@@ -1,18 +1,34 @@
 # Deployment Guide
 
-The current prototype is a static web app. It can be deployed to any static hosting service later, such as Vercel, Netlify, GitHub Pages, or an internal company hosting page.
+The current prototype is a static web app. It is ready to deploy on Vercel from a GitHub repository.
 
 ## Local Demo
 
 Open `index.html` in a browser, or serve the folder with a simple local web server.
 
-## Public Deployment Later
+## Deploy With Vercel
 
-1. Choose a static hosting provider.
-2. Upload or connect this project folder.
-3. Set the publish directory to the project root.
-4. Confirm that `index.html`, `styles.css`, and `app.js` are available.
-5. Do not add API keys to source code.
+1. Push this project to GitHub.
+2. Open Vercel.
+3. Choose `Add New Project`.
+4. Import the GitHub repository.
+5. Keep the framework preset as `Other`.
+6. Leave the build command empty.
+7. Leave the output directory empty.
+8. Deploy.
+
+Vercel should serve `index.html` from the project root.
+
+## GitHub Push
+
+This folder is already a local Git project. It needs a GitHub repository URL before it can be pushed.
+
+After a GitHub repository exists, connect it with:
+
+```bash
+git remote add origin https://github.com/YOUR_ACCOUNT/YOUR_REPO.git
+git push -u origin main
+```
 
 ## API Key Handling
 
