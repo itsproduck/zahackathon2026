@@ -20,12 +20,12 @@ Open `http://localhost:3000`. The `Run AI Agent` button will call `/api/evaluate
 2. Open Vercel.
 3. Choose `Add New Project`.
 4. Import the GitHub repository.
-5. Keep the framework preset as `Other`.
+5. Set the framework preset to `Other`.
 6. Leave the build command empty.
-7. Leave the output directory empty.
+7. Use `.` as the output directory.
 8. Deploy.
 
-Vercel should serve `index.html` from the project root.
+Vercel should serve `index.html` from the project root. The committed `vercel.json` also forces this setup with `framework: null`, `buildCommand: null`, and `outputDirectory: "."`.
 
 The `api/evaluate-assignment.mjs` file is a Vercel serverless function. Add these environment variables in Vercel before using the live PM CV Evaluator agent:
 

@@ -2,10 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": null,
   "cleanUrls": true,
+  "framework": null,
   "functions": {
     "api/*.mjs": {
       "maxDuration": 30
     }
   },
+  "outputDirectory": ".",
   "trailingSlash": false
 }
