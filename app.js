@@ -1,20 +1,4 @@
-const lessons = [
-  {
-    id: "problem",
-    title: "Find the real customer problem",
-    summary: "Turn vague feedback into a clear product problem statement."
-  },
-  {
-    id: "market",
-    title: "Prioritize the market opportunity",
-    summary: "Compare reach, pain level, and business value before choosing what to build."
-  },
-  {
-    id: "experiment",
-    title: "Design a fast product experiment",
-    summary: "Use a lightweight test to reduce risk before investing engineering time."
-  }
-];
+const lessons = courseContent.modules;
 
 const baseCandidates = [
   {
@@ -126,28 +110,69 @@ const baseCandidates = [
 const state = {
   completedLessons: new Set(JSON.parse(localStorage.getItem("produckLessons") || "[]")),
   quizScore: Number(localStorage.getItem("produckQuizScore") || 0),
+  selectedLessonId: localStorage.getItem("produckSelectedLesson") || lessons[0].id,
+  cvUpload: JSON.parse(localStorage.getItem("produckCvUpload") || "null"),
   selectedCandidateId: "mai",
   candidates: []
 };
 
+const courseTitle = document.querySelector("#courseTitle");
 const lessonList = document.querySelector("#lessonList");
+const moduleTitle = document.querySelector("#moduleTitle");
+const moduleDuration = document.querySelector("#moduleDuration");
+const modulePreview = document.querySelector("#modulePreview");
 const progressPercent = document.querySelector("#progressPercent");
 const progressBar = document.querySelector("#progressBar");
 const certificateBadge = document.querySelector("#certificateBadge");
 const quizBox = document.querySelector("#quizBox");
 const applyButton = document.querySelector("#applyButton");
 const applicationForm = document.querySelector("#applicationForm");
+const cvInput = document.querySelector("#candidateCv");
+const cvStatus = document.querySelector("#cvStatus");
+const useSampleCv = document.querySelector("#useSampleCv");
 const applicationMessage = document.querySelector("#applicationMessage");
 const candidateList = document.querySelector("#candidateList");
 const candidateDetail = document.querySelector("#candidateDetail");
 const agentMode = document.querySelector("#agentMode");
 
+const cvScreeningAgent = {
+  name: "Produck PM Screening Agent",
+  rubric: productManagerCompetency,
+  analyze(candidate) {
+    const cvText = buildCvEvidenceText(candidate);
+    const competencyScores = this.rubric.competencies.map((competency) => {
+      const matchedKeywords = competency.keywords.filter((keyword) => cvText.includes(keyword.toLowerCase()));
+      const keywordScore = Math.min(95, 52 + matchedKeywords.length * 12);
+      const contextBoost = candidate.completion >= 100 ? 4 : 0;
+      const quizBoost = candidate.quiz >= 85 ? 4 : 0;
+      const score = Math.min(98, keywordScore + contextBoost + quizBoost);
+      return {
+        ...competency,
+        score,
+        matchedKeywords
+      };
+    });
+    const weightedScore = Math.round(
+      competencyScores.reduce((sum, competency) => sum + competency.score * competency.weight, 0)
+    );
+    return {
+      agentName: this.name,
+      fileName: candidate.cvFileName || "Sample CV profile",
+      extractedSummary: summarizeCvEvidence(candidate, competencyScores),
+      competencyScores,
+      overall: weightedScore,
+      riskFlags: getCvRiskFlags(candidate, competencyScores)
+    };
+  }
+};
+
 function scoreCandidate(candidate) {
+  const cvScore = candidate.cvAnalysis?.overall || candidate.cv || 70;
   return Math.round(
     candidate.completion * 0.24 +
       candidate.quiz * 0.24 +
       candidate.engagement * 0.2 +
-      candidate.cv * 0.18 +
+      cvScore * 0.18 +
       candidate.motivation * 0.14
   );
 }
@@ -189,14 +214,16 @@ function getRecommendation(candidate) {
 function enrichCandidates(candidates) {
   return candidates
     .map((candidate) => {
-      const score = scoreCandidate(candidate);
-      const recommendation = getRecommendation({ ...candidate, score });
+      const cvAnalysis = candidate.cvAnalysis || cvScreeningAgent.analyze(candidate);
+      const score = scoreCandidate({ ...candidate, cvAnalysis });
+      const recommendation = getRecommendation({ ...candidate, cvAnalysis, score });
       const reasons = [
         `${candidate.completion}% course completion gives HR a behavioral signal beyond the CV.`,
         `${candidate.quiz}/100 assessment score shows product fundamentals.`,
-        `${candidate.engagement}/100 engagement score shows consistency inside the funnel.`
+        `${candidate.engagement}/100 engagement score shows consistency inside the funnel.`,
+        `${cvAnalysis.overall}/100 CV competency match based on the PM rubric.`
       ];
-      return { ...candidate, score, recommendation, reasons };
+      return { ...candidate, cvAnalysis, score, recommendation, reasons };
     })
     .sort((a, b) => b.score - a.score);
 }
@@ -213,11 +240,52 @@ function buildCandidateFromForm(formData) {
     completion,
     quiz: state.quizScore,
     engagement: 87,
-    cv: 74,
+    cv: state.cvUpload ? 82 : 74,
+    cvFileName: state.cvUpload?.name || "No uploaded CV",
+    cvUploadedAt: state.cvUpload?.uploadedAt || null,
     motivation,
     stage: "New",
     notes: "Live demo applicant created from the student journey."
   };
+}
+
+function buildCvEvidenceText(candidate) {
+  const uploadedName = String(candidate.cvFileName || "").replace(/[-_.]/g, " ").toLowerCase();
+  const notes = String(candidate.notes || "").toLowerCase();
+  const source = String(candidate.source || "").toLowerCase();
+  const baseProfile = [
+    uploadedName,
+    notes,
+    source,
+    "customer user research interview problem insight prioritize roadmap impact metric experiment prototype mvp stakeholder collaborate data analysis conversion"
+  ];
+  if (candidate.completion < 100) {
+    baseProfile.push("learning in progress");
+  }
+  return baseProfile.join(" ");
+}
+
+function summarizeCvEvidence(candidate, competencyScores) {
+  const strongest = [...competencyScores].sort((a, b) => b.score - a.score).slice(0, 2);
+  const fileLabel = candidate.cvFileName && candidate.cvFileName !== "No uploaded CV"
+    ? `Read uploaded PDF: ${candidate.cvFileName}.`
+    : "Used sample CV evidence because no PDF was uploaded.";
+  return `${fileLabel} Strongest signals: ${strongest.map((item) => item.label).join(" and ")}.`;
+}
+
+function getCvRiskFlags(candidate, competencyScores) {
+  const weak = competencyScores.filter((competency) => competency.score < 68).map((competency) => competency.label);
+  const flags = [];
+  if (!candidate.cvFileName || candidate.cvFileName === "No uploaded CV") {
+    flags.push("No uploaded PDF CV yet.");
+  }
+  if (weak.length > 0) {
+    flags.push(`Needs more evidence for ${weak.join(", ")}.`);
+  }
+  if (candidate.completion < 100) {
+    flags.push("Course certificate not completed.");
+  }
+  return flags.length ? flags : ["No major screening risk detected in demo mode."];
 }
 
 function loadCandidates() {
@@ -230,23 +298,37 @@ function loadCandidates() {
 }
 
 function renderLessons() {
+  courseTitle.textContent = courseContent.title;
   lessonList.innerHTML = lessons
     .map((lesson, index) => {
       const done = state.completedLessons.has(lesson.id);
+      const selected = state.selectedLessonId === lesson.id;
       return `
-        <article class="lesson-card ${done ? "done" : ""}">
+        <article class="lesson-card ${done ? "done" : ""} ${selected ? "selected" : ""}">
           <div class="lesson-number">${done ? "OK" : String(index + 1).padStart(2, "0")}</div>
           <div>
             <h3>${lesson.title}</h3>
             <p>${lesson.summary}</p>
+            <span class="lesson-duration">${lesson.duration}</span>
           </div>
-          <button class="lesson-action" type="button" data-lesson="${lesson.id}">
-            ${done ? "Completed" : "Complete"}
-          </button>
+          <div class="lesson-actions">
+            <button class="lesson-action" type="button" data-preview="${lesson.id}">Preview</button>
+            <button class="lesson-action" type="button" data-lesson="${lesson.id}">
+              ${done ? "Completed" : "Complete"}
+            </button>
+          </div>
         </article>
       `;
     })
     .join("");
+
+  document.querySelectorAll("[data-preview]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.selectedLessonId = button.dataset.preview;
+      localStorage.setItem("produckSelectedLesson", state.selectedLessonId);
+      renderStudent();
+    });
+  });
 
   document.querySelectorAll("[data-lesson]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -255,6 +337,33 @@ function renderLessons() {
       renderStudent();
     });
   });
+}
+
+function renderModulePreview() {
+  const lesson = lessons.find((item) => item.id === state.selectedLessonId) || lessons[0];
+  moduleTitle.textContent = lesson.title;
+  moduleDuration.textContent = lesson.duration;
+  modulePreview.innerHTML = `
+    <div class="module-hero">
+      <span>PM</span>
+      <div>
+        <h3>${lesson.preview.headline}</h3>
+        <p>${lesson.preview.body}</p>
+      </div>
+    </div>
+    <div class="module-body">
+      ${lesson.preview.bullets.map((bullet) => `
+        <div class="learning-point">
+          <span></span>
+          <p>${bullet}</p>
+        </div>
+      `).join("")}
+    </div>
+    <div class="example-box">
+      <strong>Mini case</strong>
+      <p>${lesson.preview.example}</p>
+    </div>
+  `;
 }
 
 function renderProgress() {
@@ -287,12 +396,12 @@ function renderQuiz() {
   }
 
   quizBox.innerHTML = `
-    <h3>Which signal should HR trust most for trainee hiring?</h3>
+    <h3>${courseContent.quiz.question}</h3>
     <p>Choose the answer that best matches Produck's approach.</p>
     <div class="quiz-options">
-      <button type="button" data-score="65">CV keyword match only</button>
-      <button type="button" data-score="92">CV plus learning behavior and assessment results</button>
-      <button type="button" data-score="70">Who applied first</button>
+      ${courseContent.quiz.options.map((option) => `
+        <button type="button" data-score="${option.score}">${option.label}</button>
+      `).join("")}
     </div>
   `;
 
@@ -308,8 +417,24 @@ function renderQuiz() {
 
 function renderStudent() {
   renderLessons();
+  renderModulePreview();
   renderProgress();
   renderQuiz();
+  renderCvUpload();
+}
+
+function renderCvUpload() {
+  if (!state.cvUpload) {
+    cvStatus.innerHTML = `
+      <span>No CV uploaded yet</span>
+      <p>Upload a PDF CV so the screening agent can attach a competency score to the application.</p>
+    `;
+    return;
+  }
+  cvStatus.innerHTML = `
+    <span>${state.cvUpload.name}</span>
+    <p>PDF received. Size: ${state.cvUpload.sizeLabel}. The agent will score it against the PM competency rubric after application.</p>
+  `;
 }
 
 function renderMetrics() {
@@ -365,7 +490,34 @@ function renderCandidateDetail() {
       <div class="signal"><strong>${candidate.completion}%</strong><span>Course completion</span></div>
       <div class="signal"><strong>${candidate.quiz}</strong><span>Quiz score</span></div>
       <div class="signal"><strong>${candidate.engagement}</strong><span>Engagement</span></div>
-      <div class="signal"><strong>${candidate.cv}</strong><span>CV strength</span></div>
+      <div class="signal"><strong>${candidate.cvAnalysis.overall}</strong><span>CV competency match</span></div>
+    </div>
+    <div class="cv-agent-panel">
+      <div class="panel-heading compact">
+        <div>
+          <p class="eyebrow">CV screening agent</p>
+          <h3>${candidate.cvAnalysis.fileName}</h3>
+        </div>
+        <span class="status-pill">${candidate.cvAnalysis.overall}/100</span>
+      </div>
+      <p>${candidate.cvAnalysis.extractedSummary}</p>
+      <div class="competency-list">
+        ${candidate.cvAnalysis.competencyScores.map((competency) => `
+          <div class="competency-row">
+            <div>
+              <strong>${competency.label}</strong>
+              <span>${competency.matchedKeywords.length ? competency.matchedKeywords.join(", ") : "limited evidence"}</span>
+            </div>
+            <div class="competency-meter" aria-label="${competency.label} score ${competency.score}">
+              <span style="width: ${competency.score}%"></span>
+            </div>
+            <b>${competency.score}</b>
+          </div>
+        `).join("")}
+      </div>
+      <div class="risk-list">
+        ${candidate.cvAnalysis.riskFlags.map((risk) => `<p>${risk}</p>`).join("")}
+      </div>
     </div>
     <h3>Why the agent ranked this candidate</h3>
     <ul class="reason-list">
@@ -430,6 +582,46 @@ document.querySelectorAll(".nav-tab").forEach((tab) => {
   tab.addEventListener("click", () => switchView(tab.dataset.view));
 });
 
+cvInput.addEventListener("change", () => {
+  const file = cvInput.files[0];
+  if (!file) {
+    state.cvUpload = null;
+    localStorage.removeItem("produckCvUpload");
+    renderCvUpload();
+    return;
+  }
+  const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  if (!isPdf) {
+    state.cvUpload = null;
+    localStorage.removeItem("produckCvUpload");
+    cvInput.value = "";
+    cvStatus.innerHTML = `
+      <span>PDF required</span>
+      <p>Please choose a PDF CV file for the demo application.</p>
+    `;
+    return;
+  }
+  state.cvUpload = {
+    name: file.name,
+    size: file.size,
+    sizeLabel: `${Math.max(1, Math.round(file.size / 1024))} KB`,
+    uploadedAt: new Date().toISOString()
+  };
+  localStorage.setItem("produckCvUpload", JSON.stringify(state.cvUpload));
+  renderCvUpload();
+});
+
+useSampleCv.addEventListener("click", () => {
+  state.cvUpload = {
+    name: "linh-nguyen-product-manager-cv.pdf",
+    size: 144000,
+    sizeLabel: "141 KB",
+    uploadedAt: new Date().toISOString()
+  };
+  localStorage.setItem("produckCvUpload", JSON.stringify(state.cvUpload));
+  renderCvUpload();
+});
+
 applicationForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const formData = new FormData(applicationForm);
@@ -455,9 +647,14 @@ document.querySelector("#resetDemo").addEventListener("click", () => {
   localStorage.removeItem("produckLessons");
   localStorage.removeItem("produckQuizScore");
   localStorage.removeItem("produckApplicant");
+  localStorage.removeItem("produckCvUpload");
+  localStorage.removeItem("produckSelectedLesson");
   state.completedLessons = new Set();
   state.quizScore = 0;
+  state.cvUpload = null;
+  state.selectedLessonId = lessons[0].id;
   state.selectedCandidateId = "mai";
+  cvInput.value = "";
   applicationMessage.textContent = "";
   renderStudent();
   renderHr();

@@ -7,10 +7,13 @@ The product creates an early talent funnel before candidates apply. Students com
 ## What the Product Does
 
 - Lets a demo student complete Product course lessons.
+- Shows an interactive course module preview, including "What does a Product Manager do?"
 - Unlocks a short readiness quiz and certificate state.
+- Lets the student upload a CV as a PDF before applying.
 - Lets the student apply to a Product Trainee program.
 - Shows HR a ranked candidate queue with realistic sample candidates.
-- Explains each ranking using learning behavior, quiz score, CV strength, and motivation.
+- Explains each ranking using learning behavior, quiz score, CV competency match, and motivation.
+- Shows how the CV screening agent scores candidates against a Product Manager competency rubric.
 - Works in demo mode without external services.
 
 ## How the System Works
@@ -19,10 +22,35 @@ This first prototype is intentionally simple:
 
 - `index.html` contains the app structure.
 - `styles.css` contains the visual design and responsive layout.
-- `app.js` contains the sample data, course progress, application flow, ranking logic, and mock AI Agent recommendations.
+- `course-content.js` contains editable course modules.
+- `competency-rubric.js` contains the editable Product Manager competency rubric.
+- `app.js` contains the sample data, course progress, application flow, CV scoring agent, ranking logic, and mock AI Agent recommendations.
 - Browser storage keeps the demo student's progress on the same machine.
 
-There is no real login, database, email sending, or CV upload yet. Those are intentionally left out to keep the hackathon demo reliable.
+There is no real login, database, or email sending yet. Those are intentionally left out to keep the hackathon demo reliable.
+
+## How to Edit Course Content
+
+Open `course-content.js` and edit:
+
+- Course title
+- Module titles
+- Module summaries
+- Preview content
+- Quiz question and answer options
+
+The app reads this file automatically.
+
+## How to Edit the Competency Rubric
+
+Open `competency-rubric.js` and edit:
+
+- Competency names
+- Weights
+- Keywords
+- Descriptions
+
+When you provide your real Product Manager competency framework, place it here so the CV screening agent scores candidates against your criteria.
 
 ## How to Start It
 
@@ -45,20 +73,22 @@ Never place a real API key directly in source code.
 ## How to Run the Demo
 
 1. Start in `Student funnel`.
-2. Complete the three course lessons.
-3. Answer the readiness check.
-4. Apply to the Product Trainee program.
-5. The app switches to `HR command room`.
-6. Show the ranked candidate queue.
-7. Open the live demo candidate and explain the agent recommendation.
-8. Click `Run AI Agent` to show the system can refresh the shortlist.
+2. Preview the "What does a Product Manager do?" course module.
+3. Complete the course lessons.
+4. Answer the readiness check.
+5. Upload a PDF CV.
+6. Apply to the Product Trainee program.
+7. The app switches to `HR command room`.
+8. Show the ranked candidate queue.
+9. Open the live demo candidate and explain the CV screening agent, competency scores, and recruiting recommendation.
+10. Click `Run AI Agent` to show the system can refresh the shortlist.
 
 ## Known Limitations
 
 - Candidate ranking is deterministic mock logic, not a live model call yet.
 - No real authentication or user accounts.
 - No real database.
-- No real CV file parsing.
+- PDF upload is real, but PDF text extraction is simulated in the browser-only prototype.
 - No email, calendar, or interview scheduling integration.
 - The certificate is a visible state in the app, not a generated PDF.
 

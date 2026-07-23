@@ -10,11 +10,11 @@ Produck solves this by building the talent funnel earlier.
 
 Show the `Student funnel` view.
 
-The candidate joins a free Product course before applying. Complete the three lessons. The system tracks learning progress. Then answer the readiness check and unlock the certificate.
+The candidate joins a free Product course before applying. Open the course preview and show "What does a Product Manager do?" Complete the lessons. The system tracks learning progress. Then answer the readiness check and unlock the certificate.
 
-This gives HR more evidence than a CV: completion, assessment score, engagement, and motivation.
+Upload a PDF CV, then submit the application.
 
-Submit the application.
+This gives HR more evidence than a CV alone: completion, assessment score, engagement, motivation, and CV competency match.
 
 ## 1:15-2:20 HR Command Room
 
@@ -25,8 +25,10 @@ Open a top candidate. Explain that the AI Agent combines:
 - Course completion
 - Quiz score
 - Engagement
-- CV strength
+- CV competency score
 - Motivation
+
+Show the CV screening agent panel. It reads the uploaded PDF state, scores the candidate against Product Manager competencies, and explains where the strongest signals are.
 
 Then show the recommendation: interview, case test, nurture, or hold.
 

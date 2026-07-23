@@ -8,6 +8,10 @@ Normal applicant tracking systems mostly start after a CV arrives. Produck start
 
 The AI Agent helps HR combine many signals, explain rankings, and coordinate next actions. The value is not just scoring; it reduces manual follow-up work in high-volume campaigns.
 
+## How does the CV scoring work?
+
+The demo uses a Product Manager competency rubric. The agent scores evidence against areas like customer discovery, problem framing, prioritization, experiment mindset, communication, and data literacy. In production, this would use real PDF text extraction and a private AI backend.
+
 ## What happens if the AI is wrong?
 
 In the current design, AI gives recommendations, not final decisions. HR still reviews the shortlist and can choose the next step. This keeps the system useful without removing human judgment.

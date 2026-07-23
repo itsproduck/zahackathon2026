@@ -47,7 +47,7 @@
               <div class="panel-heading">
                 <div>
                   <p class="eyebrow">Free course</p>
-                  <h2>Product Management Foundations</h2>
+                  <h2 id="courseTitle">Product Management Foundations</h2>
                 </div>
                 <div class="progress-ring" aria-label="Course progress">
                   <span id="progressPercent">0%</span>
@@ -57,6 +57,17 @@
                 <div id="progressBar" class="progress-fill"></div>
               </div>
               <div id="lessonList" class="lesson-list"></div>
+            </section>
+
+            <section class="panel module-panel" aria-label="Course module preview">
+              <div class="panel-heading compact">
+                <div>
+                  <p class="eyebrow">Course module</p>
+                  <h2 id="moduleTitle">What does a Product Manager do?</h2>
+                </div>
+                <span id="moduleDuration" class="status-pill muted">8 min</span>
+              </div>
+              <div id="modulePreview" class="module-preview"></div>
             </section>
 
             <section class="panel quiz-panel" aria-label="Assessment and application">
@@ -80,6 +91,15 @@
                 <div class="form-row">
                   <label for="candidateMotivation">Why Product?</label>
                   <textarea id="candidateMotivation" name="candidateMotivation" rows="4" required>I like turning messy customer problems into clear product decisions. I want to learn by joining a real trainee program.</textarea>
+                </div>
+                <div class="cv-upload">
+                  <label for="candidateCv">Upload CV as PDF</label>
+                  <input id="candidateCv" name="candidateCv" type="file" accept="application/pdf,.pdf">
+                  <button id="useSampleCv" class="ghost-button small-button" type="button">Use demo CV</button>
+                  <div id="cvStatus" class="cv-status">
+                    <span>No CV uploaded yet</span>
+                    <p>For this prototype, the agent reads a demo extraction from the PDF file name and candidate application. We can plug in real PDF text extraction next.</p>
+                  </div>
                 </div>
                 <button id="applyButton" class="primary-button" type="submit" disabled>Apply to Product Trainee</button>
                 <p id="applicationMessage" class="form-message" role="status"></p>
@@ -135,6 +155,8 @@
       </main>
     </div>
 
+    <script src="course-content.js"></script>
+    <script src="competency-rubric.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

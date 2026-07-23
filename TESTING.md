@@ -4,10 +4,12 @@
 
 - Open the app.
 - Confirm the `Student funnel` view is visible.
+- Open at least one course module preview.
 - Click all three course lesson buttons.
 - Confirm progress reaches 100%.
 - Answer the readiness check with the best answer.
 - Confirm the certificate is earned.
+- Upload a PDF CV.
 - Confirm the application button unlocks.
 - Submit the application.
 - Confirm the app switches to the HR view.
@@ -18,6 +20,8 @@
 - Confirm there are realistic sample candidates.
 - Confirm the live demo applicant appears.
 - Confirm the selected candidate has a readiness score.
+- Confirm the CV screening agent panel appears.
+- Confirm competency scores appear.
 - Confirm the agent shows ranking reasons.
 - Confirm the agent shows a logistics plan.
 - Click `Run AI Agent`.
