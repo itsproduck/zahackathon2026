@@ -14,31 +14,34 @@ The candidate joins a free Product course before applying. Open `Learning and ex
 
 Move to `Assessment and certificates`. Pass the readiness exam and show the certificate wallet with multiple certificate tracks.
 
-Move to `Hiring programs`. Preview the Product Management Trainee program and the full-time Associate Product Manager role. Upload a PDF CV or use the demo CV, then submit the application.
+Move to `Hiring programs`. Preview the active roles, choose one position, and show that the application title, motivation prompt, assignment prompt, and submit button adjust to that role. Upload a PDF CV or use the demo CV, then submit the application.
 
-This gives HR more evidence than a CV alone: completion, assessment score, engagement, motivation, and CV competency match.
+This gives HR more evidence than a CV alone: completion, assessment score, engagement, assignment quality, motivation, and CV competency match.
 
 ## 1:15-2:20 HR Command Room
 
-The HR view now shows the live applicant inside the ranked queue with other sample candidates.
+The HR view opens on the role the student selected. It also shows a large-volume command room: a 30,000-student talent pool, the Product Management Trainee role with 4,000 CVs, and multiple active hiring positions. Switch to Product Manager to show how the same dashboard handles a smaller senior-role funnel with 20 CVs.
+
+Return to PMT. The live applicant appears inside a representative agent assessment queue, while the dashboard keeps aggregate counts for the full funnel.
 
 Open a top candidate. Explain that the AI Agent combines:
 
 - Course completion
 - Quiz score
 - Engagement
+- Assignment score
 - CV competency score
 - Motivation
 
-Show the CV screening agent panel. It reads the uploaded PDF state, scores the candidate against Product Manager competencies, and explains where the strongest signals are.
+Show the Ready, Borderline, and Not Match lanes at aggregate scale. Then show the Lead Profile, readiness status, OA message draft, and status timeline for one representative candidate.
 
-Then show the recommendation: interview, case test, nurture, or hold.
+Show the CV screening agent panel. It reads the uploaded PDF state, scores the candidate against Product Manager competencies, and explains where the strongest signals are.
 
 ## 2:20-2:50 Agent Coordination
 
 Show the `Agent logistics plan`.
 
-The system is not only ranking candidates. It also prepares the next recruiting action, such as sending a case test, reserving interview slots, notifying the hiring manager, or nurturing unfinished candidates.
+The system is not only ranking candidates. It prepares the next recruiting action: Ready moves to offline test, Borderline receives a learning path, and Not Match is flagged for HR review before any outcome message is sent.
 
 Click `Run AI Agent` to show the queue can refresh.
 

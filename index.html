@@ -132,7 +132,8 @@
                   <div class="panel-heading compact">
                     <div>
                       <p class="eyebrow">Application</p>
-                      <h2>Apply with certificate and CV</h2>
+                      <h2 id="applicationTitle">Apply to Product Management Trainee 2026</h2>
+                      <p id="applicationRoleSummary" class="panel-subtext">Select a hiring program to tailor this application.</p>
                     </div>
                   </div>
                   <form id="applicationForm" class="application-form">
@@ -145,8 +146,16 @@
                       <input id="candidateSchool" name="candidateSchool" value="Foreign Trade University" required>
                     </div>
                     <div class="form-row">
-                      <label for="candidateMotivation">Why Product?</label>
+                      <label for="candidateLeadSource">Lead source</label>
+                      <input id="candidateLeadSource" name="candidateLeadSource" value="Free course + campus workshop" required>
+                    </div>
+                    <div class="form-row">
+                      <label id="candidateMotivationLabel" for="candidateMotivation">Why Product Trainee?</label>
                       <textarea id="candidateMotivation" name="candidateMotivation" rows="4" required>I like turning messy customer problems into clear product decisions. I want to learn by joining a real trainee program.</textarea>
+                    </div>
+                    <div class="form-row">
+                      <label id="candidateAssignmentLabel" for="candidateAssignment">Mini assignment answer</label>
+                      <textarea id="candidateAssignment" name="candidateAssignment" rows="4" required>I would first find where new users drop in the journey, interview a few students who signed up but did not complete the first action, then test one onboarding improvement with a clear activation metric.</textarea>
                     </div>
                     <div class="cv-upload">
                       <label for="candidateCv">Upload CV as PDF</label>
@@ -157,7 +166,7 @@
                         <p>For this prototype, the agent reads a demo extraction from the PDF file name and candidate application. We can plug in real PDF text extraction next.</p>
                       </div>
                     </div>
-                    <button id="applyButton" class="primary-button" type="submit" disabled>Apply to Product Trainee</button>
+                    <button id="applyButton" class="primary-button" type="submit" disabled>Unlock certificate to apply</button>
                     <p id="applicationMessage" class="form-message" role="status"></p>
                   </form>
                 </section>
@@ -170,7 +179,7 @@
           <div class="topbar">
             <div>
               <p class="eyebrow">TA and HR workflow</p>
-              <h1 id="hrTitle">AI Agent ranks candidates and recommends the next step.</h1>
+              <h1 id="hrTitle">AI Agent classifies readiness and prepares the next workflow.</h1>
             </div>
             <button id="runAgent" class="primary-button" type="button">Run AI Agent</button>
           </div>
@@ -178,27 +187,124 @@
           <section class="metrics-row" aria-label="Hiring funnel metrics">
             <div class="metric">
               <span id="metricApplicants">0</span>
-              <p>Applicants</p>
+              <p>Talent pool</p>
             </div>
             <div class="metric">
               <span id="metricTop">0</span>
-              <p>Interview-ready</p>
+              <p>Role CVs</p>
             </div>
             <div class="metric">
               <span id="metricAvg">0</span>
-              <p>Avg. readiness</p>
+              <p>Ready</p>
             </div>
             <div class="metric visual-metric">
               <canvas id="signalCanvas" width="240" height="96" aria-label="Candidate signal chart"></canvas>
             </div>
           </section>
 
+          <section class="panel agent-chain-panel" aria-label="Agent workflow chain">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">Agent workflow</p>
+                <h2>Student signals to HR approval</h2>
+                <p class="panel-subtext">Each agent owns one decision package, then HR approves the next action.</p>
+              </div>
+              <span class="status-pill muted">ChatGPT-ready design</span>
+            </div>
+            <div id="agentChainSteps" class="agent-chain-steps"></div>
+          </section>
+
+          <section class="panel position-command" aria-label="Active hiring positions">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">Active hiring</p>
+                <h2 id="selectedPositionTitle">Product Management Trainee 2026</h2>
+                <p id="selectedPositionSummary" class="panel-subtext">4,000 CVs from a 30,000-student talent pool.</p>
+              </div>
+              <span class="status-pill muted">Multi-position view</span>
+            </div>
+            <div id="positionTabs" class="position-tabs" aria-label="Hiring position filters"></div>
+            <div class="position-command-grid">
+              <div>
+                <div class="dashboard-card-heading">
+                  <div>
+                    <strong>Volume by position</strong>
+                    <p>Aggregate counts are shown without rendering thousands of candidate rows.</p>
+                  </div>
+                </div>
+                <div id="positionVolumeList" class="position-volume-list"></div>
+              </div>
+              <div>
+                <div class="dashboard-card-heading">
+                  <div>
+                    <strong>Agent workload</strong>
+                    <p>What TA should handle next for the selected role.</p>
+                  </div>
+                </div>
+                <div id="workloadList" class="workload-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="decision-lanes" aria-label="Agent readiness lanes">
+            <div id="decisionLanes" class="decision-lane-grid"></div>
+          </section>
+
+          <section class="panel hr-dashboard" aria-label="Candidate growth and hiring potential dashboard">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">Funnel dashboard</p>
+                <h2>Candidate growth and hire potential</h2>
+              </div>
+              <span id="dashboardHealth" class="status-pill">Healthy funnel</span>
+            </div>
+            <div class="dashboard-grid">
+              <div class="growth-panel">
+                <div class="dashboard-card-heading">
+                  <div>
+                    <strong>Candidate growth</strong>
+                    <p id="growthSummary">Weekly applicants and qualified talent trend.</p>
+                  </div>
+                  <span id="growthRate" class="dashboard-number">0%</span>
+                </div>
+                <canvas id="growthCanvas" width="560" height="220" aria-label="Weekly candidate growth chart"></canvas>
+              </div>
+              <div class="potential-panel">
+                <div class="dashboard-card-heading">
+                  <div>
+                    <strong>Hire potential</strong>
+                    <p>How ready the current pool is for the next hiring step.</p>
+                  </div>
+                </div>
+                <div id="potentialList" class="potential-list"></div>
+              </div>
+              <div class="source-panel">
+                <div class="dashboard-card-heading">
+                  <div>
+                    <strong>Channel quality</strong>
+                    <p>Where high-potential candidates are coming from.</p>
+                  </div>
+                </div>
+                <div id="sourceQualityList" class="source-quality-list"></div>
+              </div>
+              <div class="insight-panel">
+                <div class="dashboard-card-heading">
+                  <div>
+                    <strong>Agent insights</strong>
+                    <p>Signals HR should act on this week.</p>
+                  </div>
+                </div>
+                <div id="pipelineInsights" class="pipeline-insights"></div>
+              </div>
+            </div>
+          </section>
+
           <div class="hr-layout">
-            <section class="panel candidates-panel" aria-label="Ranked candidates">
+            <section class="panel candidates-panel" aria-label="Representative candidate profiles">
               <div class="panel-heading compact">
                 <div>
-                  <p class="eyebrow">Ranked shortlist</p>
-                  <h2>Candidate queue</h2>
+                  <p class="eyebrow">Representative profiles</p>
+                  <h2>Agent assessment queue</h2>
                 </div>
                 <span id="agentMode" class="status-pill">Mock agent</span>
               </div>

@@ -6,6 +6,14 @@ The current prototype is a static web app. It is ready to deploy on Vercel from 
 
 Open `index.html` in a browser, or serve the folder with a simple local web server.
 
+For the live Assignment Evaluation Agent, copy `.env.example` to `.env`, add the Workspace Agent trigger config and access token, then run:
+
+```bash
+npm start
+```
+
+Open `http://localhost:3000`. The `Run AI Agent` button will call `/api/evaluate-assignment`, which triggers the published Workspace Agent for the selected candidate.
+
 ## Deploy With Vercel
 
 1. Push this project to GitHub.
@@ -18,6 +26,18 @@ Open `index.html` in a browser, or serve the folder with a simple local web serv
 8. Deploy.
 
 Vercel should serve `index.html` from the project root.
+
+The `api/evaluate-assignment.js` file is a Vercel serverless function. Add these environment variables in Vercel before using the live agent:
+
+- `WORKSPACE_AGENT_ACCESS_TOKEN`
+- `WORKSPACE_AGENT_ASSIGNMENT_ENDPOINT` optional override; the published Assignment Evaluation Agent endpoint is already merged into the backend
+- `WORKSPACE_AGENT_ASSIGNMENT_TRIGGER_ID` optional override when you only have the exact `agtch_...` trigger ID
+
+Current Assignment Evaluation Agent endpoint:
+
+```text
+https://api.chatgpt.com/v1/workspace_agents/agtch_6a61b7c75ab48191846e2b8cbe1df8a3/trigger
+```
 
 ## GitHub Push
 
@@ -32,10 +52,10 @@ git push -u origin main
 
 ## API Key Handling
 
-The current demo does not require an API key.
+The static demo does not require an API key.
 
-If live OpenAI ranking is added later, use a small backend service so the API key stays private. Do not call the OpenAI API directly from this browser-only app with a secret key.
+The live Assignment Evaluation Agent requires a Workspace Agent access token in the backend environment. Do not expose it in browser code.
 
 ## Recommended Hackathon Choice
 
-For the deadline, keep the demo local unless the judges require a public link. A local demo is more reliable and avoids last-minute account setup.
+For the deadline, use `npm start` locally if you want to prove the Workspace Agent trigger is truly running. Keep `index.html` static mode as the fallback if network or credential setup gets in the way.
