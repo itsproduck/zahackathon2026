@@ -543,14 +543,31 @@ function drawSignalChart() {
   const canvas = document.querySelector("#signalCanvas");
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const grid = ctx.createLinearGradient(0, 0, canvas.width, 0);
+  grid.addColorStop(0, "rgba(201, 150, 49, 0.14)");
+  grid.addColorStop(1, "rgba(36, 95, 168, 0.12)");
+  ctx.fillStyle = grid;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "rgba(18, 25, 24, 0.08)";
+  ctx.lineWidth = 1;
+  for (let y = 26; y < 86; y += 18) {
+    ctx.beginPath();
+    ctx.moveTo(18, y);
+    ctx.lineTo(226, y);
+    ctx.stroke();
+  }
   const topFive = state.candidates.slice(0, 5);
   const barWidth = 30;
   topFive.forEach((candidate, index) => {
     const x = 22 + index * 42;
     const height = Math.round(candidate.score * 0.72);
-    ctx.fillStyle = index < 2 ? "#1f8f5f" : "#315f9f";
+    const bar = ctx.createLinearGradient(0, 84 - height, 0, 84);
+    bar.addColorStop(0, index < 2 ? "#f0c15b" : "#4b82c6");
+    bar.addColorStop(0.55, index < 2 ? "#16a269" : "#245fa8");
+    bar.addColorStop(1, "#121918");
+    ctx.fillStyle = bar;
     ctx.fillRect(x, 84 - height, barWidth, height);
-    ctx.fillStyle = "#66736d";
+    ctx.fillStyle = "#121918";
     ctx.font = "11px system-ui";
     ctx.fillText(String(candidate.score), x + 3, 94);
   });

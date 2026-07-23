@@ -1,19 +1,25 @@
 :root {
-  --bg: #f5f7f4;
-  --surface: #ffffff;
-  --surface-2: #eef3ef;
-  --ink: #17201c;
-  --muted: #66736d;
-  --line: #dce4df;
-  --green: #1f8f5f;
-  --green-soft: #dff3e8;
-  --blue: #315f9f;
-  --blue-soft: #e5edf8;
+  --bg: #0e1514;
+  --page: #f7f8f3;
+  --surface: rgba(255, 255, 255, 0.94);
+  --surface-2: #eef2ec;
+  --surface-3: #f9faf6;
+  --ink: #121918;
+  --muted: #68736f;
+  --line: rgba(18, 25, 24, 0.11);
+  --green: #16a269;
+  --green-soft: #daf6e8;
+  --blue: #245fa8;
+  --blue-soft: #e4eefb;
+  --gold: #c99631;
+  --gold-soft: #fff3d8;
   --yellow: #b87d18;
   --yellow-soft: #fff1d6;
   --red: #b44545;
   --red-soft: #f8e4e2;
-  --shadow: 0 20px 50px rgba(23, 32, 28, 0.08);
+  --shadow: 0 24px 60px rgba(9, 18, 17, 0.12);
+  --shadow-strong: 0 36px 90px rgba(9, 18, 17, 0.2);
+  --metal: linear-gradient(135deg, #f8dd91, #b9781e 38%, #fff5bf 66%, #9d681d);
 }
 
 * {
@@ -24,8 +30,8 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    linear-gradient(120deg, rgba(49, 95, 159, 0.09), transparent 36%),
-    var(--bg);
+    linear-gradient(110deg, rgba(201, 150, 49, 0.12), transparent 28%),
+    linear-gradient(180deg, #101a18 0, #17201f 310px, var(--page) 310px);
   color: var(--ink);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -42,20 +48,28 @@ button {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 292px minmax(0, 1fr);
   min-height: 100vh;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
 }
 
 .sidebar {
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: 24px;
-  background: #17201c;
+  padding: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 24%),
+    linear-gradient(145deg, #07110f, #14211f 58%, #0c1514);
   color: white;
   display: flex;
   flex-direction: column;
   gap: 28px;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 18px 0 60px rgba(6, 13, 12, 0.28);
 }
 
 .brand {
@@ -67,12 +81,18 @@ button {
 .brand-mark {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 8px;
-  background: var(--green);
-  color: white;
-  font-weight: 800;
+  background: var(--metal);
+  color: #15100a;
+  font-weight: 950;
+  box-shadow: 0 12px 32px rgba(201, 150, 49, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.brand strong {
+  font-size: 19px;
+  letter-spacing: 0;
 }
 
 .brand span,
@@ -88,24 +108,33 @@ button {
 
 .nav-tabs {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .nav-tab {
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.78);
-  padding: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 13px;
   border-radius: 8px;
   text-align: left;
   display: flex;
   align-items: center;
   gap: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
 }
 
 .nav-tab.active {
-  background: white;
+  background: linear-gradient(135deg, #ffffff, #eef5f1);
   color: var(--ink);
+  border-color: rgba(201, 150, 49, 0.5);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+
+.nav-tab:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .tab-icon {
@@ -116,9 +145,11 @@ button {
 
 .demo-card {
   margin-top: auto;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(201, 150, 49, 0.32);
   border-radius: 8px;
   padding: 16px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(201, 150, 49, 0.08));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .demo-card p {
@@ -128,7 +159,8 @@ button {
 }
 
 main {
-  padding: 30px;
+  padding: 34px;
+  position: relative;
 }
 
 .view {
@@ -144,14 +176,15 @@ main {
   align-items: start;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
+  color: white;
 }
 
 .eyebrow {
   margin: 0 0 8px;
-  color: var(--green);
+  color: var(--gold);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -166,9 +199,11 @@ p {
 h1 {
   max-width: 850px;
   margin-bottom: 0;
-  font-size: clamp(30px, 5vw, 58px);
+  font-size: 56px;
   line-height: 0.98;
   letter-spacing: 0;
+  text-wrap: balance;
+  text-shadow: 0 14px 42px rgba(0, 0, 0, 0.32);
 }
 
 h2 {
@@ -188,11 +223,20 @@ h3 {
   border: 0;
   padding: 0 16px;
   font-weight: 800;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 
 .primary-button {
-  background: var(--ink);
+  background: linear-gradient(135deg, #101817, #253230 58%, #0e1514);
   color: white;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 45px rgba(4, 11, 10, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.primary-button:hover,
+.ghost-button:hover,
+.lesson-action:hover {
+  transform: translateY(-1px);
 }
 
 .primary-button:disabled {
@@ -201,9 +245,10 @@ h3 {
 }
 
 .ghost-button {
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--ink);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(201, 150, 49, 0.32);
+  box-shadow: 0 14px 30px rgba(9, 18, 17, 0.1);
 }
 
 .small-button {
@@ -227,13 +272,25 @@ h3 {
 .panel,
 .metric {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.78);
   border-radius: 8px;
   box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before,
+.metric::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--green), var(--blue));
 }
 
 .panel {
-  padding: 22px;
+  padding: 24px;
 }
 
 .panel-heading {
@@ -255,7 +312,8 @@ h3 {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: conic-gradient(var(--green) var(--course-progress), var(--surface-2) 0);
+  background: conic-gradient(var(--gold) 0 12%, var(--green) var(--course-progress), var(--surface-2) 0);
+  box-shadow: 0 14px 34px rgba(22, 162, 105, 0.22);
 }
 
 .progress-ring span {
@@ -280,7 +338,7 @@ h3 {
 .progress-fill {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, var(--green), var(--blue));
+  background: linear-gradient(90deg, var(--gold), var(--green), var(--blue));
   transition: width 240ms ease;
 }
 
@@ -291,13 +349,14 @@ h3 {
 
 .lesson-card {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-columns: 44px minmax(0, 1fr);
   gap: 14px;
-  align-items: center;
+  align-items: start;
   padding: 14px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(18, 25, 24, 0.09);
   border-radius: 8px;
-  background: #fbfcfb;
+  background: linear-gradient(135deg, #ffffff, #f6f8f4);
+  box-shadow: 0 10px 28px rgba(9, 18, 17, 0.06);
 }
 
 .lesson-number {
@@ -306,7 +365,7 @@ h3 {
   width: 44px;
   height: 44px;
   border-radius: 8px;
-  background: var(--blue-soft);
+  background: linear-gradient(135deg, var(--blue-soft), #ffffff);
   color: var(--blue);
   font-weight: 900;
 }
@@ -317,8 +376,8 @@ h3 {
 }
 
 .lesson-card.selected {
-  border-color: var(--blue);
-  box-shadow: inset 4px 0 0 var(--blue);
+  border-color: rgba(201, 150, 49, 0.65);
+  box-shadow: inset 4px 0 0 var(--gold), 0 14px 34px rgba(201, 150, 49, 0.14);
 }
 
 .lesson-card p {
@@ -336,19 +395,21 @@ h3 {
 }
 
 .lesson-actions {
+  grid-column: 2;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  justify-content: end;
+  justify-content: start;
 }
 
 .lesson-action {
-  background: var(--surface-2);
+  background: linear-gradient(135deg, #ffffff, var(--surface-2));
   color: var(--ink);
+  border: 1px solid var(--line);
 }
 
 .lesson-card.done .lesson-action {
-  background: var(--green-soft);
+  background: linear-gradient(135deg, var(--green-soft), #ffffff);
   color: var(--green);
 }
 
@@ -358,7 +419,7 @@ h3 {
   min-height: 30px;
   border-radius: 99px;
   padding: 0 12px;
-  background: var(--green-soft);
+  background: linear-gradient(135deg, var(--green-soft), #f9fffb);
   color: var(--green);
   font-size: 13px;
   font-weight: 900;
@@ -366,7 +427,7 @@ h3 {
 }
 
 .status-pill.muted {
-  background: var(--surface-2);
+  background: linear-gradient(135deg, var(--surface-2), #ffffff);
   color: var(--muted);
 }
 
@@ -378,8 +439,9 @@ h3 {
 .quiz-box {
   padding: 16px;
   border-radius: 8px;
-  background: var(--surface-2);
+  background: linear-gradient(135deg, #f8faf6, #edf3f0);
   margin-bottom: 18px;
+  border: 1px solid rgba(18, 25, 24, 0.08);
 }
 
 .module-preview {
@@ -394,7 +456,10 @@ h3 {
   align-items: start;
   padding: 16px;
   border-radius: 8px;
-  background: var(--blue-soft);
+  background:
+    linear-gradient(135deg, rgba(36, 95, 168, 0.14), rgba(22, 162, 105, 0.1)),
+    #f8fbff;
+  border: 1px solid rgba(36, 95, 168, 0.16);
 }
 
 .module-hero > span {
@@ -403,9 +468,10 @@ h3 {
   width: 54px;
   height: 54px;
   border-radius: 8px;
-  background: var(--blue);
+  background: linear-gradient(135deg, var(--blue), #1c403b);
   color: white;
   font-weight: 900;
+  box-shadow: 0 14px 28px rgba(36, 95, 168, 0.24);
 }
 
 .module-hero p,
@@ -432,7 +498,8 @@ h3 {
   height: 10px;
   margin-top: 7px;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--metal);
+  box-shadow: 0 0 0 4px rgba(201, 150, 49, 0.12);
 }
 
 .learning-point p {
@@ -442,9 +509,10 @@ h3 {
 }
 
 .example-box {
-  border: 1px solid var(--line);
+  border: 1px solid rgba(201, 150, 49, 0.24);
   border-radius: 8px;
   padding: 14px;
+  background: linear-gradient(135deg, #fffdf7, #f7faf5);
 }
 
 .quiz-options {
@@ -455,16 +523,24 @@ h3 {
 
 .quiz-options button {
   min-height: 44px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(18, 25, 24, 0.1);
   border-radius: 8px;
-  background: white;
+  background: linear-gradient(135deg, #ffffff, #f7faf8);
   text-align: left;
   padding: 10px 12px;
+  color: var(--ink);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.quiz-options button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(201, 150, 49, 0.42);
+  box-shadow: 0 12px 28px rgba(9, 18, 17, 0.08);
 }
 
 .quiz-options button.correct {
   border-color: var(--green);
-  background: var(--green-soft);
+  background: linear-gradient(135deg, var(--green-soft), #ffffff);
 }
 
 .form-row {
@@ -481,11 +557,18 @@ label {
 input,
 textarea {
   width: 100%;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(18, 25, 24, 0.12);
   border-radius: 8px;
-  background: white;
+  background: linear-gradient(135deg, #ffffff, #fafbf8);
   color: var(--ink);
   padding: 11px 12px;
+  box-shadow: inset 0 1px 2px rgba(9, 18, 17, 0.04);
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid rgba(201, 150, 49, 0.34);
+  border-color: rgba(201, 150, 49, 0.54);
 }
 
 textarea {
@@ -499,10 +582,12 @@ textarea {
 }
 
 .cv-status {
-  border: 1px dashed var(--line);
+  border: 1px dashed rgba(201, 150, 49, 0.48);
   border-radius: 8px;
   padding: 12px;
-  background: #fbfcfb;
+  background:
+    linear-gradient(135deg, rgba(255, 243, 216, 0.74), rgba(228, 238, 251, 0.4)),
+    #fbfcfb;
 }
 
 .cv-status span {
@@ -534,12 +619,19 @@ textarea {
 .metric {
   min-height: 104px;
   padding: 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 246, 0.94)),
+    var(--surface);
 }
 
 .metric span {
   display: block;
   font-size: 34px;
   font-weight: 900;
+  background: linear-gradient(135deg, var(--ink), var(--blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .metric p {
@@ -564,19 +656,27 @@ textarea {
 
 .candidate-row {
   width: 100%;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(18, 25, 24, 0.09);
   border-radius: 8px;
-  background: white;
+  background: linear-gradient(135deg, #ffffff, #f7faf7);
   padding: 12px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 72px;
   gap: 12px;
   text-align: left;
+  box-shadow: 0 8px 22px rgba(9, 18, 17, 0.05);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.candidate-row:hover {
+  transform: translateY(-1px);
+  border-color: rgba(201, 150, 49, 0.42);
+  box-shadow: 0 16px 34px rgba(9, 18, 17, 0.1);
 }
 
 .candidate-row.active {
-  border-color: var(--green);
-  box-shadow: inset 4px 0 0 var(--green);
+  border-color: rgba(201, 150, 49, 0.68);
+  box-shadow: inset 4px 0 0 var(--gold), 0 18px 42px rgba(201, 150, 49, 0.16);
 }
 
 .candidate-name {
@@ -598,9 +698,10 @@ textarea {
   width: 58px;
   height: 58px;
   border-radius: 8px;
-  background: var(--blue-soft);
-  color: var(--blue);
+  background: linear-gradient(135deg, var(--gold-soft), var(--blue-soft));
+  color: #1d3936;
   font-weight: 900;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .detail-header {
@@ -614,9 +715,12 @@ textarea {
   min-width: 86px;
   text-align: center;
   border-radius: 8px;
-  background: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(201, 150, 49, 0.24), transparent),
+    var(--ink);
   color: white;
   padding: 12px;
+  box-shadow: 0 16px 36px rgba(9, 18, 17, 0.24);
 }
 
 .detail-score strong {
@@ -632,14 +736,16 @@ textarea {
 }
 
 .signal {
-  border: 1px solid var(--line);
+  border: 1px solid rgba(18, 25, 24, 0.1);
   border-radius: 8px;
   padding: 12px;
+  background: linear-gradient(135deg, #ffffff, #f7faf8);
 }
 
 .signal strong {
   display: block;
   font-size: 22px;
+  color: var(--blue);
 }
 
 .signal span {
@@ -655,11 +761,13 @@ textarea {
 }
 
 .cv-agent-panel {
-  border: 1px solid var(--line);
+  border: 1px solid rgba(36, 95, 168, 0.16);
   border-radius: 8px;
   padding: 16px;
   margin: 18px 0;
-  background: #fbfcfb;
+  background:
+    linear-gradient(135deg, rgba(228, 238, 251, 0.72), rgba(218, 246, 232, 0.42)),
+    #fbfcfb;
 }
 
 .cv-agent-panel > p {
@@ -700,14 +808,15 @@ textarea {
   height: 10px;
   overflow: hidden;
   border-radius: 99px;
-  background: var(--surface-2);
+  background: rgba(18, 25, 24, 0.08);
 }
 
 .competency-meter span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--green), var(--blue));
+  background: linear-gradient(90deg, var(--gold), var(--green), var(--blue));
+  box-shadow: 0 0 18px rgba(22, 162, 105, 0.34);
 }
 
 .risk-list {
@@ -728,9 +837,12 @@ textarea {
 
 .agent-box {
   border-radius: 8px;
-  background: var(--green-soft);
+  background:
+    linear-gradient(135deg, rgba(22, 162, 105, 0.18), rgba(201, 150, 49, 0.16)),
+    #f6fff9;
   padding: 16px;
   margin-top: 18px;
+  border: 1px solid rgba(22, 162, 105, 0.18);
 }
 
 .agent-box strong {
@@ -745,9 +857,10 @@ textarea {
 
 .logistics-box {
   margin-top: 18px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(18, 25, 24, 0.1);
   border-radius: 8px;
   padding: 16px;
+  background: linear-gradient(135deg, #ffffff, #f8faf6);
 }
 
 .task-row {
@@ -769,8 +882,8 @@ textarea {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: var(--blue-soft);
-  color: var(--blue);
+  background: var(--metal);
+  color: #15100a;
   font-size: 12px;
   font-weight: 900;
 }
@@ -800,6 +913,11 @@ textarea {
 
   .topbar {
     flex-direction: column;
+    color: var(--ink);
+  }
+
+  h1 {
+    text-shadow: none;
   }
 }
 
