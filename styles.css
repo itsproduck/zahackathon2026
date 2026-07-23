@@ -550,6 +550,44 @@ textarea {
   line-height: 1.5;
 }
 
+.logistics-box {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.task-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.task-row:first-of-type {
+  margin-top: 8px;
+}
+
+.task-row span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.task-row p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
 @media (max-width: 980px) {
   .app-shell,
   .student-grid,

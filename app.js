@@ -158,27 +158,31 @@ function getRecommendation(candidate) {
     return {
       action: "Fast-track to interview",
       tone: "green",
-      message: "This candidate has strong learning signals and a strong application. Invite them to a structured interview within 48 hours."
+      message: "This candidate has strong learning signals and a strong application. Invite them to a structured interview within 48 hours.",
+      tasks: ["Reserve interview slot", "Send interview brief", "Notify hiring manager"]
     };
   }
   if (score >= 78) {
     return {
       action: "Send case test",
       tone: "blue",
-      message: "The candidate looks promising. Send a short product case test to validate problem-solving depth."
+      message: "The candidate looks promising. Send a short product case test to validate problem-solving depth.",
+      tasks: ["Send product case test", "Set 72-hour deadline", "Rescore after submission"]
     };
   }
   if (candidate.completion < 100) {
     return {
       action: "Nurture to finish certificate",
       tone: "yellow",
-      message: "Do not reject yet. Ask the candidate to complete the course, then rescore with stronger learning data."
+      message: "Do not reject yet. Ask the candidate to complete the course, then rescore with stronger learning data.",
+      tasks: ["Send course reminder", "Highlight missing lesson", "Reopen application after certificate"]
     };
   }
   return {
     action: "Hold for later campaign",
     tone: "red",
-    message: "Current signals are below the shortlist threshold. Keep them warm for a future role or learning path."
+    message: "Current signals are below the shortlist threshold. Keep them warm for a future role or learning path.",
+    tasks: ["Move to talent pool", "Send polite update", "Recommend next learning path"]
   };
 }
 
@@ -370,6 +374,15 @@ function renderCandidateDetail() {
     <div class="agent-box">
       <strong>${candidate.recommendation.action}</strong>
       <p>${candidate.recommendation.message}</p>
+    </div>
+    <div class="logistics-box">
+      <h3>Agent logistics plan</h3>
+      ${candidate.recommendation.tasks.map((task, index) => `
+        <div class="task-row">
+          <span>${index + 1}</span>
+          <p>${task}</p>
+        </div>
+      `).join("")}
     </div>
   `;
 }

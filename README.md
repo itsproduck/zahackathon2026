@@ -61,3 +61,11 @@ Never place a real API key directly in source code.
 - No real CV file parsing.
 - No email, calendar, or interview scheduling integration.
 - The certificate is a visible state in the app, not a generated PDF.
+
+## Hackathon Materials
+
+- `DEPLOYMENT.md`: how to deploy later.
+- `TESTING.md`: final test checklist.
+- `DEMO_SCRIPT.md`: 3-minute presentation script.
+- `ARCHITECTURE.md`: short system explanation.
+- `JUDGE_QA.md`: likely judge questions and answers.
