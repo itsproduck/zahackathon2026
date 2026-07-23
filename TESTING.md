@@ -4,11 +4,15 @@
 
 - Open the app.
 - Confirm the `Student funnel` view is visible.
-- Open at least one course module preview.
+- Confirm the student funnel has `Learning and exam`, `Assessment and certificates`, and `Hiring programs` subtabs.
+- Open at least one course module and confirm the lesson content changes.
+- Answer at least one mini quiz beside a mini case.
 - Click all three course lesson buttons.
 - Confirm progress reaches 100%.
+- Open the certificates subtab and confirm multiple certificate cards appear.
 - Answer the readiness check with the best answer.
 - Confirm the certificate is earned.
+- Open the hiring subtab and confirm trainee and full-time program cards appear.
 - Upload a PDF CV.
 - Confirm the application button unlocks.
 - Submit the application.

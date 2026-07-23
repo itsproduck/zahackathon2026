@@ -10,9 +10,11 @@ Produck solves this by building the talent funnel earlier.
 
 Show the `Student funnel` view.
 
-The candidate joins a free Product course before applying. Open the course preview and show "What does a Product Manager do?" Complete the lessons. The system tracks learning progress. Then answer the readiness check and unlock the certificate.
+The candidate joins a free Product course before applying. Open `Learning and exam`, click a course module, show that the lesson content changes, then show the mini case and mini quiz beside it. Complete the lessons.
 
-Upload a PDF CV, then submit the application.
+Move to `Assessment and certificates`. Pass the readiness exam and show the certificate wallet with multiple certificate tracks.
+
+Move to `Hiring programs`. Preview the Product Management Trainee program and the full-time Associate Product Manager role. Upload a PDF CV or use the demo CV, then submit the application.
 
 This gives HR more evidence than a CV alone: completion, assessment score, engagement, motivation, and CV competency match.
 

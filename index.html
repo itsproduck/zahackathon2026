@@ -42,68 +42,126 @@
             <button id="resetDemo" class="ghost-button" type="button">Reset demo</button>
           </div>
 
-          <div class="student-grid">
-            <section class="panel course-panel" aria-label="Course lessons">
-              <div class="panel-heading">
-                <div>
-                  <p class="eyebrow">Free course</p>
-                  <h2 id="courseTitle">Product Management Foundations</h2>
-                </div>
-                <div class="progress-ring" aria-label="Course progress">
-                  <span id="progressPercent">0%</span>
-                </div>
-              </div>
-              <div class="progress-track" aria-hidden="true">
-                <div id="progressBar" class="progress-fill"></div>
-              </div>
-              <div id="lessonList" class="lesson-list"></div>
-            </section>
+          <div class="funnel-tabs" aria-label="Student funnel steps">
+            <button class="funnel-tab active" data-student-tab="learningTab" type="button">
+              <span>01</span>
+              Learning and exam
+            </button>
+            <button class="funnel-tab" data-student-tab="certificateTab" type="button">
+              <span>02</span>
+              Assessment and certificates
+            </button>
+            <button class="funnel-tab" data-student-tab="hiringTab" type="button">
+              <span>03</span>
+              Hiring programs
+            </button>
+          </div>
 
-            <section class="panel module-panel" aria-label="Course module preview">
-              <div class="panel-heading compact">
-                <div>
-                  <p class="eyebrow">Course module</p>
-                  <h2 id="moduleTitle">What does a Product Manager do?</h2>
-                </div>
-                <span id="moduleDuration" class="status-pill muted">8 min</span>
-              </div>
-              <div id="modulePreview" class="module-preview"></div>
-            </section>
-
-            <section class="panel quiz-panel" aria-label="Assessment and application">
-              <div class="panel-heading compact">
-                <div>
-                  <p class="eyebrow">Assessment</p>
-                  <h2>Readiness check</h2>
-                </div>
-                <span id="certificateBadge" class="status-pill muted">Certificate locked</span>
-              </div>
-              <div id="quizBox" class="quiz-box"></div>
-              <form id="applicationForm" class="application-form">
-                <div class="form-row">
-                  <label for="candidateName">Name</label>
-                  <input id="candidateName" name="candidateName" value="Linh Nguyen" required>
-                </div>
-                <div class="form-row">
-                  <label for="candidateSchool">School or current role</label>
-                  <input id="candidateSchool" name="candidateSchool" value="Foreign Trade University" required>
-                </div>
-                <div class="form-row">
-                  <label for="candidateMotivation">Why Product?</label>
-                  <textarea id="candidateMotivation" name="candidateMotivation" rows="4" required>I like turning messy customer problems into clear product decisions. I want to learn by joining a real trainee program.</textarea>
-                </div>
-                <div class="cv-upload">
-                  <label for="candidateCv">Upload CV as PDF</label>
-                  <input id="candidateCv" name="candidateCv" type="file" accept="application/pdf,.pdf">
-                  <button id="useSampleCv" class="ghost-button small-button" type="button">Use demo CV</button>
-                  <div id="cvStatus" class="cv-status">
-                    <span>No CV uploaded yet</span>
-                    <p>For this prototype, the agent reads a demo extraction from the PDF file name and candidate application. We can plug in real PDF text extraction next.</p>
+          <div class="funnel-stage">
+            <section id="learningTab" class="student-tab-panel active">
+              <div class="student-grid">
+                <section class="panel course-panel" aria-label="Course lessons">
+                  <div class="panel-heading">
+                    <div>
+                      <p class="eyebrow">Free course</p>
+                      <h2 id="courseTitle">Product Management Foundations</h2>
+                    </div>
+                    <div class="progress-ring" aria-label="Course progress">
+                      <span id="progressPercent">0%</span>
+                    </div>
                   </div>
-                </div>
-                <button id="applyButton" class="primary-button" type="submit" disabled>Apply to Product Trainee</button>
-                <p id="applicationMessage" class="form-message" role="status"></p>
-              </form>
+                  <div class="progress-track" aria-hidden="true">
+                    <div id="progressBar" class="progress-fill"></div>
+                  </div>
+                  <div id="lessonList" class="lesson-list"></div>
+                </section>
+
+                <section class="panel module-panel" aria-label="Course module content">
+                  <div class="panel-heading compact">
+                    <div>
+                      <p class="eyebrow">Clickable course</p>
+                      <h2 id="moduleTitle">What does a Product Manager do?</h2>
+                    </div>
+                    <span id="moduleDuration" class="status-pill muted">8 min</span>
+                  </div>
+                  <div id="modulePreview" class="module-preview"></div>
+                </section>
+              </div>
+            </section>
+
+            <section id="certificateTab" class="student-tab-panel">
+              <div class="assessment-grid">
+                <section class="panel quiz-panel" aria-label="Assessment and certificates">
+                  <div class="panel-heading compact">
+                    <div>
+                      <p class="eyebrow">Assessment</p>
+                      <h2>Readiness exam</h2>
+                    </div>
+                    <span id="certificateBadge" class="status-pill muted">Certificate locked</span>
+                  </div>
+                  <div id="quizBox" class="quiz-box"></div>
+                </section>
+
+                <section class="panel certificates-panel" aria-label="Available certificates">
+                  <div class="panel-heading compact">
+                    <div>
+                      <p class="eyebrow">Earn certificates</p>
+                      <h2>Certificate wallet</h2>
+                    </div>
+                    <span class="status-pill muted">3 tracks</span>
+                  </div>
+                  <div id="certificateList" class="certificate-list"></div>
+                </section>
+              </div>
+            </section>
+
+            <section id="hiringTab" class="student-tab-panel">
+              <div class="hiring-grid">
+                <section class="panel hiring-panel" aria-label="Hiring program previews">
+                  <div class="panel-heading compact">
+                    <div>
+                      <p class="eyebrow">Hiring preview</p>
+                      <h2>Programs and full-time positions</h2>
+                    </div>
+                    <span class="status-pill">Open</span>
+                  </div>
+                  <div id="hiringProgramList" class="hiring-program-list"></div>
+                </section>
+
+                <section class="panel application-panel" aria-label="Apply to hiring program">
+                  <div class="panel-heading compact">
+                    <div>
+                      <p class="eyebrow">Application</p>
+                      <h2>Apply with certificate and CV</h2>
+                    </div>
+                  </div>
+                  <form id="applicationForm" class="application-form">
+                    <div class="form-row">
+                      <label for="candidateName">Name</label>
+                      <input id="candidateName" name="candidateName" value="Linh Nguyen" required>
+                    </div>
+                    <div class="form-row">
+                      <label for="candidateSchool">School or current role</label>
+                      <input id="candidateSchool" name="candidateSchool" value="Foreign Trade University" required>
+                    </div>
+                    <div class="form-row">
+                      <label for="candidateMotivation">Why Product?</label>
+                      <textarea id="candidateMotivation" name="candidateMotivation" rows="4" required>I like turning messy customer problems into clear product decisions. I want to learn by joining a real trainee program.</textarea>
+                    </div>
+                    <div class="cv-upload">
+                      <label for="candidateCv">Upload CV as PDF</label>
+                      <input id="candidateCv" name="candidateCv" type="file" accept="application/pdf,.pdf">
+                      <button id="useSampleCv" class="ghost-button small-button" type="button">Use demo CV</button>
+                      <div id="cvStatus" class="cv-status">
+                        <span>No CV uploaded yet</span>
+                        <p>For this prototype, the agent reads a demo extraction from the PDF file name and candidate application. We can plug in real PDF text extraction next.</p>
+                      </div>
+                    </div>
+                    <button id="applyButton" class="primary-button" type="submit" disabled>Apply to Product Trainee</button>
+                    <p id="applicationMessage" class="form-message" role="status"></p>
+                  </form>
+                </section>
+              </div>
             </section>
           </div>
         </section>

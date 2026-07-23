@@ -18,6 +18,18 @@ const courseContent = {
           "Run small experiments before asking teams to build big features."
         ],
         example: "If users say checkout is slow, a PM does not only ask engineering to make the page faster. They first check where users drop, what causes confusion, and which fix creates the most business value."
+      },
+      miniCase: {
+        prompt: "A campus food delivery app has many signups but few first orders. What should a PM investigate first?",
+        answer: "Find the biggest drop-off point in the first-order journey, then interview users who signed up but did not order."
+      },
+      miniQuiz: {
+        question: "What is the PM's first job in this situation?",
+        options: [
+          { label: "Ask engineering to rebuild checkout", correct: false },
+          { label: "Understand the user problem and drop-off point", correct: true },
+          { label: "Launch a discount campaign immediately", correct: false }
+        ]
       }
     },
     {
@@ -35,6 +47,18 @@ const courseContent = {
           "Write a concise problem statement."
         ],
         example: "Instead of 'build a reminder feature,' write 'new users forget to finish onboarding because the value is unclear after signup.'"
+      },
+      miniCase: {
+        prompt: "Students say they want 'better course recommendations.' The team wants to build AI search. What should the PM clarify?",
+        answer: "Clarify who struggles, when recommendations fail, and what successful recommendations should improve."
+      },
+      miniQuiz: {
+        question: "Which problem statement is strongest?",
+        options: [
+          { label: "Build an AI recommendation engine", correct: false },
+          { label: "Students cannot find relevant beginner courses after signup", correct: true },
+          { label: "The homepage looks old", correct: false }
+        ]
       }
     },
     {
@@ -52,6 +76,18 @@ const courseContent = {
           "Communicate why one option wins."
         ],
         example: "A lower-effort onboarding improvement may beat a large loyalty feature if it improves activation for every new user."
+      },
+      miniCase: {
+        prompt: "You can improve onboarding, build badges, or launch referrals. The goal is activation. Which should be tested first?",
+        answer: "Onboarding, because it touches every new user and directly affects activation."
+      },
+      miniQuiz: {
+        question: "Which signal matters most for prioritization?",
+        options: [
+          { label: "Highest user and business impact with reasonable effort", correct: true },
+          { label: "The feature requested by the loudest user", correct: false },
+          { label: "The idea with the nicest UI", correct: false }
+        ]
       }
     },
     {
@@ -69,7 +105,64 @@ const courseContent = {
           "Decide what action follows the result."
         ],
         example: "Before building a full mentor marketplace, test demand with a landing page and interview the first 20 signups."
+      },
+      miniCase: {
+        prompt: "The team wants to build a mentor marketplace for students. What is a fast demand test?",
+        answer: "Create a landing page, collect signups, interview interested students, and measure real conversion."
+      },
+      miniQuiz: {
+        question: "What should a PM define before running an experiment?",
+        options: [
+          { label: "A success metric and next decision", correct: true },
+          { label: "A complete product roadmap", correct: false },
+          { label: "A perfect logo", correct: false }
+        ]
       }
+    }
+  ],
+  certificates: [
+    {
+      id: "discovery",
+      title: "Product Discovery Readiness",
+      issuer: "Produck Academy",
+      requirement: "Complete all lessons and pass the readiness exam.",
+      status: "available"
+    },
+    {
+      id: "prioritization",
+      title: "Product Prioritization Basics",
+      issuer: "Produck Academy",
+      requirement: "Complete prioritization module and answer its mini quiz.",
+      status: "progress"
+    },
+    {
+      id: "experiment",
+      title: "Experiment Design Starter",
+      issuer: "Produck Academy",
+      requirement: "Complete experiment module and submit one mini case answer.",
+      status: "progress"
+    }
+  ],
+  hiringPrograms: [
+    {
+      id: "trainee",
+      type: "Trainee program",
+      title: "Product Management Trainee 2026",
+      company: "Produck Demo Company",
+      timeline: "8-week selection program",
+      location: "Ho Chi Minh City / Hybrid",
+      description: "For high-potential students and fresh graduates who show strong learning signals, curiosity, and structured thinking.",
+      steps: ["Apply with certificate", "AI CV screening", "Product case test", "Panel interview", "Offer"]
+    },
+    {
+      id: "fulltime",
+      type: "Full-time position",
+      title: "Associate Product Manager",
+      company: "Produck Demo Company",
+      timeline: "Full-time role",
+      location: "Ho Chi Minh City",
+      description: "For candidates ready to join a product squad and own discovery, prioritization, and experiment work with a senior PM.",
+      steps: ["Submit CV", "Portfolio or case review", "Hiring manager interview", "Team fit interview", "Offer"]
     }
   ],
   quiz: {

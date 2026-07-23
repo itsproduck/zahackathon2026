@@ -109,8 +109,10 @@ const baseCandidates = [
 
 const state = {
   completedLessons: new Set(JSON.parse(localStorage.getItem("produckLessons") || "[]")),
+  moduleQuizResults: JSON.parse(localStorage.getItem("produckModuleQuizResults") || "{}"),
   quizScore: Number(localStorage.getItem("produckQuizScore") || 0),
   selectedLessonId: localStorage.getItem("produckSelectedLesson") || lessons[0].id,
+  activeStudentTab: localStorage.getItem("produckStudentTab") || "learningTab",
   cvUpload: JSON.parse(localStorage.getItem("produckCvUpload") || "null"),
   selectedCandidateId: "mai",
   candidates: []
@@ -121,6 +123,8 @@ const lessonList = document.querySelector("#lessonList");
 const moduleTitle = document.querySelector("#moduleTitle");
 const moduleDuration = document.querySelector("#moduleDuration");
 const modulePreview = document.querySelector("#modulePreview");
+const certificateList = document.querySelector("#certificateList");
+const hiringProgramList = document.querySelector("#hiringProgramList");
 const progressPercent = document.querySelector("#progressPercent");
 const progressBar = document.querySelector("#progressBar");
 const certificateBadge = document.querySelector("#certificateBadge");
@@ -312,9 +316,9 @@ function renderLessons() {
             <span class="lesson-duration">${lesson.duration}</span>
           </div>
           <div class="lesson-actions">
-            <button class="lesson-action" type="button" data-preview="${lesson.id}">Preview</button>
+            <button class="lesson-action" type="button" data-preview="${lesson.id}">Open course</button>
             <button class="lesson-action" type="button" data-lesson="${lesson.id}">
-              ${done ? "Completed" : "Complete"}
+              ${done ? "Completed" : "Mark complete"}
             </button>
           </div>
         </article>
@@ -341,6 +345,7 @@ function renderLessons() {
 
 function renderModulePreview() {
   const lesson = lessons.find((item) => item.id === state.selectedLessonId) || lessons[0];
+  const moduleQuiz = state.moduleQuizResults[lesson.id];
   moduleTitle.textContent = lesson.title;
   moduleDuration.textContent = lesson.duration;
   modulePreview.innerHTML = `
@@ -359,11 +364,42 @@ function renderModulePreview() {
         </div>
       `).join("")}
     </div>
-    <div class="example-box">
-      <strong>Mini case</strong>
-      <p>${lesson.preview.example}</p>
+    <div class="case-quiz-grid">
+      <div class="example-box">
+        <strong>Mini case</strong>
+        <p>${lesson.miniCase.prompt}</p>
+        <small>${lesson.miniCase.answer}</small>
+      </div>
+      <div class="mini-quiz-box">
+        <strong>Mini quiz</strong>
+        <p>${lesson.miniQuiz.question}</p>
+        <div class="mini-quiz-options">
+          ${lesson.miniQuiz.options.map((option, index) => `
+            <button class="${moduleQuiz?.selected === index ? (option.correct ? "correct" : "wrong") : ""}" type="button" data-module-quiz="${lesson.id}" data-option-index="${index}">
+              ${option.label}
+            </button>
+          `).join("")}
+        </div>
+        <span>${moduleQuiz ? (moduleQuiz.correct ? "Correct. This module is counted as learned." : "Try again. Pick the answer a PM would use.") : "Answer to strengthen your learning signal."}</span>
+      </div>
     </div>
   `;
+
+  document.querySelectorAll("[data-module-quiz]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const moduleId = button.dataset.moduleQuiz;
+      const optionIndex = Number(button.dataset.optionIndex);
+      const selectedLesson = lessons.find((item) => item.id === moduleId);
+      const correct = Boolean(selectedLesson?.miniQuiz.options[optionIndex]?.correct);
+      state.moduleQuizResults[moduleId] = { selected: optionIndex, correct };
+      if (correct) {
+        state.completedLessons.add(moduleId);
+        localStorage.setItem("produckLessons", JSON.stringify([...state.completedLessons]));
+      }
+      localStorage.setItem("produckModuleQuizResults", JSON.stringify(state.moduleQuizResults));
+      renderStudent();
+    });
+  });
 }
 
 function renderProgress() {
@@ -416,11 +452,69 @@ function renderQuiz() {
 }
 
 function renderStudent() {
+  renderStudentTabs();
   renderLessons();
   renderModulePreview();
   renderProgress();
   renderQuiz();
   renderCvUpload();
+  renderCertificates();
+  renderHiringPrograms();
+}
+
+function renderStudentTabs() {
+  document.querySelectorAll(".student-tab-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.id === state.activeStudentTab);
+  });
+  document.querySelectorAll(".funnel-tab").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.studentTab === state.activeStudentTab);
+  });
+}
+
+function getProgressPercent() {
+  return Math.round((state.completedLessons.size / lessons.length) * 100);
+}
+
+function renderCertificates() {
+  const progress = getProgressPercent();
+  const passedExam = state.quizScore >= 80;
+  certificateList.innerHTML = courseContent.certificates.map((certificate, index) => {
+    const earned = index === 0 ? progress === 100 && passedExam : progress >= 50 && state.moduleQuizResults[lessons[index + 1]?.id]?.correct;
+    const status = earned ? "Earned" : certificate.status === "progress" ? "In progress" : "Locked";
+    return `
+      <article class="certificate-card ${earned ? "earned" : ""}">
+        <div class="certificate-seal">${earned ? "✓" : "C${index + 1}"}</div>
+        <div>
+          <p class="eyebrow">${certificate.issuer}</p>
+          <h3>${certificate.title}</h3>
+          <p>${certificate.requirement}</p>
+        </div>
+        <span class="status-pill ${earned ? "" : "muted"}">${status}</span>
+      </article>
+    `;
+  }).join("");
+}
+
+function renderHiringPrograms() {
+  hiringProgramList.innerHTML = courseContent.hiringPrograms.map((program) => `
+    <article class="program-card">
+      <div class="program-header">
+        <span>${program.type}</span>
+        <strong>${program.timeline}</strong>
+      </div>
+      <h3>${program.title}</h3>
+      <p>${program.company} / ${program.location}</p>
+      <p>${program.description}</p>
+      <div class="program-steps">
+        ${program.steps.map((step, index) => `
+          <div>
+            <span>${index + 1}</span>
+            <p>${step}</p>
+          </div>
+        `).join("")}
+      </div>
+    </article>
+  `).join("");
 }
 
 function renderCvUpload() {
@@ -599,6 +693,14 @@ document.querySelectorAll(".nav-tab").forEach((tab) => {
   tab.addEventListener("click", () => switchView(tab.dataset.view));
 });
 
+document.querySelectorAll(".funnel-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    state.activeStudentTab = tab.dataset.studentTab;
+    localStorage.setItem("produckStudentTab", state.activeStudentTab);
+    renderStudentTabs();
+  });
+});
+
 cvInput.addEventListener("change", () => {
   const file = cvInput.files[0];
   if (!file) {
@@ -662,14 +764,18 @@ document.querySelector("#runAgent").addEventListener("click", () => {
 
 document.querySelector("#resetDemo").addEventListener("click", () => {
   localStorage.removeItem("produckLessons");
+  localStorage.removeItem("produckModuleQuizResults");
   localStorage.removeItem("produckQuizScore");
   localStorage.removeItem("produckApplicant");
   localStorage.removeItem("produckCvUpload");
   localStorage.removeItem("produckSelectedLesson");
+  localStorage.removeItem("produckStudentTab");
   state.completedLessons = new Set();
+  state.moduleQuizResults = {};
   state.quizScore = 0;
   state.cvUpload = null;
   state.selectedLessonId = lessons[0].id;
+  state.activeStudentTab = "learningTab";
   state.selectedCandidateId = "mai";
   cvInput.value = "";
   applicationMessage.textContent = "";

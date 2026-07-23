@@ -7,8 +7,11 @@ The product creates an early talent funnel before candidates apply. Students com
 ## What the Product Does
 
 - Lets a demo student complete Product course lessons.
-- Shows an interactive course module preview, including "What does a Product Manager do?"
+- Shows a clearer student funnel with subtabs for learning, certificates, and hiring programs.
+- Shows clickable course modules that change the lesson content, mini case, and mini quiz.
 - Unlocks a short readiness quiz and certificate state.
+- Shows multiple certificate tracks in a certificate wallet.
+- Previews both trainee programs and full-time Product roles.
 - Lets the student upload a CV as a PDF before applying.
 - Lets the student apply to a Product Trainee program.
 - Shows HR a ranked candidate queue with realistic sample candidates.
@@ -73,10 +76,10 @@ Never place a real API key directly in source code.
 ## How to Run the Demo
 
 1. Start in `Student funnel`.
-2. Preview the "What does a Product Manager do?" course module.
-3. Complete the course lessons.
-4. Answer the readiness check.
-5. Upload a PDF CV.
+2. Use `Learning and exam` to click course modules, read the mini case, and answer a mini quiz.
+3. Use `Assessment and certificates` to pass the readiness exam and show the certificate wallet.
+4. Use `Hiring programs` to preview trainee and full-time roles.
+5. Upload a PDF CV or click `Use demo CV`.
 6. Apply to the Product Trainee program.
 7. The app switches to `HR command room`.
 8. Show the ranked candidate queue.
