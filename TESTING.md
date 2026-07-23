@@ -42,7 +42,7 @@
 - Confirm the agent shows status reasons.
 - Confirm the agent shows a logistics plan.
 - Click `Run AI Agent`.
-- If running with `npm start` and Workspace Agent credentials, confirm the Assignment Evaluation Agent shows `Workspace Agent triggered`.
+- If running with `npm start` and Workspace Agent credentials, confirm the PM CV Evaluator shows `Workspace Agent triggered`.
 - If running without Workspace Agent credentials or by opening `index.html`, confirm the app falls back cleanly and candidate scores remain visible.
 
 ## Visual Check

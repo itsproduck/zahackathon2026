@@ -440,7 +440,7 @@ const cvScreeningAgent = {
 };
 
 const assignmentEvaluationAgent = {
-  name: "Assignment Evaluation Agent",
+  name: "PM CV Evaluator",
   dimensions: [
     {
       label: "Problem framing",
@@ -1645,7 +1645,7 @@ function renderCandidateDetail() {
     <div class="assignment-agent-panel">
       <div class="panel-heading compact">
         <div>
-          <p class="eyebrow">Assignment Evaluation Agent</p>
+          <p class="eyebrow">PM CV Evaluator</p>
           <h3>${candidate.assignmentAnalysis.score}/100 case response</h3>
         </div>
         <div class="decision-badges">

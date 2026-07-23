@@ -11,8 +11,8 @@ Produck is currently one small web app with an optional backend endpoint. It use
 - `course-content.js`: editable course modules and quiz content.
 - `competency-rubric.js`: editable Product Manager competency rubric.
 - `app.js`: course flow, PDF upload state, aggregate hiring volumes, active position filters, CV screening agent, application flow, Lead Profile generation, sample candidates, readiness classification, OA message drafts, and mock AI Agent actions.
-- `api/evaluate-assignment.js`: private Assignment Evaluation Agent endpoint.
-- `api/assignment-evaluation-core.js`: Workspace Agent trigger request, candidate-package formatting, and trigger error handling.
+- `api/evaluate-assignment.mjs`: private PM CV Evaluator endpoint.
+- `api/assignment-evaluation-core.mjs`: Workspace Agent trigger request, candidate-package formatting, and trigger error handling.
 - `server.mjs`: local static server plus API route for the live demo.
 - Browser storage: remembers demo progress and the submitted demo applicant.
 
@@ -54,9 +54,9 @@ For a production version, PDF parsing and AI scoring should happen in a private 
 
 The mock agent uses the score, missing evidence, and CV risks to prepare a next action, OA message draft, and status timeline. AI recommendations do not make the final rejection decision.
 
-## Assignment Evaluation Agent
+## PM CV Evaluator
 
-The Assignment Evaluation Agent is the first agent with a live backend path.
+The PM CV Evaluator is the first agent with a live backend path.
 
 - Static mode: `app.js` scores the assignment locally with deterministic rubric logic.
 - Live mode: `Run AI Agent` posts the selected candidate's assignment package to `/api/evaluate-assignment`.

@@ -111,7 +111,7 @@ async function triggerAssignmentWorkspaceAgent(candidate, options = {}) {
   };
 }
 
-module.exports = {
+export {
   buildAssignmentAgentInput,
   triggerAssignmentWorkspaceAgent
 };

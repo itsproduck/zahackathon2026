@@ -1,4 +1,11 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": null,
   "cleanUrls": true,
+  "functions": {
+    "api/*.mjs": {
+      "maxDuration": 30
+    }
+  },
   "trailingSlash": false
 }

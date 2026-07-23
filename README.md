@@ -34,7 +34,7 @@ This first prototype is intentionally simple:
 - `course-content.js` contains editable course modules.
 - `competency-rubric.js` contains the editable Product Manager competency rubric.
 - `app.js` contains the sample data, aggregate hiring volumes, course progress, application flow, CV scoring agent, Lead Profile generation, readiness lane logic, and mock AI Agent recommendations.
-- `api/evaluate-assignment.js` contains the private backend endpoint that triggers the PM CV Evaluator in ChatGPT.
+- `api/evaluate-assignment.mjs` contains the private backend endpoint that triggers the PM CV Evaluator in ChatGPT.
 - `server.mjs` serves the local demo and API endpoint together.
 - Browser storage keeps the demo student's progress on the same machine.
 

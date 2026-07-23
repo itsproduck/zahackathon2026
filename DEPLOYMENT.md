@@ -27,7 +27,7 @@ Open `http://localhost:3000`. The `Run AI Agent` button will call `/api/evaluate
 
 Vercel should serve `index.html` from the project root.
 
-The `api/evaluate-assignment.js` file is a Vercel serverless function. Add these environment variables in Vercel before using the live PM CV Evaluator agent:
+The `api/evaluate-assignment.mjs` file is a Vercel serverless function. Add these environment variables in Vercel before using the live PM CV Evaluator agent:
 
 - `WORKSPACE_AGENT_ACCESS_TOKEN`
 - `WORKSPACE_AGENT_ASSIGNMENT_ENDPOINT` optional override; the published PM CV Evaluator endpoint is already merged into the backend

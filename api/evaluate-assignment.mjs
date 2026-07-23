@@ -1,4 +1,4 @@
-const { triggerAssignmentWorkspaceAgent } = require("./assignment-evaluation-core");
+import { triggerAssignmentWorkspaceAgent } from "./assignment-evaluation-core.mjs";
 
 const MAX_BODY_BYTES = 24 * 1024;
 
@@ -38,7 +38,7 @@ function validateCandidate(candidate) {
   return null;
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     sendJson(res, 405, { error: "Use POST for assignment evaluation." });
@@ -72,4 +72,4 @@ module.exports = async function handler(req, res) {
       error: error.message || "Assignment evaluation failed."
     });
   }
-};
+}
