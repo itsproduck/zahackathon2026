@@ -360,6 +360,7 @@ const state = {
   cvUpload: JSON.parse(localStorage.getItem("produckCvUpload") || "null"),
   activePositionId: localStorage.getItem("produckActivePosition") || "pmt",
   selectedApplicationRoleId: localStorage.getItem("produckSelectedApplicationRole") || "pmt",
+  activeHrTab: localStorage.getItem("produckHrTab") || "hrOverviewTab",
   selectedCandidateId: "mai",
   assignmentEvaluations: JSON.parse(localStorage.getItem("produckAssignmentEvaluations") || "{}"),
   allCandidates: [],
@@ -405,6 +406,7 @@ const selectedPositionTitle = document.querySelector("#selectedPositionTitle");
 const selectedPositionSummary = document.querySelector("#selectedPositionSummary");
 const positionVolumeList = document.querySelector("#positionVolumeList");
 const workloadList = document.querySelector("#workloadList");
+const hrTabIds = ["hrOverviewTab", "hrPipelineTab", "hrReviewTab", "hrWorkflowTab"];
 
 const cvScreeningAgent = {
   name: "Produck PM Screening Agent",
@@ -944,6 +946,10 @@ function buildAssignmentEvaluationPayload(candidate) {
     engagement: candidate.engagement,
     motivation: candidate.motivation,
     source: candidate.source,
+    cvFileName: candidate.cvAnalysis?.fileName || candidate.cvFileName || "",
+    cvEvidence: candidate.cvAnalysis?.extractedSummary || candidate.notes || "",
+    cvCompetencyScores: candidate.cvAnalysis?.competencyScores || [],
+    cvRiskFlags: candidate.cvAnalysis?.riskFlags || [],
     assignmentAnswer: candidate.assignmentAnswer || candidate.notes || ""
   };
 }
@@ -975,7 +981,7 @@ async function runLiveAssignmentEvaluationForSelectedCandidate() {
     source: body.trigger?.source === "workspace_agent" ? "workspace_agent_triggered" : "demo_fallback",
     trigger: body.trigger || null,
     summary: body.trigger?.source === "workspace_agent"
-      ? "Workspace Agent trigger accepted. The visible score uses the demo fallback until a result-return path is added."
+      ? "PM CV Evaluator trigger accepted. The visible CV score uses the demo fallback until a result-return path is added."
       : fallbackEvaluation.summary,
     signature: getAssignmentSignature(selectedCandidate),
     evaluatedAt: new Date().toISOString()
@@ -1846,6 +1852,7 @@ function drawGrowthChart(weeklyData) {
 
 function renderHr() {
   loadCandidates();
+  renderHrTabs();
   renderMetrics();
   renderAgentChain();
   renderPositionCommand();
@@ -1853,6 +1860,18 @@ function renderHr() {
   renderDashboard();
   renderCandidateList();
   renderCandidateDetail();
+}
+
+function renderHrTabs() {
+  if (!hrTabIds.includes(state.activeHrTab)) {
+    state.activeHrTab = "hrOverviewTab";
+  }
+  document.querySelectorAll(".hr-tab-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.id === state.activeHrTab);
+  });
+  document.querySelectorAll("[data-hr-tab]").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.hrTab === state.activeHrTab);
+  });
 }
 
 function switchView(viewId) {
@@ -1871,11 +1890,19 @@ document.querySelectorAll(".nav-tab").forEach((tab) => {
   tab.addEventListener("click", () => switchView(tab.dataset.view));
 });
 
-document.querySelectorAll(".funnel-tab").forEach((tab) => {
+document.querySelectorAll("[data-student-tab]").forEach((tab) => {
   tab.addEventListener("click", () => {
     state.activeStudentTab = tab.dataset.studentTab;
     localStorage.setItem("produckStudentTab", state.activeStudentTab);
     renderStudentTabs();
+  });
+});
+
+document.querySelectorAll("[data-hr-tab]").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    state.activeHrTab = tab.dataset.hrTab;
+    localStorage.setItem("produckHrTab", state.activeHrTab);
+    renderHrTabs();
   });
 });
 
@@ -1968,6 +1995,7 @@ document.querySelector("#resetDemo").addEventListener("click", () => {
   localStorage.removeItem("produckStudentTab");
   localStorage.removeItem("produckActivePosition");
   localStorage.removeItem("produckSelectedApplicationRole");
+  localStorage.removeItem("produckHrTab");
   state.completedLessons = new Set();
   state.moduleQuizResults = {};
   state.quizScore = 0;
@@ -1975,6 +2003,7 @@ document.querySelector("#resetDemo").addEventListener("click", () => {
   state.assignmentEvaluations = {};
   state.activePositionId = "pmt";
   state.selectedApplicationRoleId = "pmt";
+  state.activeHrTab = "hrOverviewTab";
   state.selectedLessonId = lessons[0].id;
   state.activeStudentTab = "learningTab";
   state.selectedCandidateId = "mai";

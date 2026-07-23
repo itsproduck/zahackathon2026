@@ -6,13 +6,13 @@ The current prototype is a static web app. It is ready to deploy on Vercel from 
 
 Open `index.html` in a browser, or serve the folder with a simple local web server.
 
-For the live Assignment Evaluation Agent, copy `.env.example` to `.env`, add the Workspace Agent trigger config and access token, then run:
+For the live PM CV Evaluator, copy `.env.example` to `.env`, add the Workspace Agent trigger config and access token, then run:
 
 ```bash
 npm start
 ```
 
-Open `http://localhost:3000`. The `Run AI Agent` button will call `/api/evaluate-assignment`, which triggers the published Workspace Agent for the selected candidate.
+Open `http://localhost:3000`. The `Run AI Agent` button will call `/api/evaluate-assignment`, which triggers the published PM CV Evaluator for the selected candidate.
 
 ## Deploy With Vercel
 
@@ -27,16 +27,16 @@ Open `http://localhost:3000`. The `Run AI Agent` button will call `/api/evaluate
 
 Vercel should serve `index.html` from the project root.
 
-The `api/evaluate-assignment.js` file is a Vercel serverless function. Add these environment variables in Vercel before using the live agent:
+The `api/evaluate-assignment.js` file is a Vercel serverless function. Add these environment variables in Vercel before using the live PM CV Evaluator agent:
 
 - `WORKSPACE_AGENT_ACCESS_TOKEN`
-- `WORKSPACE_AGENT_ASSIGNMENT_ENDPOINT` optional override; the published Assignment Evaluation Agent endpoint is already merged into the backend
+- `WORKSPACE_AGENT_ASSIGNMENT_ENDPOINT` optional override; the published PM CV Evaluator endpoint is already merged into the backend
 - `WORKSPACE_AGENT_ASSIGNMENT_TRIGGER_ID` optional override when you only have the exact `agtch_...` trigger ID
 
-Current Assignment Evaluation Agent endpoint:
+Current PM CV Evaluator endpoint:
 
 ```text
-https://api.chatgpt.com/v1/workspace_agents/agtch_6a61b7c75ab48191846e2b8cbe1df8a3/trigger
+https://api.chatgpt.com/v1/workspace_agents/agtch_6a61da53bdac819194ef01956125331e/trigger
 ```
 
 ## GitHub Push
@@ -54,7 +54,7 @@ git push -u origin main
 
 The static demo does not require an API key.
 
-The live Assignment Evaluation Agent requires a Workspace Agent access token in the backend environment. Do not expose it in browser code.
+The live PM CV Evaluator requires a Workspace Agent access token in the backend environment. Do not expose it in browser code.
 
 ## Recommended Hackathon Choice
 

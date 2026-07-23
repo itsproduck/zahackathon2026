@@ -179,140 +179,184 @@
           <div class="topbar">
             <div>
               <p class="eyebrow">TA and HR workflow</p>
-              <h1 id="hrTitle">AI Agent classifies readiness and prepares the next workflow.</h1>
+              <h1 id="hrTitle">TA screens at scale, HR approves the next move.</h1>
             </div>
             <button id="runAgent" class="primary-button" type="button">Run AI Agent</button>
           </div>
 
-          <section class="metrics-row" aria-label="Hiring funnel metrics">
-            <div class="metric">
-              <span id="metricApplicants">0</span>
-              <p>Talent pool</p>
-            </div>
-            <div class="metric">
-              <span id="metricTop">0</span>
-              <p>Role CVs</p>
-            </div>
-            <div class="metric">
-              <span id="metricAvg">0</span>
-              <p>Ready</p>
-            </div>
-            <div class="metric visual-metric">
-              <canvas id="signalCanvas" width="240" height="96" aria-label="Candidate signal chart"></canvas>
-            </div>
-          </section>
+          <div class="funnel-tabs hr-tabs" aria-label="HR room sections">
+            <button class="funnel-tab active" data-hr-tab="hrOverviewTab" type="button">
+              <span>01 / TA objective</span>
+              Command overview
+            </button>
+            <button class="funnel-tab" data-hr-tab="hrPipelineTab" type="button">
+              <span>02 / TA objective</span>
+              Role pipeline
+            </button>
+            <button class="funnel-tab" data-hr-tab="hrReviewTab" type="button">
+              <span>03 / HR objective</span>
+              Candidate review
+            </button>
+            <button class="funnel-tab" data-hr-tab="hrWorkflowTab" type="button">
+              <span>04 / HR objective</span>
+              Agent workflow
+            </button>
+          </div>
 
-          <section class="panel agent-chain-panel" aria-label="Agent workflow chain">
-            <div class="panel-heading compact">
-              <div>
-                <p class="eyebrow">Agent workflow</p>
-                <h2>Student signals to HR approval</h2>
-                <p class="panel-subtext">Each agent owns one decision package, then HR approves the next action.</p>
+          <div class="hr-tab-stack">
+            <section id="hrOverviewTab" class="hr-tab-panel active" aria-label="TA command overview">
+              <div class="objective-strip">
+                <p class="eyebrow">TA objective</p>
+                <h2>Know volume, quality, and where attention is needed.</h2>
               </div>
-              <span class="status-pill muted">ChatGPT-ready design</span>
-            </div>
-            <div id="agentChainSteps" class="agent-chain-steps"></div>
-          </section>
+              <section class="metrics-row" aria-label="Hiring funnel metrics">
+                <div class="metric">
+                  <span id="metricApplicants">0</span>
+                  <p>Talent pool</p>
+                </div>
+                <div class="metric">
+                  <span id="metricTop">0</span>
+                  <p>Role CVs</p>
+                </div>
+                <div class="metric">
+                  <span id="metricAvg">0</span>
+                  <p>Ready</p>
+                </div>
+                <div class="metric visual-metric">
+                  <canvas id="signalCanvas" width="240" height="96" aria-label="Candidate signal chart"></canvas>
+                </div>
+              </section>
 
-          <section class="panel position-command" aria-label="Active hiring positions">
-            <div class="panel-heading compact">
-              <div>
-                <p class="eyebrow">Active hiring</p>
-                <h2 id="selectedPositionTitle">Product Management Trainee 2026</h2>
-                <p id="selectedPositionSummary" class="panel-subtext">4,000 CVs from a 30,000-student talent pool.</p>
-              </div>
-              <span class="status-pill muted">Multi-position view</span>
-            </div>
-            <div id="positionTabs" class="position-tabs" aria-label="Hiring position filters"></div>
-            <div class="position-command-grid">
-              <div>
-                <div class="dashboard-card-heading">
+              <section class="panel hr-dashboard" aria-label="Candidate growth and hiring potential dashboard">
+                <div class="panel-heading compact">
                   <div>
-                    <strong>Volume by position</strong>
-                    <p>Aggregate counts are shown without rendering thousands of candidate rows.</p>
+                    <p class="eyebrow">Funnel dashboard</p>
+                    <h2>Candidate growth and hire potential</h2>
+                  </div>
+                  <span id="dashboardHealth" class="status-pill">Healthy funnel</span>
+                </div>
+                <div class="dashboard-grid">
+                  <div class="growth-panel">
+                    <div class="dashboard-card-heading">
+                      <div>
+                        <strong>Candidate growth</strong>
+                        <p id="growthSummary">Weekly applicants and qualified talent trend.</p>
+                      </div>
+                      <span id="growthRate" class="dashboard-number">0%</span>
+                    </div>
+                    <canvas id="growthCanvas" width="560" height="220" aria-label="Weekly candidate growth chart"></canvas>
+                  </div>
+                  <div class="potential-panel">
+                    <div class="dashboard-card-heading">
+                      <div>
+                        <strong>Hire potential</strong>
+                        <p>How ready the current pool is for the next hiring step.</p>
+                      </div>
+                    </div>
+                    <div id="potentialList" class="potential-list"></div>
+                  </div>
+                  <div class="source-panel">
+                    <div class="dashboard-card-heading">
+                      <div>
+                        <strong>Channel quality</strong>
+                        <p>Where high-potential candidates are coming from.</p>
+                      </div>
+                    </div>
+                    <div id="sourceQualityList" class="source-quality-list"></div>
+                  </div>
+                  <div class="insight-panel">
+                    <div class="dashboard-card-heading">
+                      <div>
+                        <strong>Agent insights</strong>
+                        <p>Signals HR should act on this week.</p>
+                      </div>
+                    </div>
+                    <div id="pipelineInsights" class="pipeline-insights"></div>
                   </div>
                 </div>
-                <div id="positionVolumeList" class="position-volume-list"></div>
-              </div>
-              <div>
-                <div class="dashboard-card-heading">
-                  <div>
-                    <strong>Agent workload</strong>
-                    <p>What TA should handle next for the selected role.</p>
-                  </div>
-                </div>
-                <div id="workloadList" class="workload-list"></div>
-              </div>
-            </div>
-          </section>
-
-          <section class="decision-lanes" aria-label="Agent readiness lanes">
-            <div id="decisionLanes" class="decision-lane-grid"></div>
-          </section>
-
-          <section class="panel hr-dashboard" aria-label="Candidate growth and hiring potential dashboard">
-            <div class="panel-heading compact">
-              <div>
-                <p class="eyebrow">Funnel dashboard</p>
-                <h2>Candidate growth and hire potential</h2>
-              </div>
-              <span id="dashboardHealth" class="status-pill">Healthy funnel</span>
-            </div>
-            <div class="dashboard-grid">
-              <div class="growth-panel">
-                <div class="dashboard-card-heading">
-                  <div>
-                    <strong>Candidate growth</strong>
-                    <p id="growthSummary">Weekly applicants and qualified talent trend.</p>
-                  </div>
-                  <span id="growthRate" class="dashboard-number">0%</span>
-                </div>
-                <canvas id="growthCanvas" width="560" height="220" aria-label="Weekly candidate growth chart"></canvas>
-              </div>
-              <div class="potential-panel">
-                <div class="dashboard-card-heading">
-                  <div>
-                    <strong>Hire potential</strong>
-                    <p>How ready the current pool is for the next hiring step.</p>
-                  </div>
-                </div>
-                <div id="potentialList" class="potential-list"></div>
-              </div>
-              <div class="source-panel">
-                <div class="dashboard-card-heading">
-                  <div>
-                    <strong>Channel quality</strong>
-                    <p>Where high-potential candidates are coming from.</p>
-                  </div>
-                </div>
-                <div id="sourceQualityList" class="source-quality-list"></div>
-              </div>
-              <div class="insight-panel">
-                <div class="dashboard-card-heading">
-                  <div>
-                    <strong>Agent insights</strong>
-                    <p>Signals HR should act on this week.</p>
-                  </div>
-                </div>
-                <div id="pipelineInsights" class="pipeline-insights"></div>
-              </div>
-            </div>
-          </section>
-
-          <div class="hr-layout">
-            <section class="panel candidates-panel" aria-label="Representative candidate profiles">
-              <div class="panel-heading compact">
-                <div>
-                  <p class="eyebrow">Representative profiles</p>
-                  <h2>Agent assessment queue</h2>
-                </div>
-                <span id="agentMode" class="status-pill">Mock agent</span>
-              </div>
-              <div id="candidateList" class="candidate-list"></div>
+              </section>
             </section>
 
-            <section class="panel detail-panel" aria-label="Candidate details">
-              <div id="candidateDetail"></div>
+            <section id="hrPipelineTab" class="hr-tab-panel" aria-label="TA role pipeline">
+              <div class="objective-strip">
+                <p class="eyebrow">TA objective</p>
+                <h2>Pick a role, size the workload, and move lanes forward.</h2>
+              </div>
+              <section class="panel position-command" aria-label="Active hiring positions">
+                <div class="panel-heading compact">
+                  <div>
+                    <p class="eyebrow">Active hiring</p>
+                    <h2 id="selectedPositionTitle">Product Management Trainee 2026</h2>
+                    <p id="selectedPositionSummary" class="panel-subtext">4,000 CVs from a 30,000-student talent pool.</p>
+                  </div>
+                  <span class="status-pill muted">Multi-position view</span>
+                </div>
+                <div id="positionTabs" class="position-tabs" aria-label="Hiring position filters"></div>
+                <div class="position-command-grid">
+                  <div>
+                    <div class="dashboard-card-heading">
+                      <div>
+                        <strong>Volume by position</strong>
+                        <p>Aggregate counts are shown without rendering thousands of candidate rows.</p>
+                      </div>
+                    </div>
+                    <div id="positionVolumeList" class="position-volume-list"></div>
+                  </div>
+                  <div>
+                    <div class="dashboard-card-heading">
+                      <div>
+                        <strong>Agent workload</strong>
+                        <p>What TA should handle next for the selected role.</p>
+                      </div>
+                    </div>
+                    <div id="workloadList" class="workload-list"></div>
+                  </div>
+                </div>
+              </section>
+              <section class="decision-lanes" aria-label="Agent readiness lanes">
+                <div id="decisionLanes" class="decision-lane-grid"></div>
+              </section>
+            </section>
+
+            <section id="hrReviewTab" class="hr-tab-panel" aria-label="HR candidate review">
+              <div class="objective-strip">
+                <p class="eyebrow">HR objective</p>
+                <h2>Open the evidence package and decide the next action.</h2>
+              </div>
+              <div class="hr-layout">
+                <section class="panel candidates-panel" aria-label="Representative candidate profiles">
+                  <div class="panel-heading compact">
+                    <div>
+                      <p class="eyebrow">Representative profiles</p>
+                      <h2>Agent assessment queue</h2>
+                    </div>
+                    <span id="agentMode" class="status-pill">Mock agent</span>
+                  </div>
+                  <div id="candidateList" class="candidate-list"></div>
+                </section>
+
+                <section class="panel detail-panel" aria-label="Candidate details">
+                  <div id="candidateDetail"></div>
+                </section>
+              </div>
+            </section>
+
+            <section id="hrWorkflowTab" class="hr-tab-panel" aria-label="HR agent workflow">
+              <div class="objective-strip">
+                <p class="eyebrow">HR objective</p>
+                <h2>Audit how agents hand off work before HR approval.</h2>
+              </div>
+              <section class="panel agent-chain-panel" aria-label="Agent workflow chain">
+                <div class="panel-heading compact">
+                  <div>
+                    <p class="eyebrow">Agent workflow</p>
+                    <h2>Student signals to HR approval</h2>
+                    <p class="panel-subtext">Each agent owns one decision package, then HR approves the next action.</p>
+                  </div>
+                  <span class="status-pill muted">ChatGPT-ready design</span>
+                </div>
+                <div id="agentChainSteps" class="agent-chain-steps"></div>
+              </section>
             </section>
           </div>
         </section>

@@ -304,6 +304,48 @@ h3 {
   display: block;
 }
 
+.hr-tabs {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.hr-tabs .funnel-tab {
+  min-height: 76px;
+}
+
+.hr-tab-panel {
+  display: none;
+}
+
+.hr-tab-panel.active {
+  display: block;
+}
+
+.hr-tab-stack {
+  display: block;
+}
+
+.objective-strip {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border-left: 4px solid var(--gold);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(238, 245, 241, 0.9)),
+    var(--surface);
+  box-shadow: 0 16px 42px rgba(9, 18, 17, 0.1);
+}
+
+.objective-strip .eyebrow {
+  margin-bottom: 0;
+}
+
+.objective-strip h2 {
+  font-size: 20px;
+  line-height: 1.2;
+}
+
 .student-grid,
 .hr-layout,
 .assessment-grid,

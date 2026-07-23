@@ -23,7 +23,7 @@ The product creates an early talent funnel before candidates apply. Students com
 - Shows a consolidated Lead Profile for the agent decision.
 - Drafts OA follow-up messages for offline test, learning reminder, or HR-reviewed feedback.
 - Shows how the CV screening agent scores candidates against a Product Manager competency rubric.
-- Works in demo mode without external services, with an optional live Workspace Agent trigger for the Assignment Evaluation Agent.
+- Works in demo mode without external services, with an optional live Workspace Agent trigger for the PM CV Evaluator.
 
 ## How the System Works
 
@@ -34,11 +34,11 @@ This first prototype is intentionally simple:
 - `course-content.js` contains editable course modules.
 - `competency-rubric.js` contains the editable Product Manager competency rubric.
 - `app.js` contains the sample data, aggregate hiring volumes, course progress, application flow, CV scoring agent, Lead Profile generation, readiness lane logic, and mock AI Agent recommendations.
-- `api/evaluate-assignment.js` contains the private backend endpoint that triggers the Assignment Evaluation Agent in ChatGPT.
+- `api/evaluate-assignment.js` contains the private backend endpoint that triggers the PM CV Evaluator in ChatGPT.
 - `server.mjs` serves the local demo and API endpoint together.
 - Browser storage keeps the demo student's progress on the same machine.
 
-There is no real login, database, or email sending yet. Those are intentionally left out to keep the hackathon demo reliable. The Assignment Evaluation Agent can be triggered through a published ChatGPT Workspace Agent when the app is served with the required backend credentials.
+There is no real login, database, or email sending yet. Those are intentionally left out to keep the hackathon demo reliable. The PM CV Evaluator can be triggered through a published ChatGPT Workspace Agent when the app is served with the required backend credentials.
 
 ## How to Edit Course Content
 
@@ -67,10 +67,10 @@ When you provide your real Product Manager competency framework, place it here s
 
 For static demo mode, open `index.html` in a browser.
 
-For live Assignment Evaluation Agent mode:
+For live PM CV Evaluator mode:
 
 1. Copy `.env.example` to `.env`.
-2. Keep the included Assignment Evaluation Agent endpoint, or replace it with another published Workspace Agent endpoint.
+2. Keep the included PM CV Evaluator endpoint, or replace it with another published Workspace Agent endpoint.
 3. Add a Workspace Agent access token as `WORKSPACE_AGENT_ACCESS_TOKEN`.
 4. Run `npm start`.
 5. Open `http://localhost:3000`.
@@ -79,18 +79,18 @@ For live Assignment Evaluation Agent mode:
 
 None for static demo mode.
 
-A Workspace Agent access token is required only when running the live Assignment Evaluation Agent trigger endpoint. The browser never receives the token.
+A Workspace Agent access token is required only when running the live PM CV Evaluator trigger endpoint. The browser never receives the token.
 
 To create the token, a workspace admin must enable Workspace Agents and personal access-token creation. Then open ChatGPT, go to `Admin > Access tokens`, create a token with the `Workspace Agents` scope, copy it once, and store it only in your local `.env` or deployment secrets.
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` for live Assignment Evaluation Agent mode.
+Copy `.env.example` to `.env` for live PM CV Evaluator mode.
 
-The published Assignment Evaluation Agent endpoint is already included:
+The published PM CV Evaluator endpoint is already included:
 
 ```text
-WORKSPACE_AGENT_ASSIGNMENT_ENDPOINT=https://api.chatgpt.com/v1/workspace_agents/agtch_6a61b7c75ab48191846e2b8cbe1df8a3/trigger
+WORKSPACE_AGENT_ASSIGNMENT_ENDPOINT=https://api.chatgpt.com/v1/workspace_agents/agtch_6a61da53bdac819194ef01956125331e/trigger
 ```
 
 Never place a real access token directly in source code.
@@ -112,7 +112,7 @@ Never place a real access token directly in source code.
 
 ## Known Limitations
 
-- Only the Assignment Evaluation Agent has a live Workspace Agent trigger so far; the other agents still use deterministic demo logic.
+- The live Workspace Agent trigger now points to the PM CV Evaluator with the ZA Product Management competency pack. Other agents still use deterministic demo logic.
 - Workspace Agent triggers return `202 Accepted`; they do not currently return the agent's scored result back to this app, so the visible score still uses the deterministic fallback until a result-return path is added.
 - No real authentication or user accounts.
 - No real database.

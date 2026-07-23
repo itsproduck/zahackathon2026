@@ -1,5 +1,5 @@
 const WORKSPACE_AGENT_TRIGGER_BASE = "https://api.chatgpt.com/v1/workspace_agents";
-const DEFAULT_ASSIGNMENT_TRIGGER_ID = "agtch_6a61b7c75ab48191846e2b8cbe1df8a3";
+const DEFAULT_ASSIGNMENT_TRIGGER_ID = "agtch_6a61da53bdac819194ef01956125331e";
 
 function getWorkspaceAgentConfig() {
   const endpoint = process.env.WORKSPACE_AGENT_ASSIGNMENT_ENDPOINT;
@@ -23,21 +23,26 @@ function getWorkspaceAgentConfig() {
     };
   }
 
-  const error = new Error("Assignment Workspace Agent trigger is not configured.");
+  const error = new Error("PM CV Evaluator Workspace Agent trigger is not configured.");
   error.statusCode = 503;
   throw error;
 }
 
 function buildAssignmentAgentInput(candidate) {
   return [
-    "Run the Assignment Evaluation Agent for this Produck hiring candidate.",
+    "Run the PM CV Evaluator for this Produck HR Room candidate.",
     "",
-    "The app needs the agent to evaluate the assignment answer using your configured Agent Studio instructions.",
+    "The app needs the agent to evaluate the candidate's CV and application evidence using the attached ZA Competency 2026 Product Management pack.",
+    "Use the PM CV Evaluator's configured Agent Studio instructions and treat this as an HR-readable CV screening action.",
     "Recommended output contract for your agent response:",
     "- score: 0-100",
-    "- dimensions: Problem framing, User evidence, Prioritization, Measurement, Experiment plan",
-    "- summary: short HR-readable explanation",
+    "- recommendation: Strong pass, Pass, Borderline, Do not pass, or Insufficient evidence",
+    "- levelFit: strongest evidenced ZA PM level band and gaps to the next plausible level",
+    "- pmSkillBreakdown: product execution, feature specification, delivery, quality, strategy, discovery, prioritization, analytics, stakeholder leadership, technical fluency, commercial judgment, communication",
+    "- risks: CV risks, vague claims, contradictions, or weak evidence",
     "- missingEvidence: evidence gaps HR should request or review",
+    "- interviewProbes: targeted questions tied to competency gaps",
+    "- summary: short HR-readable explanation",
     "",
     "Candidate package:",
     JSON.stringify({
@@ -51,6 +56,10 @@ function buildAssignmentAgentInput(candidate) {
       quiz: candidate.quiz,
       engagement: candidate.engagement,
       motivation: candidate.motivation,
+      cvFileName: candidate.cvFileName || candidate.uploadedCvFileName || "",
+      cvEvidence: candidate.cvEvidence || candidate.notes || "",
+      cvCompetencyScores: candidate.cvCompetencyScores || [],
+      cvRiskFlags: candidate.cvRiskFlags || [],
       assignmentAnswer: candidate.assignmentAnswer || candidate.notes || ""
     }, null, 2)
   ].join("\n");
