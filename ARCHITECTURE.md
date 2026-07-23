@@ -29,18 +29,18 @@ The app renders a small representative queue for demo speed, while the dashboard
 
 ## Readiness Logic
 
-Each candidate receives a readiness score from six signals:
+Each candidate receives a core evidence score plus an optional learning add-on:
 
-- Course completion
-- Quiz score
-- Engagement
-- Assignment score
-- CV competency match
-- Motivation
+- Core: CV competency match, assignment evidence, and motivation.
+- Add-on: up to 4 points for course progress.
+- Add-on: up to 4 points for the readiness exam.
+- Add-on: 2 points for an earned certificate.
+
+Candidates can apply without any add-on points. Missing course, exam, or certificate activity never blocks application or automatically prevents a Ready decision.
 
 The Talent Readiness Agent then classifies the candidate into:
 
-- Ready: advance to offline test.
+- Ready: send an interview invitation automatically.
 - Borderline: send learning path and rescore later.
 - Not Match: require HR review before sending an outcome.
 
@@ -54,14 +54,23 @@ For a production version, PDF parsing and AI scoring should happen in a private 
 
 The mock agent uses the score, missing evidence, and CV risks to prepare a next action, OA message draft, and status timeline. AI recommendations do not make the final rejection decision.
 
+## Interview Evidence Probe Agent
+
+- Starts only after a Ready candidate accepts the interview invitation.
+- Reads the candidate assessment's evidence gaps, risks, level fit, competency highlights, and suggested probes.
+- Returns `produck.interview_question_pack.v1` with targeted questions, follow-ups, strong-evidence indicators, warning signs, and a 1/3/5 score guide.
+- Makes the question pack available in CV details for TA review and interviewer handoff.
+- Does not re-score the candidate or make a hiring decision.
+
 ## PM CV Evaluator
 
 The PM CV Evaluator is the first agent with a live backend path.
 
 - Static mode: `app.js` scores the assignment locally with deterministic rubric logic.
-- Live mode: `Run AI Agent` posts the selected candidate's assignment package to `/api/evaluate-assignment`.
+- Live mode: application submission automatically posts the candidate package to `/api/evaluate-assignment`; `Run AI Agent` remains available for manual reassessment.
 - The endpoint triggers a published ChatGPT Workspace Agent through its API channel.
-- The trigger API returns `202 Accepted` when the run is queued; it does not currently return the agent's scored result back to the app.
+- The trigger API returns `202 Accepted` when the run is queued; it does not currently return the final agent result in the same response.
+- The HR row is inserted immediately with a structured provisional assessment. The agent output contract uses the same schema so a future result callback can replace those provisional fields.
 - The browser caches the accepted trigger event by candidate and answer, then keeps the deterministic assignment score visible until a result-return path is added.
 - If the endpoint is unavailable or Workspace Agent credentials are missing, the app keeps the deterministic fallback so the demo still runs.
 

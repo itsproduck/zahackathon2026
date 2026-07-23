@@ -10,9 +10,9 @@ Produck solves this by building the talent funnel earlier.
 
 Show the `Student funnel` view.
 
-The candidate joins a free Product course before applying. Open `Learning and exam`, click a course module, show that the lesson content changes, then show the mini case and mini quiz beside it. Complete the lessons.
+The candidate can apply immediately with a CV. Open `Optional learning`, click a course module, and explain that learning activity strengthens ranking but never blocks application.
 
-Move to `Assessment and certificates`. Pass the readiness exam and show the certificate wallet with multiple certificate tracks.
+Move to `Optional exam and certificates`. Show the certificate wallet and explain that course, exam, and certificate activity contributes up to 10 add-on points.
 
 Move to `Hiring programs`. Preview the active roles, choose one position, and show that the application title, motivation prompt, assignment prompt, and submit button adjust to that role. Upload a PDF CV or use the demo CV, then submit the application.
 
@@ -41,7 +41,7 @@ Show the CV screening agent panel. It reads the uploaded PDF state, scores the c
 
 Show the `Agent logistics plan`.
 
-The system is not only ranking candidates. It prepares the next recruiting action: Ready moves to offline test, Borderline receives a learning path, and Not Match is flagged for HR review before any outcome message is sent.
+The system is not only ranking candidates. Ready candidates receive an interview invitation automatically. After the candidate accepts, a separate agent reads the evidence gaps and prepares targeted questions for the interviewer. Borderline profiles receive an evidence follow-up, and Not Match is flagged for HR review before any outcome message is sent.
 
 Click `Run AI Agent` to show the queue can refresh.
 

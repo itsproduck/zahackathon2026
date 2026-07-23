@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import apiHandler from "./api/evaluate-assignment.mjs";
+import interviewQuestionHandler from "./api/prepare-interview-questions.mjs";
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 3000);
 
@@ -67,6 +68,10 @@ loadEnvFile();
 const server = http.createServer((req, res) => {
   if ((req.url || "").startsWith("/api/evaluate-assignment")) {
     apiHandler(req, res);
+    return;
+  }
+  if ((req.url || "").startsWith("/api/prepare-interview-questions")) {
+    interviewQuestionHandler(req, res);
     return;
   }
   serveStatic(req, res);

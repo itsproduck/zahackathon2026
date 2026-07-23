@@ -2,17 +2,21 @@
 
 Produck is a hackathon demo for in-house Talent Acquisition and HR teams that need to manage large candidate funnels.
 
-The product creates an early talent funnel before candidates apply. Students complete a free Product course, pass a short readiness check, earn a certificate, submit a mini assignment, then apply to a trainee program. HR sees an agent assessment queue where an AI Agent classifies each candidate as Ready, Borderline, or Not Match and drafts the next OA workflow action.
+The product creates an early talent funnel around the application journey. Students can apply directly with a CV and application evidence, while the free Product course, readiness check, and certificate contribute optional ranking signals. HR sees an agent assessment queue where an AI Agent classifies each candidate as Ready, Borderline, or Not Match and drafts the next OA workflow action.
 
 ## What the Product Does
 
 - Lets a demo student complete Product course lessons.
 - Shows a clearer student funnel with subtabs for learning, certificates, and hiring programs.
 - Shows clickable course modules that change the lesson content, mini case, and mini quiz.
-- Unlocks a short readiness quiz and certificate state.
+- Offers a short readiness quiz and certificate as optional ranking signals.
 - Shows multiple certificate tracks in a certificate wallet.
 - Previews both trainee programs and full-time Product roles.
 - Captures lead source and a mini assignment answer before application.
+- Allows candidates to apply without completing the course or earning a certificate.
+- Automatically sends each application package to the AI Agent path and inserts a structured candidate row in HR.
+- Automatically invites candidates who meet the Ready threshold directly to interview.
+- Starts a separate Interview Evidence Probe Agent only after the candidate accepts; TA can review its pack in CV details and share it with the interviewer.
 - Lets the student upload a CV as a PDF before applying.
 - Lets the student select a hiring position and apply with role-specific prompts.
 - Shows HR an agent assessment queue with realistic sample candidates.
@@ -21,9 +25,115 @@ The product creates an early talent funnel before candidates apply. Students com
 - Explains each readiness status using learning behavior, quiz score, assignment score, CV competency match, and motivation.
 - Shows Ready, Borderline, and Not Match readiness lanes.
 - Shows a consolidated Lead Profile for the agent decision.
-- Drafts OA follow-up messages for offline test, learning reminder, or HR-reviewed feedback.
+- Drafts interview invitations, evidence follow-ups, or HR-reviewed outcome messages.
 - Shows how the CV screening agent scores candidates against a Product Manager competency rubric.
 - Works in demo mode without external services, with an optional live Workspace Agent trigger for the PM CV Evaluator.
+
+## Canonical User Flow
+
+> **Flow documentation rule:** This diagram is the canonical product flow. Any change to candidate stages, agent responsibilities, routing logic, automated actions, or human decision points must update this section in the same change.
+
+```mermaid
+flowchart TD
+    CANDIDATE(["Candidate / Student"])
+
+    subgraph S1["1 · Build the candidate profile"]
+        DISCOVER["Discover program<br/>Workshop · Campus · Online"]
+        LEARN["Optional learning journey<br/>Course · Quiz · Certificate"]
+        APPLY["Choose a hiring position"]
+        SUBMIT["Submit application<br/>CV · Assignment · Motivation"]
+        PROFILE["Lead Profile created<br/>Application + optional learning signals"]
+    end
+
+    CANDIDATE --> DISCOVER
+    DISCOVER --> LEARN
+    DISCOVER --> APPLY
+    LEARN --> APPLY
+    APPLY --> SUBMIT
+    SUBMIT --> PROFILE
+
+    subgraph S2["2 · Agent assessment"]
+        CV_AGENT["CV Screening Agent<br/><i>Maps CV evidence to the role competency rubric<br/>and identifies gaps or risks</i>"]
+        ASSIGN_AGENT["PM CV Evaluator<br/><i>Evaluates assignment evidence<br/>and returns a structured assessment</i>"]
+        READINESS_AGENT["Talent Readiness Agent<br/><i>Combines all evidence, classifies readiness,<br/>explains why, and prepares the next action</i>"]
+
+        CV_AGENT --> READINESS_AGENT
+        ASSIGN_AGENT --> READINESS_AGENT
+    end
+
+    PROFILE --> CV_AGENT
+    PROFILE --> ASSIGN_AGENT
+    PROFILE --> READINESS_AGENT
+
+    DECISION{"Readiness result"}
+    READINESS_AGENT --> DECISION
+
+    subgraph READY_FLOW["3A · Ready"]
+        INVITE["System automatically sends<br/>interview invitation"]
+        ACCEPT{"Candidate accepts?"}
+        WAITING["Remain in invited status"]
+        PROBE_AGENT["Interview Evidence Probe Agent<br/><i>Turns evidence gaps and risks into targeted<br/>interview questions and scoring guidance</i>"]
+        PACK["Interviewer question pack<br/>delivered directly to interviewer"]
+        INTERVIEWER(["Interviewer"])
+        INTERVIEW["Conduct evidence-based interview"]
+    end
+
+    DECISION -->|"READY"| INVITE
+    INVITE --> ACCEPT
+    ACCEPT -->|"Not yet"| WAITING
+    WAITING --> ACCEPT
+    ACCEPT -->|"Yes"| PROBE_AGENT
+    PROBE_AGENT --> PACK
+    PACK --> INTERVIEWER
+    INTERVIEWER --> INTERVIEW
+
+    subgraph BORDERLINE_FLOW["3B · Borderline"]
+        LEARNING_PATH["Send recommended learning path<br/>and missing-evidence request"]
+        IMPROVE["Candidate completes learning<br/>or supplies new evidence"]
+        RESCORE["Updated profile queued<br/>for reassessment"]
+    end
+
+    DECISION -->|"BORDERLINE"| LEARNING_PATH
+    LEARNING_PATH --> IMPROVE
+    IMPROVE --> RESCORE
+    RESCORE --> READINESS_AGENT
+
+    subgraph NOT_MATCH_FLOW["3C · Not Match"]
+        HUMAN_REVIEW["Mandatory human review<br/>No automatic rejection"]
+        HR(["HR / Talent Acquisition"])
+        REVIEW_DECISION{"HR decision"}
+        OUTCOME["Send reviewed outcome,<br/>feedback, and optional community path"]
+        RECONSIDER["Return candidate to<br/>the appropriate hiring stage"]
+    end
+
+    DECISION -->|"NOT_MATCH"| HUMAN_REVIEW
+    HUMAN_REVIEW --> HR
+    HR --> REVIEW_DECISION
+    REVIEW_DECISION -->|"Confirm"| OUTCOME
+    REVIEW_DECISION -->|"Reconsider"| RECONSIDER
+    RECONSIDER --> READINESS_AGENT
+
+    subgraph HR_FLOW["4 · HR oversight and final decision"]
+        DASHBOARD["Agent assessment dashboard<br/>Queue · Lead Profile · Timeline · Draft actions"]
+        STATUS["HR sees interview handoff status<br/>but not the private question pack"]
+        FINAL_REVIEW["HR combines agent assessment<br/>with interviewer evidence"]
+        HIRE{"Final human decision"}
+        OFFER["Offer and onboarding"]
+        CLOSE["Close or retain in talent community"]
+    end
+
+    PROFILE -.-> DASHBOARD
+    READINESS_AGENT -.-> DASHBOARD
+    PROBE_AGENT -.-> STATUS
+    DASHBOARD --> HR
+    INTERVIEW --> FINAL_REVIEW
+    STATUS --> FINAL_REVIEW
+    FINAL_REVIEW --> HIRE
+    HIRE -->|"Hire"| OFFER
+    HIRE -->|"Do not hire"| CLOSE
+```
+
+Agents assess evidence, explain recommendations, draft communications, and route work. HR and interviewers retain consequential hiring decisions.
 
 ## How the System Works
 
@@ -99,16 +209,17 @@ Never place a real access token directly in source code.
 
 1. Start in `Student funnel`.
 2. Use `Learning and exam` to click course modules, read the mini case, and answer a mini quiz.
-3. Use `Assessment and certificates` to pass the readiness exam and show the certificate wallet.
+3. Use `Assessment and certificates` to show optional signals that can improve ranking.
 4. Use `Hiring programs` to preview trainee and full-time roles.
 5. Select a position and confirm the application form changes for that role.
 6. Upload a PDF CV or click `Use demo CV`.
-7. Apply to the selected position.
-8. The app switches to `HR command room` for that role.
+7. Add a PDF CV and apply to the selected position at any point; a certificate is not required.
+8. The app sends the CV and add-on signals to the AI Agent path and inserts a new HR candidate row.
 9. Show the 30,000-student pool, the PMT role with 4,000 CVs, and the active hiring position switcher.
 10. Switch to Product Manager to show the smaller 20-CV senior-role funnel.
-11. Open the live demo candidate and explain the Lead Profile, readiness status, OA message draft, CV screening agent, and competency scores.
-12. Click `Run AI Agent` to trigger the selected candidate's assignment review through the Workspace Agent when running from `npm start`; without credentials, the app falls back to deterministic demo scoring.
+11. Open a Ready candidate, show the automatic interview invitation, and click `Candidate accepts interview`.
+12. Open a candidate with an accepted interview and review the available interviewer pack.
+13. Click `Run AI Agent` to trigger the selected candidate's assignment review through the Workspace Agent when running from `npm start`; without credentials, the app falls back to deterministic demo scoring.
 
 ## Known Limitations
 

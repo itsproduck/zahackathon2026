@@ -20,7 +20,7 @@ const activeHiringPositions = [
     borderline: 1880,
     notMatch: 1020,
     humanReview: 260,
-    offlineTest: 300,
+    interviewInvited: 300,
     interview: 80,
     offer: 12,
     slaHours: 48,
@@ -48,7 +48,7 @@ const activeHiringPositions = [
     borderline: 8,
     notMatch: 5,
     humanReview: 3,
-    offlineTest: 4,
+    interviewInvited: 4,
     interview: 3,
     offer: 1,
     slaHours: 72,
@@ -75,7 +75,7 @@ const activeHiringPositions = [
     borderline: 74,
     notMatch: 30,
     humanReview: 18,
-    offlineTest: 26,
+    interviewInvited: 26,
     interview: 12,
     offer: 3,
     slaHours: 72,
@@ -102,7 +102,7 @@ const activeHiringPositions = [
     borderline: 37,
     notMatch: 17,
     humanReview: 9,
-    offlineTest: 14,
+    interviewInvited: 14,
     interview: 6,
     offer: 1,
     slaHours: 72,
@@ -129,7 +129,7 @@ const activeHiringPositions = [
     borderline: 31,
     notMatch: 16,
     humanReview: 7,
-    offlineTest: 9,
+    interviewInvited: 9,
     interview: 4,
     offer: 1,
     slaHours: 72,
@@ -316,7 +316,7 @@ const baseCandidates = [
     cv: 80,
     motivation: 84,
     assignmentScore: 83,
-    stage: "Offline test",
+    stage: "Interview invited",
     notes: "Good readiness for Associate PM with strong learning completion and solid case framing."
   },
   {
@@ -348,6 +348,96 @@ const baseCandidates = [
     assignmentScore: 78,
     stage: "Case review",
     notes: "Good process and dashboard experience; needs more product stakeholder examples."
+  },
+  {
+    id: "lan",
+    roleId: "pm",
+    name: "Lan Vu",
+    source: "Executive referral",
+    school: "Senior Product Manager, B2B SaaS",
+    completion: 0,
+    quiz: 0,
+    engagement: 0,
+    cv: 96,
+    motivation: 92,
+    assignmentScore: 93,
+    stage: "Interview accepted",
+    notes: "Led discovery, roadmap prioritization, enterprise stakeholder alignment, experiments, and retention metrics across two product squads."
+  },
+  {
+    id: "tuan",
+    roleId: "pmt",
+    name: "Tuan Pham",
+    source: "Open application",
+    school: "Da Nang University",
+    completion: 0,
+    quiz: 0,
+    engagement: 18,
+    cv: 61,
+    motivation: 73,
+    assignmentScore: 48,
+    stage: "Needs evidence",
+    notes: "Early interest in product but the CV and assignment contain few concrete examples, metrics, or personal decisions."
+  },
+  {
+    id: "yen",
+    roleId: "apm",
+    name: "Yen Nguyen",
+    source: "Campus campaign",
+    school: "UX Research Intern",
+    completion: 67,
+    quiz: 88,
+    engagement: 94,
+    cv: 89,
+    motivation: 91,
+    assignmentScore: 86,
+    stage: "Interview invited",
+    notes: "Strong user interview, synthesis, prototype, experiment, and cross-functional collaboration evidence; limited roadmap ownership."
+  },
+  {
+    id: "khanh",
+    roleId: "growth-pm",
+    name: "Khanh Tran",
+    source: "LinkedIn campaign",
+    school: "Performance Marketing Lead",
+    completion: 0,
+    quiz: 0,
+    engagement: 36,
+    cv: 87,
+    motivation: 84,
+    assignmentScore: 91,
+    stage: "Case review",
+    notes: "Strong acquisition, funnel, conversion, experiment, and analytics evidence; needs proof of retention and product delivery ownership."
+  },
+  {
+    id: "phuong",
+    roleId: "product-ops",
+    name: "Phuong Dao",
+    source: "Operations community",
+    school: "Project Coordinator",
+    completion: 100,
+    quiz: 76,
+    engagement: 82,
+    cv: 74,
+    motivation: 79,
+    assignmentScore: 88,
+    stage: "TA review",
+    notes: "Excellent workflow mapping, dashboard, launch checklist, and stakeholder cadence; limited customer discovery evidence."
+  },
+  {
+    id: "nam",
+    roleId: "pmt",
+    name: "Nam Bui",
+    source: "Certificate wallet",
+    school: "HCMC University of Technology",
+    completion: 100,
+    quiz: 97,
+    engagement: 98,
+    cv: 58,
+    motivation: 86,
+    assignmentScore: 72,
+    stage: "Nurture",
+    notes: "Outstanding learning activity and motivation, but CV evidence is limited to classroom projects without measurable outcomes."
   }
 ];
 
@@ -363,6 +453,17 @@ const state = {
   activeHrTab: localStorage.getItem("produckHrTab") || "hrOverviewTab",
   selectedCandidateId: "mai",
   assignmentEvaluations: JSON.parse(localStorage.getItem("produckAssignmentEvaluations") || "{}"),
+  positionSearch: "",
+  positionTypeFilter: "ALL",
+  positionSort: "applicants-desc",
+  candidateSearch: "",
+  candidateJobFilter: "ALL",
+  candidateStatusFilter: "ALL",
+  candidateSort: "score-desc",
+  campaignConfig: JSON.parse(localStorage.getItem("produckCampaignConfig") || "{}"),
+  agentConfigs: JSON.parse(localStorage.getItem("produckAgentConfigs") || "{}"),
+  interviewAcceptedIds: new Set(JSON.parse(localStorage.getItem("produckInterviewAccepted") || "[]")),
+  interviewQuestionPacks: JSON.parse(localStorage.getItem("produckInterviewQuestionPacks") || "{}"),
   allCandidates: [],
   candidates: []
 };
@@ -400,12 +501,22 @@ const potentialList = document.querySelector("#potentialList");
 const sourceQualityList = document.querySelector("#sourceQualityList");
 const pipelineInsights = document.querySelector("#pipelineInsights");
 const decisionLanes = document.querySelector("#decisionLanes");
-const agentChainSteps = document.querySelector("#agentChainSteps");
+const agentRegistry = document.querySelector("#agentRegistry");
+const campaignManager = document.querySelector("#campaignManager");
 const positionTabs = document.querySelector("#positionTabs");
 const selectedPositionTitle = document.querySelector("#selectedPositionTitle");
 const selectedPositionSummary = document.querySelector("#selectedPositionSummary");
 const positionVolumeList = document.querySelector("#positionVolumeList");
 const workloadList = document.querySelector("#workloadList");
+const positionSearch = document.querySelector("#positionSearch");
+const positionTypeFilter = document.querySelector("#positionTypeFilter");
+const positionSort = document.querySelector("#positionSort");
+const positionResultCount = document.querySelector("#positionResultCount");
+const candidateSearch = document.querySelector("#candidateSearch");
+const candidateJobFilter = document.querySelector("#candidateJobFilter");
+const candidateStatusFilter = document.querySelector("#candidateStatusFilter");
+const candidateSort = document.querySelector("#candidateSort");
+const candidateResultCount = document.querySelector("#candidateResultCount");
 const hrTabIds = ["hrOverviewTab", "hrPipelineTab", "hrReviewTab", "hrWorkflowTab"];
 
 const cvScreeningAgent = {
@@ -416,9 +527,8 @@ const cvScreeningAgent = {
     const competencyScores = this.rubric.competencies.map((competency) => {
       const matchedKeywords = competency.keywords.filter((keyword) => cvText.includes(keyword.toLowerCase()));
       const keywordScore = Math.min(95, 52 + matchedKeywords.length * 12);
-      const contextBoost = candidate.completion >= 100 ? 4 : 0;
-      const quizBoost = candidate.quiz >= 85 ? 4 : 0;
-      const score = Math.min(98, keywordScore + contextBoost + quizBoost);
+      const profileScore = clampScore(candidate.cv || keywordScore);
+      const score = clampScore(keywordScore * 0.55 + profileScore * 0.45);
       return {
         ...competency,
         score,
@@ -509,8 +619,33 @@ function getTotalActiveApplicants() {
   return activeHiringPositions.reduce((sum, position) => sum + position.applicants, 0);
 }
 
+function getCampaignConfig(position) {
+  return {
+    status: "OPEN",
+    channels: position.sourceMix.slice(0, 3).map((item) => item.source),
+    ...(state.campaignConfig[position.id] || {})
+  };
+}
+
 function getFilteredCandidates() {
   return state.allCandidates.filter((candidate) => candidate.roleId === state.activePositionId);
+}
+
+function getLearningAddOn(candidate) {
+  const completion = clampScore(candidate.completion || 0);
+  const quiz = clampScore(candidate.quiz || 0);
+  const certificateEarned = Boolean(candidate.certificateEarned || (completion === 100 && quiz >= 80));
+  const coursePoints = Math.round((completion / 100) * 4);
+  const examPoints = Math.round((quiz / 100) * 4);
+  const certificatePoints = certificateEarned ? 2 : 0;
+  return {
+    score: coursePoints + examPoints + certificatePoints,
+    maxScore: 10,
+    coursePoints,
+    examPoints,
+    certificatePoints,
+    certificateEarned
+  };
 }
 
 function shouldReplaceRoleDefault(textarea) {
@@ -631,6 +766,7 @@ function getCachedAssignmentEvaluation(candidate) {
 function buildLeadProfile(candidate, cvAnalysis, assignmentAnalysis = null) {
   const assignmentScore = assignmentAnalysis?.score || scoreAssignmentAnswer(candidate.assignmentAnswer, candidate);
   const targetPosition = candidate.targetRole || getPositionById(candidate.roleId).title;
+  const learningAddOn = getLearningAddOn(candidate);
   return {
     source: candidate.source,
     targetRole: targetPosition,
@@ -641,11 +777,13 @@ function buildLeadProfile(candidate, cvAnalysis, assignmentAnalysis = null) {
     assignmentSummary: assignmentAnalysis?.summary || "Assignment evidence is scored from the candidate case response.",
     cvCompetencyScore: cvAnalysis.overall,
     motivationScore: candidate.motivation,
+    learningAddOn,
     signals: [
       { label: "Target role", value: targetPosition, description: "Hiring position selected for this application." },
       { label: "Lead source", value: candidate.source, description: "Where this profile entered the funnel." },
-      { label: "Course completion", value: `${candidate.completion}%`, description: "Learning progress from Product fundamentals." },
-      { label: "Quiz score", value: candidate.quiz, description: "Readiness exam result." },
+      { label: "Learning add-on", value: `+${learningAddOn.score}/${learningAddOn.maxScore}`, description: "Optional bonus from course, exam, and certificate signals." },
+      { label: "Course completion", value: `${candidate.completion}%`, description: "Optional learning progress; it is not an application gate." },
+      { label: "Quiz score", value: candidate.quiz, description: "Optional readiness exam result." },
       { label: "Assignment", value: assignmentScore, description: "Problem framing and action clarity." },
       { label: "CV match", value: cvAnalysis.overall, description: "Competency match against the PM rubric." },
       { label: "Motivation", value: candidate.motivation, description: "Signal from application answer." }
@@ -656,13 +794,12 @@ function buildLeadProfile(candidate, cvAnalysis, assignmentAnalysis = null) {
 function scoreCandidate(candidate) {
   const cvScore = candidate.cvAnalysis?.overall || candidate.cv || 70;
   const assignmentScore = candidate.leadProfile?.assignmentScore || scoreAssignmentAnswer(candidate.assignmentAnswer, candidate);
-  return Math.round(
-    candidate.completion * 0.2 +
-      candidate.quiz * 0.2 +
-      candidate.engagement * 0.16 +
-      cvScore * 0.18 +
-      candidate.motivation * 0.13 +
-      assignmentScore * 0.13
+  const learningAddOn = candidate.leadProfile?.learningAddOn || getLearningAddOn(candidate);
+  return clampScore(
+    cvScore * 0.6 +
+      assignmentScore * 0.18 +
+      candidate.motivation * 0.12 +
+      learningAddOn.score
   );
 }
 
@@ -674,12 +811,6 @@ function getReadinessStatus(candidate) {
   const hasMajorCvRisk = riskFlags.some((risk) => risk !== "No uploaded PDF CV yet.");
   const hasUploadedCvGap = candidate.cvFileName === "No uploaded CV";
 
-  if (candidate.completion < 100) {
-    missingEvidence.push("Finish Product Fundamentals certificate.");
-  }
-  if (candidate.quiz < 80) {
-    missingEvidence.push("Retake readiness exam to reach 80+.");
-  }
   if (hasUploadedCvGap) {
     missingEvidence.push("Upload PDF CV for stronger competency evidence.");
   }
@@ -690,13 +821,11 @@ function getReadinessStatus(candidate) {
     missingEvidence.push("Resolve CV competency evidence gaps.");
   }
 
-  const strongButIncomplete = candidate.completion < 100 && (leadProfile.cvCompetencyScore >= 82 || candidate.quiz >= 80 || leadProfile.assignmentScore >= 80);
-  let status = "BORDERLINE";
-  if (score >= 85 && candidate.completion === 100 && candidate.quiz >= 80 && leadProfile.assignmentScore >= 72 && !hasMajorCvRisk) {
-    status = "READY";
-  } else if (score < 70 && !strongButIncomplete) {
-    status = "NOT_MATCH";
-  }
+  const status = score >= 80
+    ? "READY"
+    : score >= 65
+      ? "BORDERLINE"
+      : "NOT_MATCH";
 
   const confidence = missingEvidence.length === 0 && score >= 85
     ? "high"
@@ -705,18 +834,26 @@ function getReadinessStatus(candidate) {
       : "low";
 
   if (status === "READY") {
+    const normalizedStage = String(candidate.stage || "").toLowerCase();
+    const nextAction = normalizedStage.includes("accepted")
+      ? "Prepare interviewer pack"
+      : normalizedStage === "interview"
+        ? "Continue interview process"
+        : normalizedStage.includes("invited")
+          ? "Await interview response"
+          : "Invite to interview";
     return {
       status,
       label: "Ready",
       tone: "green",
       confidence,
-      nextAction: "Advance to offline test",
-      summary: "Strong learning, assignment, CV, and motivation signals. Candidate is ready for the next selection round.",
+      nextAction,
+      summary: "Strong CV and application evidence, with any learning activity counted only as an optional bonus. Candidate is ready for the next selection round.",
       missingEvidence,
       humanReviewRequired: false,
-      oaMessageTitle: "Offline test invite",
-      oaMessage: "You are ready for the next round. We will send offline test details and available time slots.",
-      tasks: ["Draft OA offline test invite", "Reserve offline test slot", "Update status to Ready"]
+      oaMessageTitle: "Interview invitation",
+      oaMessage: "Your profile meets the current requirements. Choose an interview time to continue with the hiring team.",
+      tasks: ["Send interview invitation", "Offer available time slots", "Wait for candidate acceptance"]
     };
   }
 
@@ -741,14 +878,30 @@ function getReadinessStatus(candidate) {
     label: "Borderline",
     tone: "yellow",
     confidence,
-    nextAction: "Send learning path",
-    summary: "Candidate is close, but the profile needs more evidence before moving to offline test.",
+      nextAction: "Review evidence gaps",
+      summary: "Candidate is close, but the CV or application evidence needs calibration. Optional learning can strengthen ranking but is not required.",
     missingEvidence: missingEvidence.length ? missingEvidence : ["Ask for one more case response or HR calibration."],
     humanReviewRequired: confidence === "low",
-    oaMessageTitle: "Learning reminder",
-    oaMessage: "You are close. Please complete the recommended module and assignment so we can reassess your profile.",
-    tasks: ["Send recommended learning path", "Set reassessment checkpoint", "Rescore after profile update"]
+      oaMessageTitle: "Evidence follow-up",
+      oaMessage: "You are close. We may ask for one additional work sample or clarification before confirming the next round.",
+      tasks: ["Review evidence gaps", "Request one targeted clarification", "Rescore after profile update"]
   };
+}
+
+function getHiringProcessStatus(candidate) {
+  const status = candidate.readinessDecision.status;
+  const currentStage = String(candidate.stage || "");
+  const normalizedStage = currentStage.toLowerCase();
+  if (status === "READY") {
+    if (normalizedStage.includes("accepted")) return "Interview accepted";
+    if (normalizedStage === "interview") return "Interview";
+    if (normalizedStage.includes("invited")) return "Interview invited";
+    return "Ready for interview";
+  }
+  if (status === "BORDERLINE") {
+    return normalizedStage.includes("case") ? "Case evidence review" : "Evidence review";
+  }
+  return "TA outcome review";
 }
 
 function buildAgentTimeline(candidate) {
@@ -780,9 +933,9 @@ function buildAgentPipeline(candidate) {
       name: "Student Signals",
       owner: "System",
       tone: "blue",
-      status: "Captured",
+      status: "Optional add-on",
       input: "Course, quiz, engagement, source, motivation",
-      output: `${candidate.completion}% completion, ${candidate.quiz}/100 quiz, ${candidate.engagement}/100 engagement`
+      output: `+${candidate.leadProfile.learningAddOn.score}/10 ranking bonus from learning, exam, and certificate`
     },
     {
       name: "Lead Profile Agent",
@@ -830,7 +983,7 @@ function buildAgentPipeline(candidate) {
       tone: decision.humanReviewRequired ? "red" : "green",
       status: decision.humanReviewRequired ? "Review needed" : "Approve next step",
       input: "Agent package and candidate evidence",
-      output: decision.humanReviewRequired ? "HR checks decision before message" : "HR can approve OA action"
+      output: decision.humanReviewRequired ? "HR checks decision before message" : "Interview invitation can be sent automatically"
     }
   ];
 }
@@ -847,8 +1000,8 @@ function enrichCandidates(candidates) {
       const recommendation = getRecommendation({ ...candidate, cvAnalysis, leadProfile, score, readinessDecision });
       const agentPipeline = buildAgentPipeline({ ...candidate, cvAnalysis, assignmentAnalysis, leadProfile, score, readinessDecision });
       const reasons = [
-        `${candidate.completion}% course completion gives HR a behavioral signal beyond the CV.`,
-        `${candidate.quiz}/100 assessment score shows product fundamentals.`,
+        `CV and application evidence form the core hiring score.`,
+        `Optional learning signals add ${leadProfile.learningAddOn.score}/10 bonus points without gating the application.`,
         `${leadProfile.assignmentScore}/100 assignment score shows problem framing and action clarity.`,
         `${candidate.engagement}/100 engagement score shows consistency inside the funnel.`,
         `${cvAnalysis.overall}/100 CV competency match based on the PM rubric.`
@@ -864,7 +1017,7 @@ function buildCandidateFromForm(formData) {
   const motivation = Math.min(96, 70 + Math.floor(motivationText.length / 12));
   const position = getSelectedApplicationPosition();
   return {
-    id: "demo-applicant",
+    id: `applicant-${Date.now()}`,
     roleId: position.id,
     targetRole: position.title,
     name: String(formData.get("candidateName")),
@@ -872,13 +1025,16 @@ function buildCandidateFromForm(formData) {
     school: String(formData.get("candidateSchool")),
     completion,
     quiz: state.quizScore,
+    certificateEarned: completion === 100 && state.quizScore >= 80,
     engagement: 87,
     cv: state.cvUpload ? 82 : 74,
     cvFileName: state.cvUpload?.name || "No uploaded CV",
     cvUploadedAt: state.cvUpload?.uploadedAt || null,
     motivation,
     assignmentAnswer: String(formData.get("candidateAssignment")),
-    stage: "New",
+    stage: "AI review",
+    aiAssessmentStatus: "Queued",
+    appliedAt: new Date().toISOString(),
     notes: `Live demo applicant created from the student journey for ${position.title}.`
   };
 }
@@ -895,9 +1051,6 @@ function buildCvEvidenceText(candidate) {
     assignment,
     "customer user research interview problem insight prioritize roadmap impact metric experiment prototype mvp stakeholder collaborate data analysis conversion"
   ];
-  if (candidate.completion < 100) {
-    baseProfile.push("learning in progress");
-  }
   return baseProfile.join(" ");
 }
 
@@ -918,19 +1071,18 @@ function getCvRiskFlags(candidate, competencyScores) {
   if (weak.length > 0) {
     flags.push(`Needs more evidence for ${weak.join(", ")}.`);
   }
-  if (candidate.completion < 100) {
-    flags.push("Course certificate not completed.");
-  }
   return flags.length ? flags : ["No major screening risk detected in demo mode."];
 }
 
 function loadCandidates() {
-  const savedApplicant = localStorage.getItem("produckApplicant");
-  const liveCandidate = savedApplicant ? [JSON.parse(savedApplicant)] : [];
-  state.allCandidates = enrichCandidates([...liveCandidate, ...baseCandidates]);
+  const savedApplicants = JSON.parse(localStorage.getItem("produckApplicants") || "[]");
+  const legacyApplicant = localStorage.getItem("produckApplicant");
+  const legacyCandidates = legacyApplicant ? [JSON.parse(legacyApplicant)] : [];
+  const liveCandidates = [...savedApplicants, ...legacyCandidates];
+  state.allCandidates = enrichCandidates([...liveCandidates, ...baseCandidates]);
   state.candidates = getFilteredCandidates();
-  if (!state.candidates.some((candidate) => candidate.id === state.selectedCandidateId)) {
-    state.selectedCandidateId = state.candidates[0]?.id;
+  if (!state.allCandidates.some((candidate) => candidate.id === state.selectedCandidateId)) {
+    state.selectedCandidateId = state.allCandidates[0]?.id;
   }
 }
 
@@ -945,6 +1097,8 @@ function buildAssignmentEvaluationPayload(candidate) {
     quiz: candidate.quiz,
     engagement: candidate.engagement,
     motivation: candidate.motivation,
+    certificateEarned: candidate.leadProfile?.learningAddOn?.certificateEarned || candidate.certificateEarned || false,
+    learningAddOn: candidate.leadProfile?.learningAddOn || getLearningAddOn(candidate),
     source: candidate.source,
     cvFileName: candidate.cvAnalysis?.fileName || candidate.cvFileName || "",
     cvEvidence: candidate.cvAnalysis?.extractedSummary || candidate.notes || "",
@@ -954,12 +1108,185 @@ function buildAssignmentEvaluationPayload(candidate) {
   };
 }
 
-async function runLiveAssignmentEvaluationForSelectedCandidate() {
-  const selectedCandidate = state.candidates.find((item) => item.id === state.selectedCandidateId) || state.candidates[0];
+function getInterviewEvidencePayload(candidate) {
+  const structuredOutput = candidate.assignmentAnalysis?.structuredOutput || {};
+  return {
+    eventType: "INTERVIEW_ACCEPTED",
+    id: candidate.id,
+    name: candidate.name,
+    targetRole: candidate.leadProfile.targetRole,
+    readiness: candidate.readinessDecision.status,
+    confidence: candidate.readinessDecision.confidence,
+    summary: structuredOutput.summary || candidate.readinessDecision.summary,
+    levelFit: structuredOutput.levelFit || "Validate against the target role during interview.",
+    competencyHighlights: structuredOutput.competencyHighlights || candidate.cvAnalysis.competencyScores
+      .slice(0, 4)
+      .map((item) => ({
+        competency: item.label,
+        score: item.score,
+        evidence: item.matchedKeywords.join(", ") || "Limited explicit evidence"
+      })),
+    risks: structuredOutput.risks || candidate.cvAnalysis.riskFlags,
+    missingEvidence: structuredOutput.missingEvidence || [
+      ...candidate.readinessDecision.missingEvidence,
+      ...candidate.assignmentAnalysis.missingEvidence
+    ],
+    interviewProbes: structuredOutput.interviewProbes || [],
+    cvEvidence: candidate.cvAnalysis.extractedSummary,
+    assignmentEvidence: candidate.assignmentAnalysis.summary
+  };
+}
+
+function buildFallbackInterviewQuestionPack(candidate, source = "demo_fallback") {
+  const evidence = getInterviewEvidencePayload(candidate);
+  const rawGaps = [
+    ...evidence.missingEvidence,
+    ...evidence.risks.filter((risk) => !risk.toLowerCase().includes("no major"))
+  ];
+  const claimChecks = evidence.competencyHighlights.map((item) => (
+    `Validate ${item.competency} evidence: ${item.evidence}`
+  ));
+  const gaps = [...new Set([...rawGaps, ...claimChecks])].filter(Boolean);
+  const fallbackGaps = gaps.length ? gaps : [
+    "Validate the candidate's personal contribution to the strongest product outcome.",
+    "Validate decision quality when priorities or stakeholder needs conflict.",
+    "Validate how the candidate measures product impact.",
+    "Validate learning from a product decision that did not work as expected."
+  ];
+  const questions = fallbackGaps.slice(0, 5).map((gap, index) => {
+    const competency = evidence.competencyHighlights[index]?.competency || "Product judgment";
+    return {
+      id: `Q${index + 1}`,
+      competency,
+      evidenceGap: gap,
+      question: `Tell us about a specific example that demonstrates ${gap.replace(/[.]$/, "").toLowerCase()}. What was your personal role?`,
+      followUp: "What trade-off did you make, what changed because of your decision, and how did you measure the result?",
+      strongEvidence: ["Specific context and personal ownership", "Clear trade-off or decision", "Measurable outcome or learning"],
+      warningSigns: ["Only describes the team's work", "No concrete decision or evidence", "Cannot explain the outcome"],
+      scoreGuide: {
+        1: "Vague or unsupported answer with unclear ownership.",
+        3: "Relevant example with reasonable ownership but limited outcome evidence.",
+        5: "Specific, high-ownership example with sound judgment and measurable impact."
+      }
+    };
+  });
+  return {
+    schemaVersion: "produck.interview_question_pack.v1",
+    candidateId: candidate.id,
+    candidateName: candidate.name,
+    targetRole: candidate.leadProfile.targetRole,
+    triggerEvent: "INTERVIEW_ACCEPTED",
+    status: "READY",
+    interviewDurationMinutes: 45,
+    openingPrompt: "Set expectations, confirm the candidate's role in the examples, and ask for specific evidence.",
+    questions,
+    closingPrompt: "Ask what the candidate learned and what they would do differently with the same problem today.",
+    interviewerNotes: ["Score the evidence, not presentation style.", "Record direct evidence and unresolved follow-ups."],
+    source,
+    delivery: {
+      audience: "INTERVIEWER",
+      visibility: "NOT_IN_HR_CANDIDATE_REVIEW",
+      status: source === "workspace_agent_triggered" ? "QUEUED" : "PREPARED"
+    },
+    generatedAt: new Date().toISOString()
+  };
+}
+
+async function acceptInterviewAndPrepareQuestions(candidate) {
+  state.interviewAcceptedIds.add(candidate.id);
+  localStorage.setItem("produckInterviewAccepted", JSON.stringify([...state.interviewAcceptedIds]));
+  state.interviewQuestionPacks[candidate.id] = buildFallbackInterviewQuestionPack(candidate);
+  localStorage.setItem("produckInterviewQuestionPacks", JSON.stringify(state.interviewQuestionPacks));
+  renderCandidateDetail();
+
+  try {
+    const response = await fetch("/api/prepare-interview-questions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Idempotency-Key": `produck-interview-${candidate.id}-${Date.now()}`
+      },
+      body: JSON.stringify({
+        candidate: getInterviewEvidencePayload(candidate)
+      })
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(body.error || "Interview question agent trigger failed.");
+    }
+    state.interviewQuestionPacks[candidate.id] = {
+      ...state.interviewQuestionPacks[candidate.id],
+      source: "workspace_agent_triggered",
+      trigger: body.trigger || null
+    };
+  } catch (error) {
+    state.interviewQuestionPacks[candidate.id] = {
+      ...state.interviewQuestionPacks[candidate.id],
+      source: "demo_fallback"
+    };
+  }
+
+  localStorage.setItem("produckInterviewQuestionPacks", JSON.stringify(state.interviewQuestionPacks));
+  renderCandidateDetail();
+}
+
+function renderInterviewHandoff(candidate) {
+  if (candidate.readinessDecision.status !== "READY") {
+    return "";
+  }
+  const accepted = state.interviewAcceptedIds.has(candidate.id);
+  const pack = state.interviewQuestionPacks[candidate.id];
+  if (!accepted) {
+    return `
+      <div class="interview-handoff-panel">
+        <div>
+          <p class="eyebrow">Automatic next step</p>
+          <h3>Interview invitation sent</h3>
+          <p>This candidate meets the current requirements. The question agent waits until the candidate accepts.</p>
+        </div>
+        <button class="primary-button" type="button" data-accept-interview="${candidate.id}">Candidate accepts interview</button>
+      </div>
+    `;
+  }
+  return `
+    <div class="interview-delivery-panel">
+      <div>
+        <p class="eyebrow">Interview handoff</p>
+        <h3>Interviewer pack available</h3>
+        <p>${pack?.questions?.length || 0} evidence-gap questions are ready for TA and the assigned interviewer.</p>
+      </div>
+      <div class="interview-delivery-status">
+        <span class="status-pill ${pack?.source === "workspace_agent_triggered" ? "green" : "yellow"}">
+          ${pack?.source === "workspace_agent_triggered" ? "Agent queued" : "Prepared locally"}
+        </span>
+        <small>${pack?.source === "workspace_agent_triggered" ? "Ready for interviewer delivery" : "Prepared in demo mode"}</small>
+      </div>
+    </div>
+    <details class="interviewer-pack">
+      <summary>View interviewer pack</summary>
+      <div class="interviewer-pack-list">
+        ${(pack?.questions || []).map((item) => `
+          <article>
+            <span>${escapeHtml(item.id)}</span>
+            <div>
+              <strong>${escapeHtml(item.competency)}</strong>
+              <p>${escapeHtml(item.question)}</p>
+              <small>Follow-up: ${escapeHtml(item.followUp)}</small>
+            </div>
+          </article>
+        `).join("")}
+      </div>
+    </details>
+  `;
+}
+
+async function runLiveAssignmentEvaluation(candidateOverride = null) {
+  const selectedCandidate = candidateOverride
+    || state.candidates.find((item) => item.id === state.selectedCandidateId)
+    || state.candidates[0];
   if (!selectedCandidate) {
     return false;
   }
-
   const response = await fetch("/api/evaluate-assignment", {
     method: "POST",
     headers: {
@@ -988,6 +1315,34 @@ async function runLiveAssignmentEvaluationForSelectedCandidate() {
   };
   localStorage.setItem("produckAssignmentEvaluations", JSON.stringify(state.assignmentEvaluations));
   return true;
+}
+
+function saveProvisionalAssessment(candidate, source = "demo_fallback") {
+  const fallbackEvaluation = assignmentEvaluationAgent.analyze(candidate);
+  state.assignmentEvaluations[candidate.id] = {
+    ...fallbackEvaluation,
+    source,
+    structuredOutput: {
+      candidateId: candidate.id,
+      candidateName: candidate.name,
+      targetRole: candidate.targetRole,
+      cvScore: candidate.cvAnalysis?.overall || candidate.cv || 0,
+      addOnScore: getLearningAddOn(candidate).score,
+      assignmentScore: fallbackEvaluation.score,
+      readiness: "PROVISIONAL",
+      confidence: candidate.cvFileName === "No uploaded CV" ? "LOW" : "MEDIUM",
+      stage: "AI reviewed",
+      nextAction: "Review structured evidence package",
+      summary: fallbackEvaluation.summary,
+      risks: candidate.cvAnalysis?.riskFlags || [],
+      missingEvidence: fallbackEvaluation.missingEvidence,
+      interviewProbes: fallbackEvaluation.missingEvidence.map((item) => `Ask for evidence of ${item.toLowerCase()}.`),
+      evaluatedAt: new Date().toISOString()
+    },
+    signature: getAssignmentSignature(candidate),
+    evaluatedAt: new Date().toISOString()
+  };
+  localStorage.setItem("produckAssignmentEvaluations", JSON.stringify(state.assignmentEvaluations));
 }
 
 function renderLessons() {
@@ -1097,12 +1452,10 @@ function renderProgress() {
   progressPercent.textContent = `${progress}%`;
   progressBar.style.width = `${progress}%`;
   const certificateUnlocked = progress === 100 && state.quizScore >= 80;
-  certificateBadge.textContent = certificateUnlocked ? "Certificate earned" : "Certificate locked";
+  certificateBadge.textContent = certificateUnlocked ? "Optional certificate earned" : "Optional certificate not earned";
   certificateBadge.className = `status-pill ${certificateUnlocked ? "" : "muted"}`;
-  applyButton.disabled = !certificateUnlocked;
-  applyButton.textContent = certificateUnlocked
-    ? `Apply to ${getSelectedApplicationPosition().shortTitle}`
-    : `Unlock certificate to apply`;
+  applyButton.disabled = false;
+  applyButton.textContent = `Apply to ${getSelectedApplicationPosition().shortTitle}`;
 }
 
 function renderQuiz() {
@@ -1118,7 +1471,7 @@ function renderQuiz() {
   if (state.quizScore >= 80) {
     quizBox.innerHTML = `
       <h3>Quiz passed: ${state.quizScore}/100</h3>
-      <p>The certificate signal is now available for the recruitment application.</p>
+      <p>The optional certificate adds bonus points to your recruitment ranking.</p>
     `;
     return;
   }
@@ -1176,7 +1529,7 @@ function renderCertificates() {
     const status = earned ? "Earned" : certificate.status === "progress" ? "In progress" : "Locked";
     return `
       <article class="certificate-card ${earned ? "earned" : ""}">
-        <div class="certificate-seal">${earned ? "✓" : "C${index + 1}"}</div>
+        <div class="certificate-seal">${earned ? "✓" : `C${index + 1}`}</div>
         <div>
           <p class="eyebrow">${certificate.issuer}</p>
           <h3>${certificate.title}</h3>
@@ -1203,9 +1556,7 @@ function renderApplicationForSelectedPosition() {
   if (shouldReplaceRoleDefault(candidateAssignment)) {
     candidateAssignment.value = position.assignmentDefault;
   }
-  applyButton.textContent = applyButton.disabled
-    ? "Unlock certificate to apply"
-    : `Apply to ${position.shortTitle}`;
+  applyButton.textContent = `Apply to ${position.shortTitle}`;
 }
 
 function renderHiringPrograms() {
@@ -1219,7 +1570,7 @@ function renderHiringPrograms() {
       <p>${program.targetHires} target hire${program.targetHires === 1 ? "" : "s"} / ${program.slaHours}h SLA</p>
       <p>${program.studentDescription}</p>
       <div class="program-steps">
-        ${["Apply with certificate", "Agent readiness review", program.id === "pmt" ? "Offline test" : "Case or hiring manager review", "Interview", "Offer"].map((step, index) => `
+        ${["Apply with CV", "AI CV + add-on review", "Interview invitation", "Evidence-based interview", "Offer"].map((step, index) => `
           <div>
             <span>${index + 1}</span>
             <p>${step}</p>
@@ -1257,32 +1608,111 @@ function renderCvUpload() {
 }
 
 function renderMetrics() {
-  const position = getSelectedPosition();
-  document.querySelector("#metricApplicants").textContent = formatNumber(talentPoolSnapshot.totalStudents);
-  document.querySelector("#metricTop").textContent = formatNumber(position.applicants);
-  document.querySelector("#metricAvg").textContent = formatNumber(position.ready);
-  drawSignalChart();
+  const totals = activeHiringPositions.reduce((result, position) => ({
+    applicants: result.applicants + position.applicants,
+    screened: result.screened + position.screened,
+    ready: result.ready + position.ready,
+    interview: result.interview + position.interview,
+    offers: result.offers + position.offer,
+    review: result.review + position.humanReview,
+    target: result.target + position.targetHires
+  }), { applicants: 0, screened: 0, ready: 0, interview: 0, offers: 0, review: 0, target: 0 });
+  const openPrograms = activeHiringPositions.filter((position) => getCampaignConfig(position).status === "OPEN").length;
+  const unscreened = totals.applicants - totals.screened;
+  const offerProgress = Math.round((totals.offers / Math.max(1, totals.target)) * 100);
+
+  document.querySelector("#metricApplicants").textContent = formatNumber(totals.applicants);
+  document.querySelector("#metricApplicantsInsight").textContent = `${openPrograms} open hiring programs`;
+  document.querySelector("#metricTop").textContent = formatNumber(unscreened);
+  document.querySelector("#metricTopInsight").textContent = `${Math.round((unscreened / totals.applicants) * 100)}% of active CVs`;
+  document.querySelector("#metricAvg").textContent = formatNumber(totals.ready);
+  document.querySelector("#metricAvgInsight").textContent = `${Math.round((totals.ready / totals.applicants) * 100)}% ready for interview`;
+  document.querySelector("#metricInterview").textContent = formatNumber(totals.interview);
+  document.querySelector("#metricInterviewInsight").textContent = "Interview evidence in progress";
+  document.querySelector("#metricOffers").textContent = formatNumber(totals.offers);
+  document.querySelector("#metricOffersInsight").textContent = `${offerProgress}% of ${totals.target} target hires`;
+  document.querySelector("#metricReview").textContent = formatNumber(totals.review);
+  document.querySelector("#metricReviewInsight").textContent = "Prioritize before SLA breach";
 }
 
-function renderAgentChain() {
-  const candidate = state.candidates.find((item) => item.id === state.selectedCandidateId) || state.candidates[0];
-  if (!candidate) {
-    agentChainSteps.innerHTML = "<p>No agent workflow loaded yet.</p>";
-    return;
+const hrAgentDefinitions = [
+  {
+    id: "cv-screening",
+    name: "CV Screening Agent",
+    purpose: "Scores CV evidence against the role competency rubric.",
+    prompt: "Evaluate CV evidence against the selected role rubric. Return competency scores, evidence, risks, and missing proof.",
+    source: "Candidate CV + role competency rubric"
+  },
+  {
+    id: "assignment-evaluator",
+    name: "Assignment Evaluator",
+    purpose: "Audits the candidate's case response and evidence quality.",
+    prompt: "Evaluate the assignment for problem framing, user evidence, prioritization, metrics, and execution clarity.",
+    source: "Application assignment + evaluation rubric"
+  },
+  {
+    id: "talent-readiness",
+    name: "Talent Readiness Agent",
+    purpose: "Combines core evidence and optional add-ons into the next action.",
+    prompt: "Combine CV and assignment evidence with optional learning add-ons. Recommend Ready, Borderline, or Not Match with confidence and next action.",
+    source: "CV result + assignment result + learning signals"
+  },
+  {
+    id: "interview-probe",
+    name: "Interview Evidence Probe Agent",
+    purpose: "Prepares targeted questions after interview acceptance.",
+    prompt: "Turn unresolved evidence gaps into fair behavioral questions, follow-ups, and a 1/3/5 evidence score guide.",
+    source: "Accepted interview event + evidence gaps + risks"
   }
-  agentChainSteps.innerHTML = candidate.agentPipeline.map((step, index) => `
-    <article class="agent-chain-step ${step.tone}">
-      <div class="agent-chain-index">${index + 1}</div>
-      <div>
-        <div class="agent-chain-title">
-          <strong>${step.name}</strong>
-          <span class="status-pill compact ${step.tone}">${step.status}</span>
+];
+
+function getAgentConfig(definition) {
+  return {
+    ...definition,
+    ...(state.agentConfigs[definition.id] || {})
+  };
+}
+
+function renderAgentRegistry() {
+  agentRegistry.innerHTML = hrAgentDefinitions.map((definition) => {
+    const agent = getAgentConfig(definition);
+    return `
+      <article class="agent-admin-card">
+        <div class="agent-admin-heading">
+          <div>
+            <p class="eyebrow">Active agent</p>
+            <h3>${escapeHtml(agent.name)}</h3>
+            <p>${escapeHtml(agent.purpose)}</p>
+          </div>
+          <span class="status-pill green">Active</span>
         </div>
-        <p>${step.output}</p>
-        <small>${step.owner} reads: ${step.input}</small>
-      </div>
-    </article>
-  `).join("");
+        <label>
+          <span>Agent prompt</span>
+          <textarea rows="4" data-agent-prompt="${agent.id}">${escapeHtml(agent.prompt)}</textarea>
+        </label>
+        <label>
+          <span>Data sources</span>
+          <input type="text" data-agent-source="${agent.id}" value="${escapeHtml(agent.source)}">
+        </label>
+        <div class="agent-admin-actions">
+          <small id="agentSaveStatus-${agent.id}">Last saved in this portal</small>
+          <button class="crm-action-button" type="button" data-save-agent="${agent.id}">Save configuration</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  document.querySelectorAll("[data-save-agent]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.saveAgent;
+      state.agentConfigs[id] = {
+        prompt: document.querySelector(`[data-agent-prompt="${id}"]`).value.trim(),
+        source: document.querySelector(`[data-agent-source="${id}"]`).value.trim()
+      };
+      localStorage.setItem("produckAgentConfigs", JSON.stringify(state.agentConfigs));
+      document.querySelector(`#agentSaveStatus-${id}`).textContent = "Saved just now";
+    });
+  });
 }
 
 function renderPositionCommand() {
@@ -1291,6 +1721,7 @@ function renderPositionCommand() {
   const screenedShare = Math.round((position.screened / position.applicants) * 100);
   const readyShare = Math.round((position.ready / position.applicants) * 100);
   const reviewShare = Math.round((position.humanReview / Math.max(1, position.screened)) * 100);
+  const selectedCampaign = getCampaignConfig(position);
 
   selectedPositionTitle.textContent = position.title;
   selectedPositionSummary.textContent = `${formatNumber(position.applicants)} CVs for this role from a ${formatNumber(talentPoolSnapshot.totalStudents)}-student pool. ${formatNumber(totalApplicants)} total CVs are active across ${activeHiringPositions.length} positions.`;
@@ -1302,25 +1733,93 @@ function renderPositionCommand() {
     </button>
   `).join("");
 
-  positionVolumeList.innerHTML = activeHiringPositions.map((item) => {
-    const share = Math.round((item.applicants / Math.max(1, totalApplicants)) * 100);
-    return `
-      <button class="position-volume-row ${item.id === state.activePositionId ? "active" : ""}" type="button" data-position="${item.id}">
-        <div>
-          <strong>${item.title}</strong>
-          <span>${item.type} / ${item.targetHires} target hire${item.targetHires === 1 ? "" : "s"}</span>
-        </div>
-        <div class="position-volume-meter" aria-label="${item.title} applicant share ${share}%">
-          <span style="width: ${share}%"></span>
-        </div>
-        <b>${formatNumber(item.applicants)}</b>
+  const positionQuery = state.positionSearch.trim().toLowerCase();
+  const visiblePositions = activeHiringPositions
+    .filter((item) => state.positionTypeFilter === "ALL" || item.type === state.positionTypeFilter)
+    .filter((item) => `${item.title} ${item.shortTitle} ${item.type}`.toLowerCase().includes(positionQuery))
+    .sort((a, b) => {
+      if (state.positionSort === "ready-desc") return b.ready - a.ready;
+      if (state.positionSort === "review-desc") return b.humanReview - a.humanReview;
+      if (state.positionSort === "title-asc") return a.title.localeCompare(b.title);
+      return b.applicants - a.applicants;
+    });
+
+  positionResultCount.textContent = visiblePositions.length;
+  positionVolumeList.innerHTML = `
+    <div class="crm-table-scroll">
+      <table class="crm-table positions-table">
+        <thead>
+          <tr>
+            <th scope="col">Position</th>
+            <th scope="col">Type</th>
+            <th scope="col">Campaign</th>
+            <th scope="col">Promotion channels</th>
+            <th scope="col" class="numeric">CVs</th>
+            <th scope="col" class="numeric">Screened</th>
+            <th scope="col" class="numeric">Ready</th>
+            <th scope="col" class="numeric">Borderline</th>
+            <th scope="col" class="numeric">Not match</th>
+            <th scope="col" class="numeric">HR review</th>
+            <th scope="col" class="numeric">Target hires</th>
+            <th scope="col">SLA</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${visiblePositions.map((item) => {
+            const screenedShare = Math.round((item.screened / Math.max(1, item.applicants)) * 100);
+            return `
+              <tr class="${item.id === state.activePositionId ? "active" : ""}">
+                <td>
+                  <button class="crm-primary-link" type="button" data-position="${item.id}">${escapeHtml(item.title)}</button>
+                  <small>${screenedShare}% screened</small>
+                </td>
+                <td><span class="crm-type-tag">${escapeHtml(item.type)}</span></td>
+                <td><span class="status-pill compact ${getCampaignConfig(item).status === "OPEN" ? "green" : "muted"}">${getCampaignConfig(item).status === "OPEN" ? "Open" : "Closed"}</span></td>
+                <td>${escapeHtml(getCampaignConfig(item).channels.join(", "))}</td>
+                <td class="numeric strong-cell">${formatNumber(item.applicants)}</td>
+                <td class="numeric">${formatNumber(item.screened)}</td>
+                <td class="numeric positive-cell">${formatNumber(item.ready)}</td>
+                <td class="numeric warning-cell">${formatNumber(item.borderline)}</td>
+                <td class="numeric danger-cell">${formatNumber(item.notMatch)}</td>
+                <td class="numeric">${formatNumber(item.humanReview)}</td>
+                <td class="numeric">${formatNumber(item.targetHires)}</td>
+                <td><span class="status-pill compact ${item.slaHours <= 48 ? "green" : "yellow"}">${item.slaHours}h</span></td>
+                <td><button class="crm-action-button" type="button" data-position="${item.id}">Open</button></td>
+              </tr>
+            `;
+          }).join("") || `
+            <tr><td class="crm-empty" colspan="13">No positions match the current filters.</td></tr>
+          `}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  campaignManager.innerHTML = `
+    <div class="campaign-manager-heading">
+      <div>
+        <p class="eyebrow">Campaign controls</p>
+        <h3>${escapeHtml(position.title)}</h3>
+        <p>Target: ${formatNumber(position.targetHires)} hires · ${formatNumber(position.applicants)} CVs · ${position.slaHours}h SLA</p>
+      </div>
+      <button class="primary-button" type="button" data-toggle-campaign="${position.id}">
+        ${selectedCampaign.status === "OPEN" ? "Close campaign" : "Open campaign"}
       </button>
-    `;
-  }).join("");
+    </div>
+    <label>
+      <span>Promotion channels</span>
+      <input id="campaignChannels" type="text" value="${escapeHtml(selectedCampaign.channels.join(", "))}" placeholder="LinkedIn, Campus, Referral">
+    </label>
+    <div class="campaign-channel-actions">
+      <small>Separate channels with commas.</small>
+      <button class="crm-action-button" type="button" data-save-channels="${position.id}">Save channels</button>
+    </div>
+  `;
 
   workloadList.innerHTML = [
     { label: "Screened by agent", value: `${formatNumber(position.screened)} / ${screenedShare}%`, tone: "blue" },
-    { label: "Ready for offline test", value: `${formatNumber(position.ready)} / ${readyShare}%`, tone: "green" },
+    { label: "Ready for interview", value: `${formatNumber(position.ready)} / ${readyShare}%`, tone: "green" },
     { label: "Human review needed", value: `${formatNumber(position.humanReview)} / ${reviewShare}%`, tone: "red" },
     { label: "SLA target", value: `${position.slaHours}h`, tone: "yellow" }
   ].map((item) => `
@@ -1342,6 +1841,25 @@ function renderPositionCommand() {
       renderHr();
     });
   });
+
+  document.querySelector(`[data-toggle-campaign="${position.id}"]`)?.addEventListener("click", () => {
+    state.campaignConfig[position.id] = {
+      ...selectedCampaign,
+      status: selectedCampaign.status === "OPEN" ? "CLOSED" : "OPEN"
+    };
+    localStorage.setItem("produckCampaignConfig", JSON.stringify(state.campaignConfig));
+    renderPositionCommand();
+  });
+
+  document.querySelector(`[data-save-channels="${position.id}"]`)?.addEventListener("click", () => {
+    const channels = document.querySelector("#campaignChannels").value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    state.campaignConfig[position.id] = { ...selectedCampaign, channels };
+    localStorage.setItem("produckCampaignConfig", JSON.stringify(state.campaignConfig));
+    renderPositionCommand();
+  });
 }
 
 function renderDecisionLanes() {
@@ -1356,7 +1874,7 @@ function renderDecisionLanes() {
       status: "READY",
       label: "Ready",
       tone: "green",
-      description: "Advance to offline test",
+      description: "Invite directly to interview",
       count: position.ready
     },
     {
@@ -1393,7 +1911,7 @@ function getPotentialBuckets() {
     {
       id: "high",
       label: "Ready",
-      description: "Advance to offline test",
+      description: "Invite directly to interview",
       tone: "green",
       count: position.ready
     },
@@ -1516,7 +2034,7 @@ function renderPipelineInsights(potentialBuckets, readinessShare) {
   const insights = [
     `${position.shortTitle} has ${formatNumber(position.applicants)} CVs, with ${readinessShare}% ready or close enough for an active next action.`,
     readyNames
-      ? `Representative ready profiles: ${readyNames}. Move the aggregate ready lane into offline test scheduling.`
+      ? `Representative ready profiles: ${readyNames}. Send interview invitations and prepare interviewer packs after acceptance.`
       : "No ready representative profile in this sample; check aggregate lane before opening more profiles.",
     borderlineCount
       ? `${formatNumber(borderlineCount)} borderline candidate${borderlineCount === 1 ? "" : "s"} need learning or assignment evidence before rescore.`
@@ -1537,18 +2055,100 @@ function renderPipelineInsights(potentialBuckets, readinessShare) {
 }
 
 function renderCandidateList() {
-  candidateList.innerHTML = state.candidates
-    .map((candidate, index) => `
-      <button class="candidate-row ${candidate.id === state.selectedCandidateId ? "active" : ""}" type="button" data-candidate="${candidate.id}">
-        <div>
-          <div class="candidate-name">#${index + 1} ${candidate.name}</div>
-          <div class="candidate-meta">${candidate.school}<br>${candidate.readinessDecision.nextAction}</div>
-          <span class="status-pill compact ${candidate.readinessDecision.tone}">${candidate.readinessDecision.label}</span>
-        </div>
-        <div class="score-badge">${candidate.score}</div>
-      </button>
-    `)
-    .join("");
+  candidateJobFilter.innerHTML = `
+    <option value="ALL">All programs</option>
+    ${activeHiringPositions.map((position) => `
+      <option value="${position.id}" ${state.candidateJobFilter === position.id ? "selected" : ""}>${escapeHtml(position.title)}</option>
+    `).join("")}
+  `;
+  const candidateQuery = state.candidateSearch.trim().toLowerCase();
+  const visibleCandidates = state.allCandidates
+    .filter((candidate) => state.candidateJobFilter === "ALL" || candidate.roleId === state.candidateJobFilter)
+    .filter((candidate) => (
+      state.candidateStatusFilter === "ALL"
+      || candidate.readinessDecision.status === state.candidateStatusFilter
+    ))
+    .filter((candidate) => (
+      `${candidate.name} ${candidate.school} ${candidate.source} ${candidate.stage}`
+        .toLowerCase()
+        .includes(candidateQuery)
+    ))
+    .sort((a, b) => {
+      if (state.candidateSort === "assignment-desc") return b.assignmentAnalysis.score - a.assignmentAnalysis.score;
+      if (state.candidateSort === "cv-desc") return b.cvAnalysis.overall - a.cvAnalysis.overall;
+      if (state.candidateSort === "name-asc") return a.name.localeCompare(b.name);
+      return b.score - a.score;
+    });
+
+  candidateResultCount.textContent = visibleCandidates.length;
+  candidateList.innerHTML = `
+    <div class="crm-table-scroll">
+      <table class="crm-table candidates-table">
+        <thead>
+          <tr class="crm-group-header">
+            <th scope="colgroup" colspan="4">General information</th>
+            <th scope="colgroup" colspan="4">Score</th>
+            <th scope="colgroup" colspan="2">Ranking status</th>
+            <th scope="colgroup" colspan="2">Hiring process status</th>
+            <th scope="colgroup" colspan="2">Next step</th>
+          </tr>
+          <tr>
+            <th scope="col">Candidate</th>
+            <th scope="col">Job</th>
+            <th scope="col">School / current role</th>
+            <th scope="col">Source</th>
+            <th scope="col" class="numeric">CV match</th>
+            <th scope="col" class="numeric">Assignment</th>
+            <th scope="col" class="numeric">Add-on</th>
+            <th scope="col" class="numeric">Overall</th>
+            <th scope="col" class="numeric">Rank</th>
+            <th scope="col">Readiness</th>
+            <th scope="col">Stage</th>
+            <th scope="col">AI evaluation</th>
+            <th scope="col">Suggested action</th>
+            <th scope="col">Review</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${visibleCandidates.map((candidate, index) => {
+            const aiStatus = candidate.assignmentAnalysis?.source === "workspace_agent_triggered"
+              ? "Agent queued"
+              : candidate.assignmentAnalysis?.source === "demo_fallback"
+                ? "Demo scored"
+                : candidate.aiAssessmentStatus || "Scored";
+            return `
+            <tr class="${candidate.id === state.selectedCandidateId ? "active" : ""}">
+              <td>
+                <button class="crm-primary-link" type="button" data-candidate="${candidate.id}">
+                  ${escapeHtml(candidate.name)}
+                </button>
+                <small>Candidate ID ${escapeHtml(candidate.id.toUpperCase())}</small>
+              </td>
+              <td>${escapeHtml(getPositionById(candidate.roleId).shortTitle)}</td>
+              <td>${escapeHtml(candidate.school)}</td>
+              <td>${escapeHtml(candidate.source)}</td>
+              <td class="numeric">${candidate.cvAnalysis.overall}</td>
+              <td class="numeric">${candidate.assignmentAnalysis.score}</td>
+              <td class="numeric positive-cell">+${candidate.leadProfile.learningAddOn.score}/10</td>
+              <td class="numeric"><strong class="crm-score">${candidate.score}</strong></td>
+              <td class="numeric"><strong class="crm-rank">#${index + 1}</strong></td>
+              <td><span class="status-pill compact ${candidate.readinessDecision.tone}">${candidate.readinessDecision.label}</span></td>
+              <td>
+                <span class="crm-stage">${escapeHtml(getHiringProcessStatus(candidate))}</span>
+                ${state.interviewQuestionPacks[candidate.id] ? "<small>Interviewer pack ready</small>" : ""}
+              </td>
+              <td><span class="crm-stage">${escapeHtml(aiStatus)}</span></td>
+              <td class="next-action-cell">${escapeHtml(candidate.readinessDecision.nextAction)}</td>
+              <td><button class="crm-action-button" type="button" data-candidate="${candidate.id}">Review</button></td>
+            </tr>
+          `;
+          }).join("") || `
+            <tr><td class="crm-empty" colspan="14">No candidates match the current filters.</td></tr>
+          `}
+        </tbody>
+      </table>
+    </div>
+  `;
 
   document.querySelectorAll("[data-candidate]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -1559,7 +2159,7 @@ function renderCandidateList() {
 }
 
 function renderCandidateDetail() {
-  const candidate = state.candidates.find((item) => item.id === state.selectedCandidateId) || state.candidates[0];
+  const candidate = state.allCandidates.find((item) => item.id === state.selectedCandidateId) || state.allCandidates[0];
   if (!candidate) {
     candidateDetail.innerHTML = "<p>No candidates yet.</p>";
     return;
@@ -1594,6 +2194,65 @@ function renderCandidateDetail() {
         ${candidate.readinessDecision.missingEvidence.map((item) => `<span>${item}</span>`).join("") || "<span>No missing evidence for this decision.</span>"}
       </div>
     </div>
+    <div class="hr-key-signals">
+      <div class="signal"><strong>${candidate.cvAnalysis.overall}</strong><span>CV match</span></div>
+      <div class="signal"><strong>${candidate.leadProfile.assignmentScore}</strong><span>Assignment</span></div>
+      <div class="signal"><strong>${candidate.completion}%</strong><span>Learning add-on</span></div>
+      <div class="signal"><strong>${candidate.quiz}</strong><span>Exam add-on</span></div>
+    </div>
+    ${renderInterviewHandoff(candidate)}
+    <details class="assessment-audit">
+      <summary>
+        <span>Full assessment audit</span>
+        <small>CV, assignment, and optional learning evidence</small>
+      </summary>
+      <div class="assessment-audit-body">
+        <div class="audit-essentials">
+          <article>
+            <div class="audit-card-heading">
+              <div>
+                <p class="eyebrow">CV evidence</p>
+                <h3>${candidate.cvAnalysis.overall}/100 match</h3>
+              </div>
+              <span class="status-pill ${candidate.cvAnalysis.overall >= 80 ? "green" : "yellow"}">${candidate.cvAnalysis.overall >= 80 ? "Strong" : "Review"}</span>
+            </div>
+            <p>${escapeHtml(candidate.cvAnalysis.extractedSummary)}</p>
+            <div class="audit-evidence-list">
+              ${[...candidate.cvAnalysis.competencyScores].sort((a, b) => b.score - a.score).slice(0, 3).map((item) => `
+                <span><b>${escapeHtml(item.label)}</b>${item.score}</span>
+              `).join("")}
+            </div>
+          </article>
+          <article>
+            <div class="audit-card-heading">
+              <div>
+                <p class="eyebrow">Assignment</p>
+                <h3>${candidate.assignmentAnalysis.score}/100 evidence</h3>
+              </div>
+              <span class="status-pill ${candidate.assignmentAnalysis.score >= 80 ? "green" : "yellow"}">${candidate.assignmentAnalysis.score >= 80 ? "Strong" : "Needs proof"}</span>
+            </div>
+            <p>${escapeHtml(candidate.assignmentAnalysis.summary)}</p>
+            <div class="audit-gap">
+              <strong>Check in review</strong>
+              <span>${escapeHtml(candidate.assignmentAnalysis.missingEvidence[0] || "No material assignment gap detected.")}</span>
+            </div>
+          </article>
+          <article>
+            <div class="audit-card-heading">
+              <div>
+                <p class="eyebrow">Optional add-on</p>
+                <h3>+${candidate.leadProfile.learningAddOn.score}/10 ranking bonus</h3>
+              </div>
+              <span class="status-pill muted">Not a gate</span>
+            </div>
+            <div class="audit-addon-grid">
+              <span><b>${candidate.leadProfile.learningAddOn.coursePoints}/4</b>Learning</span>
+              <span><b>${candidate.leadProfile.learningAddOn.examPoints}/4</b>Exam</span>
+              <span><b>${candidate.leadProfile.learningAddOn.certificatePoints}/2</b>Certificate</span>
+            </div>
+            <p>${candidate.completion}% course completion · ${candidate.quiz}/100 exam · ${candidate.engagement}/100 engagement</p>
+          </article>
+        </div>
     <div class="agent-pipeline-panel">
       <div class="panel-heading compact">
         <div>
@@ -1731,7 +2390,18 @@ function renderCandidateDetail() {
         </div>
       `).join("")}
     </div>
+      </div>
+    </details>
   `;
+
+  const acceptInterviewButton = document.querySelector(`[data-accept-interview="${candidate.id}"]`);
+  if (acceptInterviewButton) {
+    acceptInterviewButton.addEventListener("click", async () => {
+      acceptInterviewButton.disabled = true;
+      acceptInterviewButton.textContent = "Preparing interviewer questions...";
+      await acceptInterviewAndPrepareQuestions(candidate);
+    });
+  }
 }
 
 function drawSignalChart() {
@@ -1854,7 +2524,7 @@ function renderHr() {
   loadCandidates();
   renderHrTabs();
   renderMetrics();
-  renderAgentChain();
+  renderAgentRegistry();
   renderPositionCommand();
   renderDecisionLanes();
   renderDashboard();
@@ -1906,6 +2576,41 @@ document.querySelectorAll("[data-hr-tab]").forEach((tab) => {
   });
 });
 
+positionSearch.addEventListener("input", () => {
+  state.positionSearch = positionSearch.value;
+  renderPositionCommand();
+});
+
+positionTypeFilter.addEventListener("change", () => {
+  state.positionTypeFilter = positionTypeFilter.value;
+  renderPositionCommand();
+});
+
+positionSort.addEventListener("change", () => {
+  state.positionSort = positionSort.value;
+  renderPositionCommand();
+});
+
+candidateSearch.addEventListener("input", () => {
+  state.candidateSearch = candidateSearch.value;
+  renderCandidateList();
+});
+
+candidateJobFilter.addEventListener("change", () => {
+  state.candidateJobFilter = candidateJobFilter.value;
+  renderCandidateList();
+});
+
+candidateStatusFilter.addEventListener("change", () => {
+  state.candidateStatusFilter = candidateStatusFilter.value;
+  renderCandidateList();
+});
+
+candidateSort.addEventListener("change", () => {
+  state.candidateSort = candidateSort.value;
+  renderCandidateList();
+});
+
 cvInput.addEventListener("change", () => {
   const file = cvInput.files[0];
   if (!file) {
@@ -1946,17 +2651,39 @@ useSampleCv.addEventListener("click", () => {
   renderCvUpload();
 });
 
-applicationForm.addEventListener("submit", (event) => {
+applicationForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!state.cvUpload) {
+    applicationMessage.textContent = "Upload a PDF CV or use the demo CV. Learning and certificate progress are optional.";
+    return;
+  }
+  applyButton.disabled = true;
+  applyButton.textContent = "Sending to AI Agent...";
   const formData = new FormData(applicationForm);
   const applicant = buildCandidateFromForm(formData);
-  localStorage.setItem("produckApplicant", JSON.stringify(applicant));
+  const savedApplicants = JSON.parse(localStorage.getItem("produckApplicants") || "[]");
+  localStorage.setItem("produckApplicants", JSON.stringify([applicant, ...savedApplicants]));
   state.activePositionId = applicant.roleId;
   localStorage.setItem("produckActivePosition", state.activePositionId);
   state.selectedCandidateId = applicant.id;
-  applicationMessage.textContent = `Application sent to ${applicant.targetRole}. HR can now see this candidate in that assessment queue.`;
   loadCandidates();
-  setTimeout(() => switchView("hrView"), 700);
+  const enrichedApplicant = state.allCandidates.find((candidate) => candidate.id === applicant.id);
+  saveProvisionalAssessment(enrichedApplicant || applicant);
+
+  try {
+    await runLiveAssignmentEvaluation(enrichedApplicant || applicant);
+    applicationMessage.textContent = `Application sent to ${applicant.targetRole}. The AI Agent was triggered and a structured row was added to HR.`;
+  } catch (error) {
+    applicationMessage.textContent = `Application sent to ${applicant.targetRole}. A structured demo assessment was added to HR while the live Agent is unavailable.`;
+  } finally {
+    loadCandidates();
+    state.selectedCandidateId = applicant.id;
+    state.activeHrTab = "hrReviewTab";
+    localStorage.setItem("produckHrTab", state.activeHrTab);
+    applyButton.disabled = false;
+    renderStudent();
+    switchView("hrView");
+  }
 });
 
 document.querySelector("#runAgent").addEventListener("click", async () => {
@@ -1967,7 +2694,7 @@ document.querySelector("#runAgent").addEventListener("click", async () => {
   agentMode.className = "status-pill blue";
 
   try {
-    await runLiveAssignmentEvaluationForSelectedCandidate();
+    await runLiveAssignmentEvaluation();
     agentMode.textContent = "Workspace Agent triggered";
     agentMode.className = "status-pill green";
   } catch (error) {
@@ -1989,8 +2716,11 @@ document.querySelector("#resetDemo").addEventListener("click", () => {
   localStorage.removeItem("produckModuleQuizResults");
   localStorage.removeItem("produckQuizScore");
   localStorage.removeItem("produckApplicant");
+  localStorage.removeItem("produckApplicants");
   localStorage.removeItem("produckCvUpload");
   localStorage.removeItem("produckAssignmentEvaluations");
+  localStorage.removeItem("produckInterviewAccepted");
+  localStorage.removeItem("produckInterviewQuestionPacks");
   localStorage.removeItem("produckSelectedLesson");
   localStorage.removeItem("produckStudentTab");
   localStorage.removeItem("produckActivePosition");
@@ -2001,6 +2731,8 @@ document.querySelector("#resetDemo").addEventListener("click", () => {
   state.quizScore = 0;
   state.cvUpload = null;
   state.assignmentEvaluations = {};
+  state.interviewAcceptedIds = new Set();
+  state.interviewQuestionPacks = {};
   state.activePositionId = "pmt";
   state.selectedApplicationRoleId = "pmt";
   state.activeHrTab = "hrOverviewTab";

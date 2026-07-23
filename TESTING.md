@@ -4,7 +4,7 @@
 
 - Open the app.
 - Confirm the `Student funnel` view is visible.
-- Confirm the student funnel has `Learning and exam`, `Assessment and certificates`, and `Hiring programs` subtabs.
+- Confirm the student funnel has `Optional learning`, `Optional exam and certificates`, and `Hiring programs` subtabs.
 - Open at least one course module and confirm the lesson content changes.
 - Answer at least one mini quiz beside a mini case.
 - Click all three course lesson buttons.
@@ -17,9 +17,10 @@
 - Confirm the application title, motivation prompt, assignment prompt, and button text update.
 - Confirm lead source and mini assignment answer fields appear.
 - Upload a PDF CV.
-- Confirm the application button unlocks.
+- Confirm the application button is available before earning a certificate.
 - Submit the application.
-- Confirm the app switches to the HR view for the selected role.
+- Confirm the app automatically triggers the AI assessment path.
+- Confirm the app switches to Candidate Review and inserts a new structured row.
 
 ## HR Journey
 
@@ -36,6 +37,9 @@
 - Confirm the selected candidate has a readiness status and confidence.
 - Confirm the Lead Profile panel appears.
 - Confirm the OA message draft appears.
+- Confirm a Ready candidate receives a direct interview invitation.
+- Click `Candidate accepts interview`.
+- Confirm CV details lets TA expand an available interviewer pack after interview acceptance.
 - Confirm the status timeline appears.
 - Confirm the CV screening agent panel appears.
 - Confirm competency scores appear.

@@ -151,8 +151,8 @@ const courseContent = {
       company: "Produck Demo Company",
       timeline: "8-week selection program",
       location: "Ho Chi Minh City / Hybrid",
-      description: "For high-potential students and fresh graduates who show strong learning signals, curiosity, and structured thinking.",
-      steps: ["Apply with certificate", "AI CV screening", "Product case test", "Panel interview", "Offer"]
+      description: "For high-potential students and fresh graduates. Learning signals can strengthen ranking but are not required to apply.",
+      steps: ["Apply with CV", "AI CV + add-on review", "Product case test", "Panel interview", "Offer"]
     },
     {
       id: "fulltime",

@@ -1,6 +1,6 @@
-import { triggerAssignmentWorkspaceAgent } from "./assignment-evaluation-core.mjs";
+import { triggerInterviewQuestionAgent } from "./interview-question-core.mjs";
 
-const MAX_BODY_BYTES = 24 * 1024;
+const MAX_BODY_BYTES = 32 * 1024;
 
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -26,14 +26,13 @@ function sendJson(res, statusCode, payload) {
 
 function validateCandidate(candidate) {
   if (!candidate || typeof candidate !== "object") {
-    return "Candidate payload is required.";
+    return "Accepted candidate payload is required.";
   }
-  if (!String(candidate.name || "").trim()) {
-    return "Candidate name is required.";
+  if (candidate.eventType !== "INTERVIEW_ACCEPTED") {
+    return "Interview questions can start only after INTERVIEW_ACCEPTED.";
   }
-  const answer = String(candidate.assignmentAnswer || candidate.notes || "").trim();
-  if (answer.length > 5000) {
-    return "Assignment answer is too long for the demo endpoint.";
+  if (!String(candidate.id || "").trim() || !String(candidate.name || "").trim()) {
+    return "Candidate id and name are required.";
   }
   return null;
 }
@@ -41,7 +40,7 @@ function validateCandidate(candidate) {
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    sendJson(res, 405, { error: "Use POST for assignment evaluation." });
+    sendJson(res, 405, { error: "Use POST to prepare interview questions." });
     return;
   }
 
@@ -62,14 +61,13 @@ export default async function handler(req, res) {
       return;
     }
 
-    const trigger = await triggerAssignmentWorkspaceAgent(body.candidate, {
+    const trigger = await triggerInterviewQuestionAgent(body.candidate, {
       idempotencyKey: req.headers["idempotency-key"] || req.headers["x-client-request-id"]
     });
     sendJson(res, 202, { trigger });
   } catch (error) {
-    const statusCode = Number(error.statusCode) || 500;
-    sendJson(res, statusCode, {
-      error: error.message || "Assignment evaluation failed."
+    sendJson(res, Number(error.statusCode) || 500, {
+      error: error.message || "Interview question preparation failed."
     });
   }
 }

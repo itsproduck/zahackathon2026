@@ -23,7 +23,7 @@
           </button>
           <button class="nav-tab" data-view="hrView">
             <span class="tab-icon">02</span>
-            HR command room
+            HR Portal
           </button>
         </nav>
         <div class="demo-card">
@@ -37,7 +37,7 @@
           <div class="topbar">
             <div>
               <p class="eyebrow">Candidate experience</p>
-              <h1 id="studentTitle">Learn Product, earn a certificate, apply with stronger signals.</h1>
+              <h1 id="studentTitle">Apply when ready. Learning adds stronger signals.</h1>
             </div>
             <button id="resetDemo" class="ghost-button" type="button">Reset demo</button>
           </div>
@@ -45,11 +45,11 @@
           <div class="funnel-tabs" aria-label="Student funnel steps">
             <button class="funnel-tab active" data-student-tab="learningTab" type="button">
               <span>01</span>
-              Learning and exam
+              Optional learning
             </button>
             <button class="funnel-tab" data-student-tab="certificateTab" type="button">
               <span>02</span>
-              Assessment and certificates
+              Optional exam and certificates
             </button>
             <button class="funnel-tab" data-student-tab="hiringTab" type="button">
               <span>03</span>
@@ -97,7 +97,7 @@
                       <p class="eyebrow">Assessment</p>
                       <h2>Readiness exam</h2>
                     </div>
-                    <span id="certificateBadge" class="status-pill muted">Certificate locked</span>
+                    <span id="certificateBadge" class="status-pill muted">Optional certificate not earned</span>
                   </div>
                   <div id="quizBox" class="quiz-box"></div>
                 </section>
@@ -166,7 +166,11 @@
                         <p>For this prototype, the agent reads a demo extraction from the PDF file name and candidate application. We can plug in real PDF text extraction next.</p>
                       </div>
                     </div>
-                    <button id="applyButton" class="primary-button" type="submit" disabled>Unlock certificate to apply</button>
+                    <div class="application-signal-note">
+                      <strong>CV required. Certificate optional.</strong>
+                      <p>Your CV and application are the core review inputs. Course, exam, and certificate progress add bonus ranking signals when available.</p>
+                    </div>
+                    <button id="applyButton" class="primary-button" type="submit">Apply now</button>
                     <p id="applicationMessage" class="form-message" role="status"></p>
                   </form>
                 </section>
@@ -178,52 +182,67 @@
         <section id="hrView" class="view" aria-labelledby="hrTitle">
           <div class="topbar">
             <div>
-              <p class="eyebrow">TA and HR workflow</p>
-              <h1 id="hrTitle">TA screens at scale, HR approves the next move.</h1>
+              <p class="eyebrow">HR Portal</p>
+              <h1 id="hrTitle">Hiring operations, candidate evidence, and AI agents.</h1>
             </div>
             <button id="runAgent" class="primary-button" type="button">Run AI Agent</button>
           </div>
 
-          <div class="funnel-tabs hr-tabs" aria-label="HR room sections">
+          <div class="funnel-tabs hr-tabs" aria-label="HR Portal sections">
             <button class="funnel-tab active" data-hr-tab="hrOverviewTab" type="button">
-              <span>01 / TA objective</span>
-              Command overview
+              <span>01</span>
+              Dashboard
             </button>
             <button class="funnel-tab" data-hr-tab="hrPipelineTab" type="button">
-              <span>02 / TA objective</span>
-              Role pipeline
+              <span>02</span>
+              Hiring programs
             </button>
             <button class="funnel-tab" data-hr-tab="hrReviewTab" type="button">
-              <span>03 / HR objective</span>
-              Candidate review
+              <span>03</span>
+              CV database
             </button>
             <button class="funnel-tab" data-hr-tab="hrWorkflowTab" type="button">
-              <span>04 / HR objective</span>
-              Agent workflow
+              <span>04</span>
+              AI Agents
             </button>
           </div>
 
           <div class="hr-tab-stack">
             <section id="hrOverviewTab" class="hr-tab-panel active" aria-label="TA command overview">
               <div class="objective-strip">
-                <p class="eyebrow">TA objective</p>
-                <h2>Know volume, quality, and where attention is needed.</h2>
+                <p class="eyebrow">Dashboard</p>
+                <h2>Every hiring statistic, paired with an actionable insight.</h2>
               </div>
               <section class="metrics-row" aria-label="Hiring funnel metrics">
-                <div class="metric">
+                <div class="metric priority">
                   <span id="metricApplicants">0</span>
-                  <p>Talent pool</p>
+                  <p>Active CVs</p>
+                  <small id="metricApplicantsInsight">Across open programs</small>
                 </div>
                 <div class="metric">
                   <span id="metricTop">0</span>
-                  <p>Role CVs</p>
+                  <p>Awaiting screening</p>
+                  <small id="metricTopInsight">Needs TA capacity</small>
+                </div>
+                <div class="metric positive">
+                  <span id="metricAvg">0</span>
+                  <p>Ready now</p>
+                  <small id="metricAvgInsight">Can invite to interview</small>
                 </div>
                 <div class="metric">
-                  <span id="metricAvg">0</span>
-                  <p>Ready</p>
+                  <span id="metricInterview">0</span>
+                  <p>In interview</p>
+                  <small id="metricInterviewInsight">Across all programs</small>
                 </div>
-                <div class="metric visual-metric">
-                  <canvas id="signalCanvas" width="240" height="96" aria-label="Candidate signal chart"></canvas>
+                <div class="metric positive">
+                  <span id="metricOffers">0</span>
+                  <p>Offers</p>
+                  <small id="metricOffersInsight">Against hiring targets</small>
+                </div>
+                <div class="metric risk">
+                  <span id="metricReview">0</span>
+                  <p>TA review backlog</p>
+                  <small id="metricReviewInsight">Human action required</small>
                 </div>
               </section>
 
@@ -279,8 +298,8 @@
 
             <section id="hrPipelineTab" class="hr-tab-panel" aria-label="TA role pipeline">
               <div class="objective-strip">
-                <p class="eyebrow">TA objective</p>
-                <h2>Pick a role, size the workload, and move lanes forward.</h2>
+                <p class="eyebrow">Hiring programs</p>
+                <h2>Track targets, campaign status, and promotion channels.</h2>
               </div>
               <section class="panel position-command" aria-label="Active hiring positions">
                 <div class="panel-heading compact">
@@ -291,25 +310,60 @@
                   </div>
                   <span class="status-pill muted">Multi-position view</span>
                 </div>
-                <div id="positionTabs" class="position-tabs" aria-label="Hiring position filters"></div>
-                <div class="position-command-grid">
+                <div class="crm-toolbar" aria-label="Position table controls">
+                  <label class="crm-search">
+                    <span>Search positions</span>
+                    <input id="positionSearch" type="search" placeholder="Role or position type">
+                  </label>
+                  <label>
+                    <span>Type</span>
+                    <select id="positionTypeFilter">
+                      <option value="ALL">All types</option>
+                      <option value="Trainee">Trainee</option>
+                      <option value="Full-time">Full-time</option>
+                      <option value="Specialist">Specialist</option>
+                      <option value="Operations">Operations</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Sort by</span>
+                    <select id="positionSort">
+                      <option value="applicants-desc">CV volume: high to low</option>
+                      <option value="ready-desc">Ready candidates: high to low</option>
+                      <option value="review-desc">HR review: high to low</option>
+                      <option value="title-asc">Position: A to Z</option>
+                    </select>
+                  </label>
+                  <div class="crm-result-count">
+                    <strong id="positionResultCount">5</strong>
+                    <span>positions</span>
+                  </div>
+                </div>
+                <div id="positionTabs" class="position-tabs crm-quick-tabs" aria-label="Quick position filters"></div>
+                <div id="positionVolumeList" class="position-volume-list"></div>
+                <div id="campaignManager" class="campaign-manager"></div>
+                <div class="position-command-grid workload-grid">
                   <div>
                     <div class="dashboard-card-heading">
                       <div>
-                        <strong>Volume by position</strong>
-                        <p>Aggregate counts are shown without rendering thousands of candidate rows.</p>
+                        <strong>Selected role workload</strong>
+                        <p>Aggregate next actions for the highlighted position.</p>
                       </div>
                     </div>
-                    <div id="positionVolumeList" class="position-volume-list"></div>
+                    <div id="workloadList" class="workload-list"></div>
                   </div>
                   <div>
                     <div class="dashboard-card-heading">
                       <div>
-                        <strong>Agent workload</strong>
-                        <p>What TA should handle next for the selected role.</p>
+                        <strong>How to use this view</strong>
+                        <p>Scan the table first, then open only the role that needs attention.</p>
                       </div>
                     </div>
-                    <div id="workloadList" class="workload-list"></div>
+                    <div class="crm-usage-note">
+                      <p><strong>1.</strong> Sort by CV volume to plan screening capacity.</p>
+                      <p><strong>2.</strong> Sort by HR review to find decision debt.</p>
+                      <p><strong>3.</strong> Open a role to update the readiness lanes below.</p>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -318,19 +372,54 @@
               </section>
             </section>
 
-            <section id="hrReviewTab" class="hr-tab-panel" aria-label="HR candidate review">
+            <section id="hrReviewTab" class="hr-tab-panel" aria-label="CV database">
               <div class="objective-strip">
-                <p class="eyebrow">HR objective</p>
-                <h2>Open the evidence package and decide the next action.</h2>
+                <p class="eyebrow">CV database</p>
+                <h2>Filter every application, inspect evidence, and choose the next action.</h2>
               </div>
-              <div class="hr-layout">
+              <div class="hr-layout crm-review-layout">
                 <section class="panel candidates-panel" aria-label="Representative candidate profiles">
                   <div class="panel-heading compact">
                     <div>
-                      <p class="eyebrow">Representative profiles</p>
-                      <h2>Agent assessment queue</h2>
+                      <p class="eyebrow">All applications</p>
+                      <h2>CV review queue</h2>
+                      <p class="panel-subtext">Scan the columns, filter the queue, then open one evidence package.</p>
                     </div>
                     <span id="agentMode" class="status-pill">Mock agent</span>
+                  </div>
+                  <div class="crm-toolbar" aria-label="Candidate table controls">
+                    <label class="crm-search">
+                      <span>Search candidates</span>
+                      <input id="candidateSearch" type="search" placeholder="Name, school, source">
+                    </label>
+                    <label>
+                      <span>Hiring program</span>
+                      <select id="candidateJobFilter">
+                        <option value="ALL">All programs</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>Readiness</span>
+                      <select id="candidateStatusFilter">
+                        <option value="ALL">All statuses</option>
+                        <option value="READY">Ready</option>
+                        <option value="BORDERLINE">Borderline</option>
+                        <option value="NOT_MATCH">Not match</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>Sort by</span>
+                      <select id="candidateSort">
+                        <option value="score-desc">Readiness score: high to low</option>
+                        <option value="assignment-desc">Assignment: high to low</option>
+                        <option value="cv-desc">CV match: high to low</option>
+                        <option value="name-asc">Candidate: A to Z</option>
+                      </select>
+                    </label>
+                    <div class="crm-result-count">
+                      <strong id="candidateResultCount">0</strong>
+                      <span>visible profiles</span>
+                    </div>
                   </div>
                   <div id="candidateList" class="candidate-list"></div>
                 </section>
@@ -341,21 +430,21 @@
               </div>
             </section>
 
-            <section id="hrWorkflowTab" class="hr-tab-panel" aria-label="HR agent workflow">
+            <section id="hrWorkflowTab" class="hr-tab-panel" aria-label="AI Agents">
               <div class="objective-strip">
-                <p class="eyebrow">HR objective</p>
-                <h2>Audit how agents hand off work before HR approval.</h2>
+                <p class="eyebrow">AI Agents</p>
+                <h2>Review every agent, update its prompt, and manage data sources.</h2>
               </div>
-              <section class="panel agent-chain-panel" aria-label="Agent workflow chain">
+              <section class="panel agent-chain-panel" aria-label="AI agent management">
                 <div class="panel-heading compact">
                   <div>
-                    <p class="eyebrow">Agent workflow</p>
-                    <h2>Student signals to HR approval</h2>
-                    <p class="panel-subtext">Each agent owns one decision package, then HR approves the next action.</p>
+                    <p class="eyebrow">Agent registry</p>
+                    <h2>Configured hiring agents</h2>
+                    <p class="panel-subtext">Edit the operating prompt and source configuration for each agent.</p>
                   </div>
                   <span class="status-pill muted">ChatGPT-ready design</span>
                 </div>
-                <div id="agentChainSteps" class="agent-chain-steps"></div>
+                <div id="agentRegistry" class="agent-registry"></div>
               </section>
             </section>
           </div>
