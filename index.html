@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Produck Talent Funnel Demo</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Demo navigation">
+        <div class="brand">
+          <div class="brand-mark">P</div>
+          <div>
+            <strong>Produck</strong>
+            <span>AI talent funnel</span>
+          </div>
+        </div>
+        <nav class="nav-tabs" aria-label="Primary">
+          <button class="nav-tab active" data-view="studentView">
+            <span class="tab-icon">01</span>
+            Student funnel
+          </button>
+          <button class="nav-tab" data-view="hrView">
+            <span class="tab-icon">02</span>
+            HR command room
+          </button>
+        </nav>
+        <div class="demo-card">
+          <p class="eyebrow">Demo mode</p>
+          <p>Works fully with sample data. Add an OpenAI key later to replace the simulated agent.</p>
+        </div>
+      </aside>
+
+      <main>
+        <section id="studentView" class="view active" aria-labelledby="studentTitle">
+          <div class="topbar">
+            <div>
+              <p class="eyebrow">Candidate experience</p>
+              <h1 id="studentTitle">Learn Product, earn a certificate, apply with stronger signals.</h1>
+            </div>
+            <button id="resetDemo" class="ghost-button" type="button">Reset demo</button>
+          </div>
+
+          <div class="student-grid">
+            <section class="panel course-panel" aria-label="Course lessons">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Free course</p>
+                  <h2>Product Management Foundations</h2>
+                </div>
+                <div class="progress-ring" aria-label="Course progress">
+                  <span id="progressPercent">0%</span>
+                </div>
+              </div>
+              <div class="progress-track" aria-hidden="true">
+                <div id="progressBar" class="progress-fill"></div>
+              </div>
+              <div id="lessonList" class="lesson-list"></div>
+            </section>
+
+            <section class="panel quiz-panel" aria-label="Assessment and application">
+              <div class="panel-heading compact">
+                <div>
+                  <p class="eyebrow">Assessment</p>
+                  <h2>Readiness check</h2>
+                </div>
+                <span id="certificateBadge" class="status-pill muted">Certificate locked</span>
+              </div>
+              <div id="quizBox" class="quiz-box"></div>
+              <form id="applicationForm" class="application-form">
+                <div class="form-row">
+                  <label for="candidateName">Name</label>
+                  <input id="candidateName" name="candidateName" value="Linh Nguyen" required>
+                </div>
+                <div class="form-row">
+                  <label for="candidateSchool">School or current role</label>
+                  <input id="candidateSchool" name="candidateSchool" value="Foreign Trade University" required>
+                </div>
+                <div class="form-row">
+                  <label for="candidateMotivation">Why Product?</label>
+                  <textarea id="candidateMotivation" name="candidateMotivation" rows="4" required>I like turning messy customer problems into clear product decisions. I want to learn by joining a real trainee program.</textarea>
+                </div>
+                <button id="applyButton" class="primary-button" type="submit" disabled>Apply to Product Trainee</button>
+                <p id="applicationMessage" class="form-message" role="status"></p>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section id="hrView" class="view" aria-labelledby="hrTitle">
+          <div class="topbar">
+            <div>
+              <p class="eyebrow">TA and HR workflow</p>
+              <h1 id="hrTitle">AI Agent ranks candidates and recommends the next step.</h1>
+            </div>
+            <button id="runAgent" class="primary-button" type="button">Run AI Agent</button>
+          </div>
+
+          <section class="metrics-row" aria-label="Hiring funnel metrics">
+            <div class="metric">
+              <span id="metricApplicants">0</span>
+              <p>Applicants</p>
+            </div>
+            <div class="metric">
+              <span id="metricTop">0</span>
+              <p>Interview-ready</p>
+            </div>
+            <div class="metric">
+              <span id="metricAvg">0</span>
+              <p>Avg. readiness</p>
+            </div>
+            <div class="metric visual-metric">
+              <canvas id="signalCanvas" width="240" height="96" aria-label="Candidate signal chart"></canvas>
+            </div>
+          </section>
+
+          <div class="hr-layout">
+            <section class="panel candidates-panel" aria-label="Ranked candidates">
+              <div class="panel-heading compact">
+                <div>
+                  <p class="eyebrow">Ranked shortlist</p>
+                  <h2>Candidate queue</h2>
+                </div>
+                <span id="agentMode" class="status-pill">Mock agent</span>
+              </div>
+              <div id="candidateList" class="candidate-list"></div>
+            </section>
+
+            <section class="panel detail-panel" aria-label="Candidate details">
+              <div id="candidateDetail"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
