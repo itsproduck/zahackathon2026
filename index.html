@@ -18,17 +18,20 @@
         </div>
         <nav class="nav-tabs" aria-label="Primary">
           <button class="nav-tab active" data-view="studentView">
-            <span class="tab-icon">01</span>
-            Student funnel
+            <span class="tab-icon" aria-hidden="true">◎</span>
+            Candidate experience
           </button>
           <button class="nav-tab" data-view="hrView">
-            <span class="tab-icon">02</span>
-            HR Portal
+            <span class="tab-icon" aria-hidden="true">▦</span>
+            Hiring workspace
           </button>
         </nav>
         <div class="demo-card">
-          <p class="eyebrow">Demo mode</p>
-          <p>Works fully with sample data. Add an OpenAI key later to replace the simulated agent.</p>
+          <span class="system-status" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow">Demo workspace</p>
+            <p>Sample data · AI-ready</p>
+          </div>
         </div>
       </aside>
 
@@ -37,28 +40,98 @@
           <div class="topbar">
             <div>
               <p class="eyebrow">Candidate experience</p>
-              <h1 id="studentTitle">Apply when ready. Learning adds stronger signals.</h1>
+              <h1 id="studentTitle">Build proof. Apply when you are ready.</h1>
             </div>
             <button id="resetDemo" class="ghost-button" type="button">Reset demo</button>
           </div>
 
-          <div class="funnel-tabs" aria-label="Student funnel steps">
-            <button class="funnel-tab active" data-student-tab="learningTab" type="button">
-              <span>01</span>
+          <div class="funnel-tabs student-tabs" aria-label="Student funnel steps">
+            <button class="funnel-tab active" data-student-tab="studentHomeTab" type="button">
+              <span aria-hidden="true">▣</span>
+              My dashboard
+            </button>
+            <button class="funnel-tab" data-student-tab="learningTab" type="button">
+              <span aria-hidden="true">◫</span>
               Optional learning
             </button>
             <button class="funnel-tab" data-student-tab="certificateTab" type="button">
-              <span>02</span>
+              <span aria-hidden="true">◇</span>
               Optional exam and certificates
             </button>
             <button class="funnel-tab" data-student-tab="hiringTab" type="button">
-              <span>03</span>
+              <span aria-hidden="true">♧</span>
               Hiring programs
             </button>
           </div>
 
           <div class="funnel-stage">
-            <section id="learningTab" class="student-tab-panel active">
+            <section id="studentHomeTab" class="student-tab-panel active">
+              <div class="student-dashboard-grid">
+                <section class="panel student-journey-panel" aria-label="Student application journey">
+                  <div class="student-dashboard-hero">
+                    <div>
+                      <p class="eyebrow">Student workspace</p>
+                      <h2 id="studentDashboardTitle">Your PM readiness dashboard</h2>
+                      <p id="studentDashboardSummary" class="panel-subtext">Prepare your evidence, apply to a program, and track what the hiring team can already trust.</p>
+                    </div>
+                    <div id="studentReadinessBadge" class="student-readiness-badge"></div>
+                  </div>
+                  <div id="studentJourneyTimeline" class="student-journey-timeline"></div>
+                </section>
+
+                <div class="student-dashboard-columns">
+                  <div class="student-dashboard-column">
+                    <section class="panel student-next-panel" aria-label="Student next actions">
+                      <div class="panel-heading compact">
+                        <div>
+                          <p class="eyebrow">Next actions</p>
+                          <h2>What to do now</h2>
+                        </div>
+                        <span id="studentNextActionCount" class="status-pill muted">0 actions</span>
+                      </div>
+                      <div id="studentNextActions" class="student-next-actions"></div>
+                    </section>
+
+                    <section class="panel student-competency-panel" aria-label="Product competency gaps">
+                      <div class="panel-heading compact">
+                        <div>
+                          <p class="eyebrow">Competency map</p>
+                          <h2>Strengths and gaps</h2>
+                        </div>
+                        <span class="status-pill muted">PM rubric</span>
+                      </div>
+                      <div id="studentCompetencyMap" class="student-competency-map"></div>
+                    </section>
+                  </div>
+
+                  <div class="student-dashboard-column">
+                    <section class="panel student-evidence-panel" aria-label="Student evidence health">
+                      <div class="panel-heading compact">
+                        <div>
+                          <p class="eyebrow">Evidence profile</p>
+                          <h2>Signals hiring will see</h2>
+                        </div>
+                        <span id="studentEvidenceScore" class="status-pill blue">Draft</span>
+                      </div>
+                      <div id="studentEvidenceSummary" class="student-evidence-summary"></div>
+                    </section>
+
+                    <section class="panel student-program-panel" aria-label="Hiring program fit">
+                      <div class="panel-heading compact">
+                        <div>
+                          <p class="eyebrow">Program fit</p>
+                          <h2>Best current pathway</h2>
+                        </div>
+                        <span id="studentProgramFitBadge" class="status-pill">Open</span>
+                      </div>
+                      <div id="studentProgramFit" class="student-program-fit"></div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="learningTab" class="student-tab-panel">
               <div class="student-grid">
                 <section class="panel course-panel" aria-label="Course lessons">
                   <div class="panel-heading">
@@ -116,6 +189,14 @@
             </section>
 
             <section id="hiringTab" class="student-tab-panel">
+              <section class="candidate-page-overview" aria-label="Hiring program overview">
+                <div>
+                  <p class="eyebrow">Hiring programs</p>
+                  <h2>Find the right product opportunity</h2>
+                  <p>Compare open roles, review the evidence each program expects, and submit one focused application.</p>
+                </div>
+                <span class="status-pill green">5 programs open</span>
+              </section>
               <div class="hiring-grid">
                 <section class="panel hiring-panel" aria-label="Hiring program previews">
                   <div class="panel-heading compact">
@@ -136,6 +217,7 @@
                       <p id="applicationRoleSummary" class="panel-subtext">Select a hiring program to tailor this application.</p>
                     </div>
                   </div>
+                  <div id="studentApplicationStatus" class="student-application-status" aria-live="polite"></div>
                   <form id="applicationForm" class="application-form">
                     <div class="form-row">
                       <label for="candidateName">Name</label>
@@ -153,7 +235,7 @@
                       <label id="candidateMotivationLabel" for="candidateMotivation">Why Product Trainee?</label>
                       <textarea id="candidateMotivation" name="candidateMotivation" rows="4" required>I like turning messy customer problems into clear product decisions. I want to learn by joining a real trainee program.</textarea>
                     </div>
-                    <div class="form-row">
+                    <div id="candidateAssignmentRow" class="form-row">
                       <label id="candidateAssignmentLabel" for="candidateAssignment">Mini assignment answer</label>
                       <textarea id="candidateAssignment" name="candidateAssignment" rows="4" required>I would first find where new users drop in the journey, interview a few students who signed up but did not complete the first action, then test one onboarding improvement with a clear activation metric.</textarea>
                     </div>
@@ -183,9 +265,9 @@
           <div class="topbar">
             <div>
               <p class="eyebrow">HR Portal</p>
-              <h1 id="hrTitle">Hiring operations, candidate evidence, and AI agents.</h1>
+              <h1 id="hrTitle">Move qualified candidates forward with evidence.</h1>
             </div>
-            <button id="runAgent" class="primary-button" type="button">Run AI Agent</button>
+            <button id="runAgent" class="primary-button" type="button">Run queue scan</button>
           </div>
 
           <div class="funnel-tabs hr-tabs" aria-label="HR Portal sections">
@@ -195,15 +277,15 @@
             </button>
             <button class="funnel-tab" data-hr-tab="hrPipelineTab" type="button">
               <span>02</span>
-              Hiring programs
+              Programs
             </button>
             <button class="funnel-tab" data-hr-tab="hrReviewTab" type="button">
               <span>03</span>
-              CV database
+              Decision queue
             </button>
             <button class="funnel-tab" data-hr-tab="hrWorkflowTab" type="button">
               <span>04</span>
-              AI Agents
+              Automation controls
             </button>
           </div>
 
@@ -372,20 +454,20 @@
               </section>
             </section>
 
-            <section id="hrReviewTab" class="hr-tab-panel" aria-label="CV database">
+            <section id="hrReviewTab" class="hr-tab-panel" aria-label="Decision queue">
               <div class="objective-strip">
-                <p class="eyebrow">CV database</p>
-                <h2>Filter every application, inspect evidence, and choose the next action.</h2>
+                <p class="eyebrow">Decision queue</p>
+                <h2>Prioritize human decisions, then inspect the supporting evidence.</h2>
               </div>
               <div class="hr-layout crm-review-layout">
-                <section class="panel candidates-panel" aria-label="Representative candidate profiles">
+                <section class="panel candidates-panel" aria-label="Candidate decision queue">
                   <div class="panel-heading compact">
                     <div>
-                      <p class="eyebrow">All applications</p>
-                      <h2>CV review queue</h2>
-                      <p class="panel-subtext">Scan the columns, filter the queue, then open one evidence package.</p>
+                      <p class="eyebrow">TA and HR work</p>
+                      <h2>Candidate decision queue</h2>
+                      <p class="panel-subtext">Start with the next human decision. Open a record only when the evidence needs attention.</p>
                     </div>
-                    <span id="agentMode" class="status-pill">Mock agent</span>
+                    <span id="agentMode" class="status-pill">AI support active</span>
                   </div>
                   <div class="crm-toolbar" aria-label="Candidate table controls">
                     <label class="crm-search">
@@ -418,13 +500,14 @@
                     </label>
                     <div class="crm-result-count">
                       <strong id="candidateResultCount">0</strong>
-                      <span>visible profiles</span>
+                      <span>decisions in queue</span>
                     </div>
                   </div>
+                  <div id="decisionQueueTabs" class="decision-queue-tabs" aria-label="Decision queue filters"></div>
                   <div id="candidateList" class="candidate-list"></div>
                 </section>
 
-                <section class="panel detail-panel" aria-label="Candidate details">
+                <section class="panel detail-panel candidate-record-detail-panel" aria-label="Candidate evidence record" aria-hidden="true">
                   <div id="candidateDetail"></div>
                 </section>
               </div>
@@ -432,15 +515,15 @@
 
             <section id="hrWorkflowTab" class="hr-tab-panel" aria-label="AI Agents">
               <div class="objective-strip">
-                <p class="eyebrow">AI Agents</p>
-                <h2>Review every agent, update its prompt, and manage data sources.</h2>
+              <p class="eyebrow">Automation controls</p>
+              <h2>Manage the safeguards behind each AI-supported decision.</h2>
               </div>
               <section class="panel agent-chain-panel" aria-label="AI agent management">
                 <div class="panel-heading compact">
                   <div>
-                    <p class="eyebrow">Agent registry</p>
-                    <h2>Configured hiring agents</h2>
-                    <p class="panel-subtext">Edit the operating prompt and source configuration for each agent.</p>
+                    <p class="eyebrow">Automation registry</p>
+                    <h2>Configured hiring automations</h2>
+                    <p class="panel-subtext">Review the operating prompt and source configuration used for each workflow.</p>
                   </div>
                   <span class="status-pill muted">ChatGPT-ready design</span>
                 </div>

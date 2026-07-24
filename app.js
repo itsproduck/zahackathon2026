@@ -446,11 +446,13 @@ const state = {
   moduleQuizResults: JSON.parse(localStorage.getItem("produckModuleQuizResults") || "{}"),
   quizScore: Number(localStorage.getItem("produckQuizScore") || 0),
   selectedLessonId: localStorage.getItem("produckSelectedLesson") || lessons[0].id,
-  activeStudentTab: localStorage.getItem("produckStudentTab") || "learningTab",
+  activeStudentTab: localStorage.getItem("produckStudentTab") || "studentHomeTab",
   cvUpload: JSON.parse(localStorage.getItem("produckCvUpload") || "null"),
   activePositionId: localStorage.getItem("produckActivePosition") || "pmt",
   selectedApplicationRoleId: localStorage.getItem("produckSelectedApplicationRole") || "pmt",
   activeHrTab: localStorage.getItem("produckHrTab") || "hrOverviewTab",
+  activeCandidateRecordTab: localStorage.getItem("produckCandidateRecordTab") || "AI_MATCHING",
+  candidateRecordOpen: false,
   selectedCandidateId: "mai",
   assignmentEvaluations: JSON.parse(localStorage.getItem("produckAssignmentEvaluations") || "{}"),
   positionSearch: "",
@@ -460,8 +462,11 @@ const state = {
   candidateJobFilter: "ALL",
   candidateStatusFilter: "ALL",
   candidateSort: "score-desc",
+  candidateQueueFilter: "HUMAN_REVIEW",
   campaignConfig: JSON.parse(localStorage.getItem("produckCampaignConfig") || "{}"),
   agentConfigs: JSON.parse(localStorage.getItem("produckAgentConfigs") || "{}"),
+  manualDecisions: JSON.parse(localStorage.getItem("produckHumanDecisions") || "{}"),
+  lastSubmittedApplicant: JSON.parse(localStorage.getItem("produckLastSubmittedApplicant") || "null"),
   interviewAcceptedIds: new Set(JSON.parse(localStorage.getItem("produckInterviewAccepted") || "[]")),
   interviewQuestionPacks: JSON.parse(localStorage.getItem("produckInterviewQuestionPacks") || "{}"),
   allCandidates: [],
@@ -487,12 +492,26 @@ const candidateMotivationLabel = document.querySelector("#candidateMotivationLab
 const candidateAssignmentLabel = document.querySelector("#candidateAssignmentLabel");
 const candidateMotivation = document.querySelector("#candidateMotivation");
 const candidateAssignment = document.querySelector("#candidateAssignment");
+const candidateAssignmentRow = document.querySelector("#candidateAssignmentRow");
 const cvInput = document.querySelector("#candidateCv");
 const cvStatus = document.querySelector("#cvStatus");
+const studentApplicationStatus = document.querySelector("#studentApplicationStatus");
+const studentDashboardTitle = document.querySelector("#studentDashboardTitle");
+const studentDashboardSummary = document.querySelector("#studentDashboardSummary");
+const studentReadinessBadge = document.querySelector("#studentReadinessBadge");
+const studentJourneyTimeline = document.querySelector("#studentJourneyTimeline");
+const studentNextActionCount = document.querySelector("#studentNextActionCount");
+const studentNextActions = document.querySelector("#studentNextActions");
+const studentEvidenceScore = document.querySelector("#studentEvidenceScore");
+const studentEvidenceSummary = document.querySelector("#studentEvidenceSummary");
+const studentCompetencyMap = document.querySelector("#studentCompetencyMap");
+const studentProgramFitBadge = document.querySelector("#studentProgramFitBadge");
+const studentProgramFit = document.querySelector("#studentProgramFit");
 const useSampleCv = document.querySelector("#useSampleCv");
 const applicationMessage = document.querySelector("#applicationMessage");
 const candidateList = document.querySelector("#candidateList");
 const candidateDetail = document.querySelector("#candidateDetail");
+const candidateDetailPanel = document.querySelector(".candidate-record-detail-panel");
 const agentMode = document.querySelector("#agentMode");
 const dashboardHealth = document.querySelector("#dashboardHealth");
 const growthSummary = document.querySelector("#growthSummary");
@@ -517,6 +536,7 @@ const candidateJobFilter = document.querySelector("#candidateJobFilter");
 const candidateStatusFilter = document.querySelector("#candidateStatusFilter");
 const candidateSort = document.querySelector("#candidateSort");
 const candidateResultCount = document.querySelector("#candidateResultCount");
+const decisionQueueTabs = document.querySelector("#decisionQueueTabs");
 const hrTabIds = ["hrOverviewTab", "hrPipelineTab", "hrReviewTab", "hrWorkflowTab"];
 
 const cvScreeningAgent = {
@@ -629,6 +649,80 @@ function getCampaignConfig(position) {
 
 function getFilteredCandidates() {
   return state.allCandidates.filter((candidate) => candidate.roleId === state.activePositionId);
+}
+
+function getQueueDefinitions() {
+  return [
+    {
+      id: "HUMAN_REVIEW",
+      label: "Needs my review",
+      matches: (candidate) => candidate.readinessDecision.humanReviewRequired || candidate.readinessDecision.status === "BORDERLINE"
+    },
+    {
+      id: "READY_TO_INVITE",
+      label: "Ready to invite",
+      matches: (candidate) => candidate.readinessDecision.status === "READY" && candidate.readinessDecision.nextAction === "Invite to interview"
+    },
+    {
+      id: "INTERVIEW_HANDOFF",
+      label: "Interviewer handoff",
+      matches: (candidate) => Boolean(state.interviewQuestionPacks[candidate.id])
+    },
+    {
+      id: "ALL",
+      label: "All candidates",
+      matches: () => true
+    }
+  ];
+}
+
+function matchesQueueFilter(candidate) {
+  return getQueueDefinitions().find((definition) => definition.id === state.candidateQueueFilter)?.matches(candidate) ?? true;
+}
+
+function getManualDecision(candidate) {
+  return state.manualDecisions[candidate.id] || null;
+}
+
+function getManualDecisionCopy(candidate) {
+  const decision = getManualDecision(candidate);
+  if (!decision) {
+    const reviewBeforeNextStep = candidate.readinessDecision.humanReviewRequired || candidate.readinessDecision.status !== "READY";
+    return {
+      label: reviewBeforeNextStep ? "Review before next step" : "Ready for approval",
+      detail: reviewBeforeNextStep
+        ? "AI has prepared the evidence. A TA or HR decision is required before communication is sent."
+        : "AI prepared the next step. A human can approve it before the candidate receives a message.",
+      tone: reviewBeforeNextStep ? "yellow" : "green"
+    };
+  }
+
+  const decisionCopy = {
+    APPROVE: {
+      label: "Next step approved",
+      detail: "The recommendation is recorded as approved. Candidate communication can now move forward.",
+      tone: "green"
+    },
+    REQUEST_EVIDENCE: {
+      label: "Evidence requested",
+      detail: "The candidate needs one targeted clarification before this decision is revisited.",
+      tone: "yellow"
+    },
+    HOLD: {
+      label: "Decision paused",
+      detail: "The record is on hold until the hiring team confirms the next step.",
+      tone: "red"
+    }
+  };
+  return decisionCopy[decision.action] || decisionCopy.HOLD;
+}
+
+function recordManualDecision(candidateId, action) {
+  state.manualDecisions[candidateId] = {
+    action,
+    recordedAt: new Date().toISOString()
+  };
+  localStorage.setItem("produckHumanDecisions", JSON.stringify(state.manualDecisions));
 }
 
 function getLearningAddOn(candidate) {
@@ -1031,7 +1125,7 @@ function buildCandidateFromForm(formData) {
     cvFileName: state.cvUpload?.name || "No uploaded CV",
     cvUploadedAt: state.cvUpload?.uploadedAt || null,
     motivation,
-    assignmentAnswer: String(formData.get("candidateAssignment")),
+    assignmentAnswer: String(formData.get("candidateAssignment") || ""),
     stage: "AI review",
     aiAssessmentStatus: "Queued",
     appliedAt: new Date().toISOString(),
@@ -1159,7 +1253,7 @@ function buildFallbackInterviewQuestionPack(candidate, source = "demo_fallback")
       id: `Q${index + 1}`,
       competency,
       evidenceGap: gap,
-      question: `Tell us about a specific example that demonstrates ${gap.replace(/[.]$/, "").toLowerCase()}. What was your personal role?`,
+      question: "Walk us through the strongest relevant example. What was your personal role, decision, and outcome?",
       followUp: "What trade-off did you make, what changed because of your decision, and how did you measure the result?",
       strongEvidence: ["Specific context and personal ownership", "Clear trade-off or decision", "Measurable outcome or learning"],
       warningSigns: ["Only describes the team's work", "No concrete decision or evidence", "Cannot explain the outcome"],
@@ -1253,7 +1347,7 @@ function renderInterviewHandoff(candidate) {
       <div>
         <p class="eyebrow">Interview handoff</p>
         <h3>Interviewer pack available</h3>
-        <p>${pack?.questions?.length || 0} evidence-gap questions are ready for TA and the assigned interviewer.</p>
+        <p>${pack?.questions?.length || 0} targeted evidence probes are ready for TA and the assigned interviewer.</p>
       </div>
       <div class="interview-delivery-status">
         <span class="status-pill ${pack?.source === "workspace_agent_triggered" ? "green" : "yellow"}">
@@ -1270,8 +1364,17 @@ function renderInterviewHandoff(candidate) {
             <span>${escapeHtml(item.id)}</span>
             <div>
               <strong>${escapeHtml(item.competency)}</strong>
+              <p class="interviewer-evidence-gap"><b>Verify:</b> ${escapeHtml(item.evidenceGap)}</p>
               <p>${escapeHtml(item.question)}</p>
               <small>Follow-up: ${escapeHtml(item.followUp)}</small>
+              <details class="interviewer-score-guide">
+                <summary>Score guide</summary>
+                <div>
+                  <p><b>1</b>${escapeHtml(item.scoreGuide?.[1] || "Limited evidence")}</p>
+                  <p><b>3</b>${escapeHtml(item.scoreGuide?.[3] || "Relevant evidence with open questions")}</p>
+                  <p><b>5</b>${escapeHtml(item.scoreGuide?.[5] || "Specific evidence with clear ownership")}</p>
+                </div>
+              </details>
             </div>
           </article>
         `).join("")}
@@ -1458,6 +1561,288 @@ function renderProgress() {
   applyButton.textContent = `Apply to ${getSelectedApplicationPosition().shortTitle}`;
 }
 
+function getStudentDashboardSnapshot() {
+  const progress = getProgressPercent();
+  const passedExam = state.quizScore >= 80;
+  const certificateEarned = progress === 100 && passedExam;
+  const hasCv = Boolean(state.cvUpload);
+  const hasApplication = Boolean(state.lastSubmittedApplicant);
+  const selectedProgram = getSelectedApplicationPosition();
+  const motivationLength = candidateMotivation?.value.trim().length || 0;
+  const assignmentLength = candidateAssignment?.value.trim().length || 0;
+  const assignmentReady = selectedProgram.type !== "Trainee" || assignmentLength >= 90;
+  const readinessScore = clampScore(
+    18
+      + (hasCv ? 20 : 0)
+      + (assignmentReady ? 18 : 7)
+      + Math.round(progress * 0.22)
+      + (passedExam ? 8 : 0)
+      + (certificateEarned ? 6 : 0)
+      + (motivationLength >= 70 ? 10 : 4)
+      + (hasApplication ? 12 : 0),
+    0,
+    100
+  );
+
+  return {
+    progress,
+    passedExam,
+    certificateEarned,
+    hasCv,
+    hasApplication,
+    selectedProgram,
+    assignmentReady,
+    readinessScore,
+    applicant: state.lastSubmittedApplicant
+  };
+}
+
+function getReadinessTone(score) {
+  if (score >= 76) return "green";
+  if (score >= 56) return "blue";
+  if (score >= 36) return "yellow";
+  return "red";
+}
+
+function renderStudentDashboard() {
+  const snapshot = getStudentDashboardSnapshot();
+  const tone = getReadinessTone(snapshot.readinessScore);
+  const statusLabel = snapshot.hasApplication ? "Application in review" : snapshot.hasCv ? "Ready to apply" : "Profile draft";
+  const submittedCopy = snapshot.applicant
+    ? `Application submitted for ${snapshot.applicant.targetRole} on ${formatShortDateTime(snapshot.applicant.appliedAt)}.`
+    : `Targeting ${snapshot.selectedProgram.title}.`;
+
+  studentDashboardTitle.textContent = snapshot.hasApplication ? "Your application is moving" : "Your PM readiness dashboard";
+  studentDashboardSummary.textContent = `${submittedCopy} Keep strengthening the evidence the hiring team will inspect.`;
+  studentReadinessBadge.innerHTML = `
+    <small>Score</small>
+    <div class="student-score-number"><strong>${snapshot.readinessScore}</strong><em>/100</em></div>
+    <i><b style="width: ${snapshot.readinessScore}%"></b></i>
+    <span>${escapeHtml(statusLabel)}</span>
+  `;
+  studentReadinessBadge.className = `student-readiness-badge ${tone}`;
+
+  renderStudentJourneyTimeline(snapshot);
+  renderStudentNextActions(snapshot);
+  renderStudentEvidenceSummary(snapshot);
+  renderStudentCompetencyMap(snapshot);
+  renderStudentProgramFit(snapshot);
+  bindStudentDashboardActions();
+}
+
+function renderStudentJourneyTimeline(snapshot) {
+  const steps = [
+    {
+      label: "Build proof",
+      detail: `${snapshot.progress}% learning complete, ${snapshot.certificateEarned ? "certificate earned" : "certificate optional"}.`,
+      state: snapshot.progress > 0 ? "complete" : "active"
+    },
+    {
+      label: "Attach CV",
+      detail: snapshot.hasCv ? state.cvUpload.name : "CV is needed before application submission.",
+      state: snapshot.hasCv ? "complete" : "active"
+    },
+    {
+      label: "Apply",
+      detail: snapshot.hasApplication ? "Application received." : `${snapshot.selectedProgram.shortTitle} application is ready to open.`,
+      state: snapshot.hasApplication ? "complete" : snapshot.hasCv ? "active" : ""
+    },
+    {
+      label: "Evidence review",
+      detail: snapshot.hasApplication ? "AI prepares the evidence packet for TA and HR." : "Starts after application submission.",
+      state: snapshot.hasApplication ? "active" : ""
+    },
+    {
+      label: "Interview",
+      detail: "Evidence-gap questions and schedule arrive after human review.",
+      state: ""
+    }
+  ];
+
+  studentJourneyTimeline.innerHTML = steps.map((step, index) => `
+    <article class="student-journey-step ${step.state}">
+      <span>${index + 1}</span>
+      <div>
+        <strong>${escapeHtml(step.label)}</strong>
+        <p>${escapeHtml(step.detail)}</p>
+      </div>
+    </article>
+  `).join("");
+}
+
+function renderStudentNextActions(snapshot) {
+  const nextLesson = lessons.find((lesson) => !state.completedLessons.has(lesson.id)) || lessons[0];
+  const actions = [];
+
+  if (!snapshot.hasCv) {
+    actions.push({
+      title: "Attach CV",
+      detail: "Use the demo CV now, or upload your own PDF in the application step.",
+      action: "Use demo CV",
+      attribute: "data-student-demo-cv"
+    });
+  }
+
+  if (snapshot.progress < 100) {
+    actions.push({
+      title: `Continue ${nextLesson.title}`,
+      detail: "This is optional, but it improves your visible learning signal.",
+      action: "Open learning",
+      tab: "learningTab"
+    });
+  } else if (!snapshot.passedExam) {
+    actions.push({
+      title: "Take readiness exam",
+      detail: "Passing the exam unlocks the strongest certificate signal.",
+      action: "Open exam",
+      tab: "certificateTab"
+    });
+  }
+
+  if (!snapshot.hasApplication) {
+    actions.push({
+      title: `Apply to ${snapshot.selectedProgram.shortTitle}`,
+      detail: "Submit the CV and mini assignment as the core hiring evidence.",
+      action: "Open application",
+      tab: "hiringTab"
+    });
+  } else {
+    actions.push({
+      title: "Prepare interview evidence",
+      detail: "Add one concrete example for your weakest competency before the interview invite.",
+      action: "Review gaps",
+      tab: "studentHomeTab"
+    });
+  }
+
+  studentNextActionCount.textContent = `${actions.length} action${actions.length === 1 ? "" : "s"}`;
+  studentNextActions.innerHTML = actions.map((item) => `
+    <article class="student-next-action">
+      <div>
+        <strong>${escapeHtml(item.title)}</strong>
+        <p>${escapeHtml(item.detail)}</p>
+      </div>
+      <button class="lesson-action" type="button" ${item.attribute || `data-student-go="${item.tab}"`}>
+        ${escapeHtml(item.action)}
+      </button>
+    </article>
+  `).join("");
+}
+
+function renderStudentEvidenceSummary(snapshot) {
+  const evidenceItems = [
+    {
+      label: "CV",
+      value: snapshot.hasCv ? "Attached" : "Missing",
+      detail: snapshot.hasCv ? state.cvUpload.name : "Required for application review.",
+      tone: snapshot.hasCv ? "green" : "yellow"
+    },
+    {
+      label: snapshot.selectedProgram.type === "Trainee" ? "Mini assignment" : "Interview process",
+      value: snapshot.selectedProgram.type === "Trainee"
+        ? snapshot.assignmentReady ? "Draft ready" : "Needs detail"
+        : "2 rounds",
+      detail: snapshot.selectedProgram.type === "Trainee"
+        ? snapshot.assignmentReady ? "Problem, user evidence, test, and metric are visible." : "Add a concrete metric and decision."
+        : "Two interview rounds replace the trainee assignment.",
+      tone: snapshot.assignmentReady ? "green" : "yellow"
+    },
+    {
+      label: "Learning",
+      value: `${snapshot.progress}%`,
+      detail: "Optional signal from PM foundations course.",
+      tone: snapshot.progress >= 75 ? "green" : snapshot.progress > 0 ? "blue" : "muted"
+    },
+    {
+      label: "Certificate",
+      value: snapshot.certificateEarned ? "Earned" : "Optional",
+      detail: snapshot.certificateEarned ? `Exam score ${state.quizScore}/100.` : "Can improve ranking, but does not block application.",
+      tone: snapshot.certificateEarned ? "green" : "muted"
+    }
+  ];
+
+  studentEvidenceScore.textContent = `${snapshot.readinessScore}/100`;
+  studentEvidenceScore.className = `status-pill ${getReadinessTone(snapshot.readinessScore)}`;
+  studentEvidenceSummary.innerHTML = evidenceItems.map((item) => `
+    <article class="student-evidence-card">
+      <span class="status-pill compact ${item.tone}">${escapeHtml(item.value)}</span>
+      <strong>${escapeHtml(item.label)}</strong>
+      <p>${escapeHtml(item.detail)}</p>
+    </article>
+  `).join("");
+}
+
+function renderStudentCompetencyMap(snapshot) {
+  const combinedEvidence = `${candidateMotivation.value} ${candidateAssignment.value}`.toLowerCase();
+  const competencyRows = productManagerCompetency.competencies.map((competency) => {
+    const matches = competency.keywords.filter((keyword) => combinedEvidence.includes(keyword.toLowerCase()));
+    const score = clampScore(
+      38 + matches.length * 10 + snapshot.progress * 0.16 + (snapshot.hasCv ? 7 : 0) + (snapshot.passedExam ? 5 : 0),
+      28,
+      96
+    );
+    const tone = score >= 74 ? "green" : score >= 58 ? "blue" : "yellow";
+    const status = score >= 74 ? "Strong proof" : score >= 58 ? "Partial proof" : "Evidence gap";
+    return { ...competency, score, tone, status, matches };
+  });
+
+  studentCompetencyMap.innerHTML = competencyRows.map((competency) => `
+    <article class="student-competency-row">
+      <div>
+        <strong>${escapeHtml(competency.label)}</strong>
+        <p>${escapeHtml(competency.status)} · ${escapeHtml(competency.description)}</p>
+      </div>
+      <div class="student-competency-meter">
+        <span class="${competency.tone}" style="width: ${competency.score}%"></span>
+      </div>
+      <b>${competency.score}</b>
+    </article>
+  `).join("");
+}
+
+function renderStudentProgramFit(snapshot) {
+  const selected = snapshot.selectedProgram;
+  const fitTone = getReadinessTone(snapshot.readinessScore);
+  const fitLabel = snapshot.readinessScore >= 76 ? "High fit" : snapshot.readinessScore >= 56 ? "Promising fit" : "Build proof";
+  studentProgramFitBadge.textContent = fitLabel;
+  studentProgramFitBadge.className = `status-pill ${fitTone}`;
+  studentProgramFit.innerHTML = `
+    <div class="student-program-headline">
+      <strong>${escapeHtml(selected.title)}</strong>
+      <p>${escapeHtml(selected.studentDescription)}</p>
+    </div>
+    <div class="student-program-metrics">
+      <span><b>${formatNumber(selected.applicants)}</b> active CVs</span>
+      <span><b>${selected.targetHires}</b> target hires</span>
+      <span><b>${selected.slaHours}h</b> review SLA</span>
+    </div>
+    <button class="program-select-button" type="button" data-student-go="hiringTab">Review application</button>
+  `;
+}
+
+function bindStudentDashboardActions() {
+  document.querySelectorAll("[data-student-go]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.activeStudentTab = button.dataset.studentGo;
+      localStorage.setItem("produckStudentTab", state.activeStudentTab);
+      renderStudentTabs();
+    });
+  });
+
+  document.querySelectorAll("[data-student-demo-cv]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.cvUpload = {
+        name: "linh-nguyen-product-manager-cv.pdf",
+        size: 144000,
+        sizeLabel: "141 KB",
+        uploadedAt: new Date().toISOString()
+      };
+      localStorage.setItem("produckCvUpload", JSON.stringify(state.cvUpload));
+      renderStudent();
+    });
+  });
+}
+
 function renderQuiz() {
   const courseDone = state.completedLessons.size === lessons.length;
   if (!courseDone) {
@@ -1498,6 +1883,7 @@ function renderQuiz() {
 
 function renderStudent() {
   renderStudentTabs();
+  renderStudentDashboard();
   renderLessons();
   renderModulePreview();
   renderProgress();
@@ -1506,13 +1892,14 @@ function renderStudent() {
   renderCertificates();
   renderHiringPrograms();
   renderApplicationForSelectedPosition();
+  renderStudentApplicationStatus();
 }
 
 function renderStudentTabs() {
   document.querySelectorAll(".student-tab-panel").forEach((panel) => {
     panel.classList.toggle("active", panel.id === state.activeStudentTab);
   });
-  document.querySelectorAll(".funnel-tab").forEach((tab) => {
+  document.querySelectorAll("[data-student-tab]").forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.studentTab === state.activeStudentTab);
   });
 }
@@ -1543,45 +1930,91 @@ function renderCertificates() {
 
 function renderApplicationForSelectedPosition() {
   const position = getSelectedApplicationPosition();
+  const requiresAssignment = position.type === "Trainee";
   applicationTitle.textContent = `Apply to ${position.title}`;
   applicationRoleSummary.textContent = `${position.type} role / ${formatNumber(position.applicants)} CVs currently active / ${position.targetHires} target hire${position.targetHires === 1 ? "" : "s"}.`;
   candidateMotivationLabel.textContent = position.motivationLabel;
-  candidateAssignmentLabel.textContent = position.assignmentLabel;
   candidateMotivation.placeholder = position.motivationDefault;
-  candidateAssignment.placeholder = position.assignmentDefault;
+  candidateAssignmentRow.hidden = !requiresAssignment;
+  candidateAssignment.disabled = !requiresAssignment;
+  candidateAssignment.required = requiresAssignment;
 
   if (shouldReplaceRoleDefault(candidateMotivation)) {
     candidateMotivation.value = position.motivationDefault;
   }
-  if (shouldReplaceRoleDefault(candidateAssignment)) {
+  if (requiresAssignment) {
+    candidateAssignmentLabel.textContent = position.assignmentLabel;
+    candidateAssignment.placeholder = position.assignmentDefault;
+  }
+  if (requiresAssignment && shouldReplaceRoleDefault(candidateAssignment)) {
     candidateAssignment.value = position.assignmentDefault;
   }
   applyButton.textContent = `Apply to ${position.shortTitle}`;
 }
 
+function renderStudentApplicationStatus() {
+  const applicant = state.lastSubmittedApplicant;
+  if (!applicant) {
+    studentApplicationStatus.innerHTML = `
+      <div class="student-status-copy">
+        <span class="status-pill muted">Your evidence stays in your control</span>
+        <p>Your CV and application are reviewed first. Course progress and certificates are optional supporting proof, never an application gate.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const submittedAt = formatShortDateTime(applicant.appliedAt);
+  const submittedProgram = getPositionById(applicant.roleId);
+  const submittedEvidence = submittedProgram.type === "Trainee"
+    ? "Your CV and assignment are attached."
+    : "Your CV is attached. Two interview rounds follow evidence review.";
+  studentApplicationStatus.innerHTML = `
+    <div class="student-status-heading">
+      <div>
+        <p class="eyebrow">Your application</p>
+        <h3>Application received</h3>
+        <p>We received your application for ${escapeHtml(applicant.targetRole)} on ${escapeHtml(submittedAt)}.</p>
+      </div>
+      <span class="status-pill blue">Evidence review in progress</span>
+    </div>
+    <div class="student-status-steps">
+      <div class="complete"><span>1</span><p><strong>Application received</strong>${escapeHtml(submittedEvidence)}</p></div>
+      <div class="active"><span>2</span><p><strong>Evidence review</strong>AI prepares a structured package for the hiring team.</p></div>
+      <div><span>3</span><p><strong>Human decision</strong>You will receive the next step or targeted feedback.</p></div>
+    </div>
+    <p class="student-status-note">Learning progress can strengthen your profile, but it will not block this application.</p>
+  `;
+}
+
 function renderHiringPrograms() {
-  hiringProgramList.innerHTML = activeHiringPositions.map((program) => `
-    <article class="program-card ${program.id === state.selectedApplicationRoleId ? "selected" : ""}">
-      <div class="program-header">
-        <span>${program.type}</span>
-        <strong>${formatNumber(program.applicants)} CVs</strong>
-      </div>
-      <h3>${program.title}</h3>
-      <p>${program.targetHires} target hire${program.targetHires === 1 ? "" : "s"} / ${program.slaHours}h SLA</p>
-      <p>${program.studentDescription}</p>
-      <div class="program-steps">
-        ${["Apply with CV", "AI CV + add-on review", "Interview invitation", "Evidence-based interview", "Offer"].map((step, index) => `
-          <div>
-            <span>${index + 1}</span>
-            <p>${step}</p>
-          </div>
-        `).join("")}
-      </div>
-      <button class="program-select-button" type="button" data-apply-position="${program.id}">
-        ${program.id === state.selectedApplicationRoleId ? "Selected for application" : `Select ${program.shortTitle}`}
-      </button>
-    </article>
-  `).join("");
+  hiringProgramList.innerHTML = activeHiringPositions.map((program) => {
+    const candidateSteps = program.type === "Trainee"
+      ? ["Apply", "Complete assignment", "Interview", "Onboard"]
+      : ["Apply", "Interview round 1", "Interview round 2", "Onboard"];
+    return `
+      <article class="program-card ${program.id === state.selectedApplicationRoleId ? "selected" : ""}">
+        <div class="program-header">
+          <span>${program.type}</span>
+          <strong>${formatNumber(program.applicants)} CVs</strong>
+        </div>
+        <h3>${program.title}</h3>
+        <p>${program.targetHires} target hire${program.targetHires === 1 ? "" : "s"} / ${program.slaHours}h SLA</p>
+        <p>${program.studentDescription}</p>
+        <div class="program-steps" aria-label="Candidate steps">
+          ${candidateSteps.map((step, index) => `
+            <div>
+              <span>${index + 1}</span>
+              <p>${step}</p>
+            </div>
+          `).join("")}
+        </div>
+        <button class="program-select-button" type="button" data-apply-position="${program.id}">
+          ${program.id === state.selectedApplicationRoleId ? "Selected for application" : `Select ${program.shortTitle}`}
+        </button>
+      </article>
+    `;
+  }).join("");
 
   document.querySelectorAll("[data-apply-position]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -1589,6 +2022,7 @@ function renderHiringPrograms() {
       localStorage.setItem("produckSelectedApplicationRole", state.selectedApplicationRoleId);
       renderHiringPrograms();
       renderApplicationForSelectedPosition();
+      renderStudentDashboard();
     });
   });
 }
@@ -2054,6 +2488,54 @@ function renderPipelineInsights(potentialBuckets, readinessShare) {
   `).join("");
 }
 
+function renderDecisionQueueTabs() {
+  const definitions = getQueueDefinitions();
+  decisionQueueTabs.innerHTML = definitions.map((definition) => {
+    const count = state.allCandidates.filter(definition.matches).length;
+    return `
+      <button class="decision-queue-tab ${state.candidateQueueFilter === definition.id ? "active" : ""}" type="button" data-queue-filter="${definition.id}">
+        <span>${escapeHtml(definition.label)}</span>
+        <strong>${count}</strong>
+      </button>
+    `;
+  }).join("");
+
+  document.querySelectorAll("[data-queue-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.candidateQueueFilter = button.dataset.queueFilter;
+      renderCandidateList();
+      renderCandidateDetail();
+    });
+  });
+}
+
+function setCandidateRecordOpen(isOpen) {
+  state.candidateRecordOpen = isOpen;
+  candidateDetailPanel.classList.toggle("candidate-record-overlay", isOpen);
+  candidateDetailPanel.setAttribute("aria-hidden", String(!isOpen));
+  if (isOpen) {
+    candidateDetailPanel.setAttribute("role", "dialog");
+    candidateDetailPanel.setAttribute("aria-modal", "true");
+  } else {
+    candidateDetailPanel.removeAttribute("role");
+    candidateDetailPanel.removeAttribute("aria-modal");
+  }
+  document.body.classList.toggle("candidate-record-open", isOpen);
+
+  if (isOpen) {
+    renderCandidateDetail();
+    requestAnimationFrame(() => {
+      candidateDetailPanel.querySelector("[data-close-candidate-record]")?.focus();
+    });
+    return;
+  }
+
+  renderCandidateList();
+  requestAnimationFrame(() => {
+    candidateList.querySelector(`[data-candidate="${state.selectedCandidateId}"]`)?.focus();
+  });
+}
+
 function renderCandidateList() {
   candidateJobFilter.innerHTML = `
     <option value="ALL">All programs</option>
@@ -2063,6 +2545,7 @@ function renderCandidateList() {
   `;
   const candidateQuery = state.candidateSearch.trim().toLowerCase();
   const visibleCandidates = state.allCandidates
+    .filter(matchesQueueFilter)
     .filter((candidate) => state.candidateJobFilter === "ALL" || candidate.roleId === state.candidateJobFilter)
     .filter((candidate) => (
       state.candidateStatusFilter === "ALL"
@@ -2080,80 +2563,49 @@ function renderCandidateList() {
       return b.score - a.score;
     });
 
+  if (visibleCandidates.length && !visibleCandidates.some((candidate) => candidate.id === state.selectedCandidateId)) {
+    state.selectedCandidateId = visibleCandidates[0].id;
+  }
+
   candidateResultCount.textContent = visibleCandidates.length;
+  renderDecisionQueueTabs();
   candidateList.innerHTML = `
-    <div class="crm-table-scroll">
-      <table class="crm-table candidates-table">
-        <thead>
-          <tr class="crm-group-header">
-            <th scope="colgroup" colspan="4">General information</th>
-            <th scope="colgroup" colspan="4">Score</th>
-            <th scope="colgroup" colspan="2">Ranking status</th>
-            <th scope="colgroup" colspan="2">Hiring process status</th>
-            <th scope="colgroup" colspan="2">Next step</th>
-          </tr>
-          <tr>
-            <th scope="col">Candidate</th>
-            <th scope="col">Job</th>
-            <th scope="col">School / current role</th>
-            <th scope="col">Source</th>
-            <th scope="col" class="numeric">CV match</th>
-            <th scope="col" class="numeric">Assignment</th>
-            <th scope="col" class="numeric">Add-on</th>
-            <th scope="col" class="numeric">Overall</th>
-            <th scope="col" class="numeric">Rank</th>
-            <th scope="col">Readiness</th>
-            <th scope="col">Stage</th>
-            <th scope="col">AI evaluation</th>
-            <th scope="col">Suggested action</th>
-            <th scope="col">Review</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${visibleCandidates.map((candidate, index) => {
-            const aiStatus = candidate.assignmentAnalysis?.source === "workspace_agent_triggered"
-              ? "Agent queued"
-              : candidate.assignmentAnalysis?.source === "demo_fallback"
-                ? "Demo scored"
-                : candidate.aiAssessmentStatus || "Scored";
-            return `
-            <tr class="${candidate.id === state.selectedCandidateId ? "active" : ""}">
-              <td>
-                <button class="crm-primary-link" type="button" data-candidate="${candidate.id}">
-                  ${escapeHtml(candidate.name)}
-                </button>
-                <small>Candidate ID ${escapeHtml(candidate.id.toUpperCase())}</small>
-              </td>
-              <td>${escapeHtml(getPositionById(candidate.roleId).shortTitle)}</td>
-              <td>${escapeHtml(candidate.school)}</td>
-              <td>${escapeHtml(candidate.source)}</td>
-              <td class="numeric">${candidate.cvAnalysis.overall}</td>
-              <td class="numeric">${candidate.assignmentAnalysis.score}</td>
-              <td class="numeric positive-cell">+${candidate.leadProfile.learningAddOn.score}/10</td>
-              <td class="numeric"><strong class="crm-score">${candidate.score}</strong></td>
-              <td class="numeric"><strong class="crm-rank">#${index + 1}</strong></td>
-              <td><span class="status-pill compact ${candidate.readinessDecision.tone}">${candidate.readinessDecision.label}</span></td>
-              <td>
-                <span class="crm-stage">${escapeHtml(getHiringProcessStatus(candidate))}</span>
-                ${state.interviewQuestionPacks[candidate.id] ? "<small>Interviewer pack ready</small>" : ""}
-              </td>
-              <td><span class="crm-stage">${escapeHtml(aiStatus)}</span></td>
-              <td class="next-action-cell">${escapeHtml(candidate.readinessDecision.nextAction)}</td>
-              <td><button class="crm-action-button" type="button" data-candidate="${candidate.id}">Review</button></td>
-            </tr>
-          `;
-          }).join("") || `
-            <tr><td class="crm-empty" colspan="14">No candidates match the current filters.</td></tr>
-          `}
-        </tbody>
-      </table>
+    <div class="decision-row-list">
+      ${visibleCandidates.map((candidate) => {
+        const manualDecision = getManualDecisionCopy(candidate);
+        const evidenceGap = candidate.readinessDecision.missingEvidence[0] || "No material evidence gap detected.";
+        return `
+          <article class="decision-queue-row ${candidate.id === state.selectedCandidateId ? "active" : ""}">
+            <div class="decision-row-subject">
+              <span class="decision-row-label">Candidate</span>
+              <button class="crm-primary-link" type="button" data-candidate="${candidate.id}">${escapeHtml(candidate.name)}</button>
+              <p>${escapeHtml(getPositionById(candidate.roleId).shortTitle)} · ${escapeHtml(candidate.school)}</p>
+            </div>
+            <div class="decision-row-recommendation">
+              <span class="decision-row-label">AI recommendation</span>
+              <span class="status-pill compact ${candidate.readinessDecision.tone}">${candidate.readinessDecision.label} · ${escapeHtml(candidate.readinessDecision.confidence)}</span>
+              <strong>${escapeHtml(candidate.readinessDecision.nextAction)}</strong>
+              <p class="decision-inline-evidence">
+                <span>${candidate.score}/100</span>
+                CV ${candidate.cvAnalysis.overall} · Case ${candidate.assignmentAnalysis.score} · Learning +${candidate.leadProfile.learningAddOn.score}
+              </p>
+            </div>
+            <div class="decision-row-checkpoint">
+              <span class="decision-row-label">Human checkpoint</span>
+              <strong class="checkpoint-label ${manualDecision.tone}">${escapeHtml(manualDecision.label)}</strong>
+              <p>${escapeHtml(evidenceGap)}</p>
+              <button class="crm-action-button" type="button" data-candidate="${candidate.id}">Open record</button>
+            </div>
+          </article>
+        `;
+      }).join("") || `<p class="crm-empty">No candidates match this queue and filter set.</p>`}
     </div>
   `;
 
   document.querySelectorAll("[data-candidate]").forEach((button) => {
     button.addEventListener("click", () => {
       state.selectedCandidateId = button.dataset.candidate;
-      renderHr();
+      setCandidateRecordOpen(true);
     });
   });
 }
@@ -2164,36 +2616,657 @@ function renderCandidateDetail() {
     candidateDetail.innerHTML = "<p>No candidates yet.</p>";
     return;
   }
-  candidateDetail.innerHTML = `
-    <div class="detail-header">
-      <div>
-        <p class="eyebrow">Candidate detail</p>
-        <h2>${candidate.name}</h2>
-        <p class="candidate-meta">${candidate.school} / ${candidate.source}</p>
-      </div>
-      <div class="detail-score">
-        <strong>${candidate.score}</strong>
-        <span>readiness</span>
-      </div>
-    </div>
-    <div class="agent-decision-panel ${candidate.readinessDecision.tone}">
-      <div class="agent-decision-header">
+
+  const manualDecision = getManualDecision(candidate);
+  const manualDecisionCopy = getManualDecisionCopy(candidate);
+  const approveLabel = candidate.readinessDecision.status === "READY" ? "Approve next step" : "Approve review outcome";
+  const rankedCompetencies = [...candidate.cvAnalysis.competencyScores].sort((a, b) => b.score - a.score);
+  const rankedAssignmentDimensions = [...candidate.assignmentAnalysis.dimensions].sort((a, b) => b.score - a.score);
+  const interviewPack = state.interviewQuestionPacks[candidate.id] || buildFallbackInterviewQuestionPack(candidate, "suggested");
+  const acceptedInterview = state.interviewAcceptedIds.has(candidate.id);
+  const primaryGap = candidate.readinessDecision.missingEvidence[0]
+    || candidate.assignmentAnalysis.missingEvidence[0]
+    || "No material evidence gap detected.";
+  const candidateInitials = candidate.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+  const evidenceAuditItems = [
+    ...rankedCompetencies.slice(0, 4).map((competency) => ({
+      label: competency.label,
+      source: "CV evidence",
+      detail: competency.matchedKeywords.length
+        ? `Evidence found: ${competency.matchedKeywords.join(", ")}.`
+        : "No direct evidence found; validate this competency in the interview.",
+      score: competency.score
+    })),
+    ...rankedAssignmentDimensions.slice(0, 2).map((dimension) => ({
+      label: dimension.label,
+      source: "Case response",
+      detail: dimension.matchedKeywords.length
+        ? `Demonstrated through: ${dimension.matchedKeywords.join(", ")}.`
+        : "The case response needs a more specific example for this requirement.",
+      score: dimension.score
+    }))
+  ];
+  const highlightItems = [
+    {
+      title: `${rankedCompetencies[0]?.label || "Product competency"} is the strongest CV signal`,
+      detail: rankedCompetencies[0]?.matchedKeywords.length
+        ? `Supported by ${rankedCompetencies[0].matchedKeywords.join(", ")}.`
+        : candidate.cvAnalysis.extractedSummary
+    },
+    {
+      title: `${rankedAssignmentDimensions[0]?.label || "Case response"} stands out in the assignment`,
+      detail: candidate.assignmentAnalysis.summary
+    },
+    {
+      title: `${candidate.leadProfile.learningAddOn.score}/10 optional learning bonus`,
+      detail: `${candidate.completion}% course completion, ${candidate.quiz}/100 exam score, and ${candidate.engagement}/100 engagement.`
+    }
+  ];
+  const validTabs = ["PROFILE", "AI_MATCHING", "INTERVIEW", "HR_DECISION", "OFFER", "CV"];
+  if (!validTabs.includes(state.activeCandidateRecordTab)) {
+    state.activeCandidateRecordTab = "AI_MATCHING";
+  }
+
+  const profilePanel = `
+    <section class="candidate-tab-view candidate-profile-view" aria-label="Candidate profile">
+      <div class="candidate-view-heading">
         <div>
-          <p class="eyebrow">Talent Readiness Agent</p>
-          <h3>${candidate.readinessDecision.label}: ${candidate.readinessDecision.nextAction}</h3>
+          <p class="eyebrow">Application profile</p>
+          <h3>Candidate overview</h3>
+          <p>Core application context and the evidence package attached to this record.</p>
         </div>
-        <div class="decision-badges">
-          <span class="status-pill ${candidate.readinessDecision.tone}">${candidate.readinessDecision.confidence} confidence</span>
-          <span class="status-pill ${candidate.readinessDecision.humanReviewRequired ? "red" : "green"}">
-            ${candidate.readinessDecision.humanReviewRequired ? "HR review required" : "OA ready"}
-          </span>
+        <span class="status-pill ${candidate.readinessDecision.tone}">${escapeHtml(getHiringProcessStatus(candidate))}</span>
+      </div>
+      <div class="candidate-profile-grid">
+        <article class="candidate-content-card">
+          <div class="candidate-section-heading">
+            <div>
+              <p class="eyebrow">Application</p>
+              <h3>Profile details</h3>
+            </div>
+          </div>
+          <dl class="candidate-fact-list">
+            <div><dt>Target role</dt><dd>${escapeHtml(candidate.leadProfile.targetRole)}</dd></div>
+            <div><dt>Current role or school</dt><dd>${escapeHtml(candidate.school)}</dd></div>
+            <div><dt>Lead source</dt><dd>${escapeHtml(candidate.source)}</dd></div>
+            <div><dt>Current stage</dt><dd>${escapeHtml(candidate.stage)}</dd></div>
+            <div><dt>Motivation signal</dt><dd>${candidate.motivation}/100</dd></div>
+          </dl>
+        </article>
+        <article class="candidate-content-card">
+          <div class="candidate-section-heading">
+            <div>
+              <p class="eyebrow">Evidence package</p>
+              <h3>Inputs available to the hiring team</h3>
+            </div>
+          </div>
+          <div class="candidate-profile-signal-list">
+            ${candidate.leadProfile.signals.slice(0, 6).map((signal) => `
+              <div>
+                <span>${escapeHtml(signal.label)}</span>
+                <strong>${escapeHtml(signal.value)}</strong>
+                <p>${escapeHtml(signal.description)}</p>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+      </div>
+    </section>
+  `;
+
+  const matchingPanel = `
+    <section class="candidate-tab-view" aria-label="AI matching">
+      <section class="candidate-match-summary ${candidate.readinessDecision.tone}" aria-label="AI matching summary">
+        <aside class="candidate-match-score">
+          <div class="candidate-score-heading">
+            <span>Match score</span>
+            <span class="score-trend" aria-label="Score trend">↗</span>
+          </div>
+          <div class="candidate-score-value">
+            <strong>${candidate.score}</strong><span>/100</span>
+          </div>
+          <div class="candidate-score-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${candidate.score}">
+            <span style="width: ${candidate.score}%"></span>
+          </div>
+          <span class="candidate-score-status ${candidate.readinessDecision.tone}">${escapeHtml(candidate.readinessDecision.label)}</span>
+        </aside>
+        <div class="candidate-match-copy">
+          <div class="candidate-match-heading">
+            <div class="candidate-match-title">
+              <span class="matching-spark" aria-hidden="true">✣</span>
+              <div>
+                <p class="eyebrow">Assessment summary</p>
+                <h3>${escapeHtml(candidate.readinessDecision.label)} match</h3>
+              </div>
+            </div>
+            <button class="ghost-button candidate-rescan-button" type="button" data-rescan-candidate="${candidate.id}">
+              <span aria-hidden="true">↻</span> Scan again
+            </button>
+          </div>
+          <div class="candidate-summary-copy">
+            <p>
+              ${escapeHtml(candidate.readinessDecision.summary)}
+              The profile shows particularly strong evidence in
+              <mark>${escapeHtml(rankedCompetencies[0]?.label || "the core role requirements")}</mark>.
+            </p>
+            <p>
+              The main interview point to clarify is
+              <mark>${escapeHtml(primaryGap)}</mark>
+              This is a focused evidence check, not an automatic rejection signal.
+            </p>
+          </div>
+        </div>
+      </section>
+      <div class="candidate-evidence-overview">
+        <section class="candidate-requirements-card">
+          <div class="candidate-section-heading">
+            <div>
+              <p class="eyebrow">Requirements and proof</p>
+              <h3>Evidence audit</h3>
+            </div>
+            <span class="status-pill muted">${evidenceAuditItems.filter((item) => item.score >= 75).length}/${evidenceAuditItems.length} aligned</span>
+          </div>
+          <div class="candidate-requirement-list">
+            ${evidenceAuditItems.map((item, index) => {
+              const tone = item.score >= 80 ? "green" : item.score >= 68 ? "yellow" : "red";
+              const icon = tone === "green" ? "✓" : tone === "yellow" ? "−" : "!";
+              return `
+                <details class="candidate-requirement-row ${tone}" ${index === 0 ? "open" : ""}>
+                  <summary>
+                    <span class="requirement-status" aria-hidden="true">${icon}</span>
+                    <span class="requirement-label">${escapeHtml(item.label)}<small>${escapeHtml(item.source)}</small></span>
+                    <span class="requirement-score">${item.score}</span>
+                    <span class="requirement-chevron" aria-hidden="true">⌄</span>
+                  </summary>
+                  <p>${escapeHtml(item.detail)}</p>
+                </details>
+              `;
+            }).join("")}
+          </div>
+        </section>
+        <section class="candidate-highlights-card">
+          <div class="candidate-section-heading">
+            <div>
+              <p class="eyebrow">Differentiators</p>
+              <h3>Additional highlights</h3>
+            </div>
+          </div>
+          <div class="candidate-highlight-list">
+            ${highlightItems.map((item) => `
+              <article class="candidate-highlight-row">
+                <span class="matching-spark small" aria-hidden="true">✣</span>
+                <div>
+                  <strong>${escapeHtml(item.title)}</strong>
+                  <p>${escapeHtml(item.detail)}</p>
+                </div>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      </div>
+    </section>
+  `;
+
+  const interviewPanel = `
+    <section class="candidate-tab-view candidate-interview-view" aria-label="Interview">
+      <div class="candidate-view-heading">
+        <div>
+          <p class="eyebrow">Interview workspace</p>
+          <h3>Suggested evidence questions</h3>
+          <p>${interviewPack.questions.length} targeted questions generated from this candidate’s gaps, risks, and strongest claims.</p>
+        </div>
+        <div class="candidate-view-actions">
+          <span class="status-pill ${acceptedInterview ? "green" : "muted"}">${acceptedInterview ? "Interview accepted" : "Suggested pack"}</span>
+          ${candidate.readinessDecision.status === "READY" && !acceptedInterview
+            ? `<button class="primary-button" type="button" data-accept-interview="${candidate.id}">Candidate accepts interview</button>`
+            : ""}
         </div>
       </div>
-      <p>${candidate.readinessDecision.summary}</p>
-      <div class="missing-evidence">
-        ${candidate.readinessDecision.missingEvidence.map((item) => `<span>${item}</span>`).join("") || "<span>No missing evidence for this decision.</span>"}
+      <div class="interview-brief">
+        <div><span>Duration</span><strong>${interviewPack.interviewDurationMinutes} min</strong></div>
+        <div><span>Opening</span><strong>${escapeHtml(interviewPack.openingPrompt)}</strong></div>
+        <div><span>Guidance</span><strong>${escapeHtml(interviewPack.interviewerNotes[0])}</strong></div>
+      </div>
+      <div class="suggested-question-list">
+        ${interviewPack.questions.map((question, index) => `
+          <details class="suggested-question" ${index === 0 ? "open" : ""}>
+            <summary>
+              <span class="question-number">${escapeHtml(question.id)}</span>
+              <span>
+                <small>${escapeHtml(question.competency)}</small>
+                <strong>${escapeHtml(question.question)}</strong>
+              </span>
+              <span class="requirement-chevron" aria-hidden="true">⌄</span>
+            </summary>
+            <div class="suggested-question-body">
+              <p class="question-evidence-gap"><b>Evidence to verify:</b> ${escapeHtml(question.evidenceGap)}</p>
+              <p><b>Follow-up:</b> ${escapeHtml(question.followUp)}</p>
+              <div class="question-evidence-grid">
+                <div>
+                  <span>Strong evidence</span>
+                  <ul>${question.strongEvidence.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+                </div>
+                <div>
+                  <span>Warning signs</span>
+                  <ul>${question.warningSigns.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+                </div>
+              </div>
+              <details class="question-score-guide">
+                <summary>View 1 / 3 / 5 score guide</summary>
+                <div>
+                  <p><b>1</b>${escapeHtml(question.scoreGuide[1])}</p>
+                  <p><b>3</b>${escapeHtml(question.scoreGuide[3])}</p>
+                  <p><b>5</b>${escapeHtml(question.scoreGuide[5])}</p>
+                </div>
+              </details>
+            </div>
+          </details>
+        `).join("")}
+      </div>
+    </section>
+  `;
+
+  const decisionPanel = `
+    <section class="candidate-tab-view candidate-decision-view" aria-label="HR decision">
+      <div class="candidate-view-heading">
+        <div>
+          <p class="eyebrow">Human checkpoint</p>
+          <h3>${escapeHtml(manualDecisionCopy.label)}</h3>
+          <p>${escapeHtml(manualDecisionCopy.detail)}</p>
+        </div>
+        <span class="status-pill ${manualDecisionCopy.tone}">${manualDecision ? `Recorded ${escapeHtml(formatShortDateTime(manualDecision.recordedAt))}` : "Decision required"}</span>
+      </div>
+      <section class="human-decision-panel ${manualDecisionCopy.tone}">
+        <div class="human-decision-heading">
+          <div>
+            <p class="eyebrow">AI recommendation</p>
+            <h3>${escapeHtml(candidate.readinessDecision.nextAction)}</h3>
+            <p>${escapeHtml(candidate.readinessDecision.summary)}</p>
+          </div>
+          <span class="status-pill ${candidate.readinessDecision.tone}">${candidate.readinessDecision.confidence} confidence</span>
+        </div>
+        <div class="human-decision-actions">
+          <button class="primary-button" type="button" data-record-decision="${candidate.id}" data-decision-action="APPROVE">${approveLabel}</button>
+          <button class="ghost-button small-button" type="button" data-record-decision="${candidate.id}" data-decision-action="REQUEST_EVIDENCE">Request evidence</button>
+          <button class="ghost-button small-button" type="button" data-record-decision="${candidate.id}" data-decision-action="HOLD">Place on hold</button>
+        </div>
+      </section>
+      <article class="candidate-content-card decision-message-card">
+        <div class="candidate-section-heading">
+          <div>
+            <p class="eyebrow">Candidate communication</p>
+            <h3>${escapeHtml(candidate.readinessDecision.oaMessageTitle)}</h3>
+          </div>
+          <span class="status-pill muted">Draft</span>
+        </div>
+        <p>${escapeHtml(candidate.readinessDecision.oaMessage)}</p>
+      </article>
+    </section>
+  `;
+
+  const offerApproved = manualDecision?.action === "APPROVE" && candidate.readinessDecision.status === "READY";
+  const offerPanel = `
+    <section class="candidate-tab-view candidate-offer-view" aria-label="Offer">
+      <div class="candidate-empty-state ${offerApproved ? "ready" : ""}">
+        <span aria-hidden="true">${offerApproved ? "✓" : "♧"}</span>
+        <p class="eyebrow">Offer workspace</p>
+        <h3>${offerApproved ? "Ready to prepare an offer" : "No offer in progress"}</h3>
+        <p>${offerApproved
+          ? "The candidate has an approved next step. Compensation, approvers, and the offer package can now be prepared."
+          : "An offer becomes available after HR records an approved decision for a ready candidate."}</p>
+        ${offerApproved ? `<span class="status-pill green">Ready for drafting</span>` : ""}
+      </div>
+    </section>
+  `;
+
+  const cvPanel = `
+    <section class="candidate-tab-view candidate-cv-view" aria-label="CV">
+      <div class="candidate-view-heading">
+        <div>
+          <p class="eyebrow">Candidate document</p>
+          <h3>${escapeHtml(candidate.cvAnalysis.fileName)}</h3>
+          <p>${escapeHtml(candidate.cvAnalysis.extractedSummary)}</p>
+        </div>
+        <span class="status-pill ${candidate.cvAnalysis.overall >= 80 ? "green" : "yellow"}">${candidate.cvAnalysis.overall}/100 CV evidence</span>
+      </div>
+      <div class="candidate-cv-layout">
+        <article class="candidate-content-card">
+          <div class="candidate-section-heading">
+            <div>
+              <p class="eyebrow">Competency extraction</p>
+              <h3>Evidence by competency</h3>
+            </div>
+          </div>
+          <div class="competency-list candidate-cv-competencies">
+            ${candidate.cvAnalysis.competencyScores.map((competency) => `
+              <div class="competency-row">
+                <div>
+                  <strong>${escapeHtml(competency.label)}</strong>
+                  <span>${competency.matchedKeywords.length ? competency.matchedKeywords.map(escapeHtml).join(", ") : "Limited explicit evidence"}</span>
+                </div>
+                <div class="competency-meter" aria-label="${escapeHtml(competency.label)} score ${competency.score}">
+                  <span style="width: ${competency.score}%"></span>
+                </div>
+                <b>${competency.score}</b>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+        <article class="candidate-content-card">
+          <div class="candidate-section-heading">
+            <div>
+              <p class="eyebrow">Review flags</p>
+              <h3>Items to validate</h3>
+            </div>
+          </div>
+          <div class="candidate-risk-list">
+            ${candidate.cvAnalysis.riskFlags.map((risk) => `<p>${escapeHtml(risk)}</p>`).join("")}
+          </div>
+        </article>
+      </div>
+    </section>
+  `;
+
+  const tabPanels = {
+    PROFILE: profilePanel,
+    AI_MATCHING: matchingPanel,
+    INTERVIEW: interviewPanel,
+    HR_DECISION: decisionPanel,
+    OFFER: offerPanel,
+    CV: cvPanel
+  };
+  const tabDefinitions = [
+    { id: "PROFILE", icon: "▣", label: "Profile" },
+    { id: "AI_MATCHING", icon: "✣", label: "AI matching" },
+    { id: "INTERVIEW", icon: "▦", label: "Interview", count: interviewPack.questions.length },
+    { id: "HR_DECISION", icon: "◇", label: "HR decision", count: manualDecision ? 1 : 0 },
+    { id: "OFFER", icon: "♧", label: "Offer", count: offerApproved ? 1 : 0 },
+    { id: "CV", icon: "▤", label: "CV", count: 1 }
+  ];
+
+  candidateDetail.innerHTML = `
+    <div class="candidate-record-titlebar">
+      <div class="candidate-record-identity">
+        <span class="candidate-avatar" aria-hidden="true">${escapeHtml(candidateInitials)}</span>
+        <div>
+          <p class="eyebrow">Candidate evidence record</p>
+          <h2>${escapeHtml(candidate.name)}</h2>
+          <p class="candidate-meta">${escapeHtml(candidate.leadProfile.targetRole)} · ${escapeHtml(candidate.school)} · ${escapeHtml(candidate.source)}</p>
+        </div>
+      </div>
+      <div class="candidate-record-titlebar-actions">
+        <span class="status-pill ${candidate.readinessDecision.tone}">${escapeHtml(getHiringProcessStatus(candidate))}</span>
+        <button class="ghost-button candidate-record-close" type="button" data-close-candidate-record>
+          <span aria-hidden="true">×</span> Close
+        </button>
       </div>
     </div>
+    <nav class="candidate-record-tabs" role="tablist" aria-label="Candidate record sections">
+      ${tabDefinitions.map((tab) => `
+        <button
+          class="candidate-record-tab ${state.activeCandidateRecordTab === tab.id ? "active" : ""}"
+          type="button"
+          role="tab"
+          aria-selected="${state.activeCandidateRecordTab === tab.id}"
+          data-candidate-record-tab="${tab.id}"
+        >
+          <b aria-hidden="true">${tab.icon}</b>
+          ${tab.label}
+          ${Number.isFinite(tab.count) ? `<small>${tab.count}</small>` : ""}
+        </button>
+      `).join("")}
+    </nav>
+    <div class="candidate-record-panel" role="tabpanel">
+      ${tabPanels[state.activeCandidateRecordTab]}
+    </div>
+  `;
+
+  document.querySelectorAll("[data-candidate-record-tab]").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      state.activeCandidateRecordTab = tab.dataset.candidateRecordTab;
+      localStorage.setItem("produckCandidateRecordTab", state.activeCandidateRecordTab);
+      renderCandidateDetail();
+    });
+  });
+
+  candidateDetailPanel.querySelector("[data-close-candidate-record]")?.addEventListener("click", () => {
+    setCandidateRecordOpen(false);
+  });
+
+  const acceptInterviewButton = document.querySelector(`[data-accept-interview="${candidate.id}"]`);
+  if (acceptInterviewButton) {
+    acceptInterviewButton.addEventListener("click", async () => {
+      acceptInterviewButton.disabled = true;
+      acceptInterviewButton.textContent = "Preparing questions...";
+      await acceptInterviewAndPrepareQuestions(candidate);
+    });
+  }
+
+  const rescanCandidateButton = document.querySelector(`[data-rescan-candidate="${candidate.id}"]`);
+  if (rescanCandidateButton) {
+    rescanCandidateButton.addEventListener("click", async () => {
+      rescanCandidateButton.disabled = true;
+      rescanCandidateButton.innerHTML = '<span aria-hidden="true">↻</span> Scanning...';
+      try {
+        await runLiveAssignmentEvaluation(candidate);
+      } catch (error) {
+        saveProvisionalAssessment(candidate, "demo_fallback");
+      } finally {
+        loadCandidates();
+        state.selectedCandidateId = candidate.id;
+        renderCandidateList();
+        renderCandidateDetail();
+      }
+    });
+  }
+
+  document.querySelectorAll(`[data-record-decision="${candidate.id}"]`).forEach((button) => {
+    button.addEventListener("click", () => {
+      recordManualDecision(candidate.id, button.dataset.decisionAction);
+      renderCandidateList();
+      renderCandidateDetail();
+    });
+  });
+}
+
+function renderCandidateDetailLegacy() {
+  const candidate = state.allCandidates.find((item) => item.id === state.selectedCandidateId) || state.allCandidates[0];
+  if (!candidate) {
+    candidateDetail.innerHTML = "<p>No candidates yet.</p>";
+    return;
+  }
+  const manualDecision = getManualDecision(candidate);
+  const manualDecisionCopy = getManualDecisionCopy(candidate);
+  const approveLabel = candidate.readinessDecision.status === "READY" ? "Approve next step" : "Approve review outcome";
+  const rankedCompetencies = [...candidate.cvAnalysis.competencyScores].sort((a, b) => b.score - a.score);
+  const rankedAssignmentDimensions = [...candidate.assignmentAnalysis.dimensions].sort((a, b) => b.score - a.score);
+  const checklistItems = [
+    ...rankedCompetencies.slice(0, 4).map((competency) => ({
+      label: competency.label,
+      detail: competency.matchedKeywords.length
+        ? `Evidence found: ${competency.matchedKeywords.join(", ")}.`
+        : "No direct keyword evidence found; confirm this competency in the interview.",
+      score: competency.score
+    })),
+    ...rankedAssignmentDimensions.slice(0, 2).map((dimension) => ({
+      label: `${dimension.label} in case response`,
+      detail: dimension.matchedKeywords.length
+        ? `Demonstrated through: ${dimension.matchedKeywords.join(", ")}.`
+        : "The case response needs a more specific example for this requirement.",
+      score: dimension.score
+    }))
+  ];
+  const highlightItems = [
+    {
+      title: `${rankedCompetencies[0]?.label || "Product competency"} is the strongest CV signal`,
+      detail: rankedCompetencies[0]?.matchedKeywords.length
+        ? `Supported by ${rankedCompetencies[0].matchedKeywords.join(", ")}.`
+        : candidate.cvAnalysis.extractedSummary
+    },
+    {
+      title: `${rankedAssignmentDimensions[0]?.label || "Case response"} stands out in the assignment`,
+      detail: candidate.assignmentAnalysis.summary
+    },
+    {
+      title: `${candidate.leadProfile.learningAddOn.score}/10 optional learning bonus`,
+      detail: `${candidate.completion}% course completion, ${candidate.quiz}/100 exam score, and ${candidate.engagement}/100 engagement.`
+    }
+  ];
+  const candidateInitials = candidate.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+  const primaryGap = candidate.readinessDecision.missingEvidence[0]
+    || candidate.assignmentAnalysis.missingEvidence[0]
+    || "No material evidence gap detected.";
+  candidateDetail.innerHTML = `
+    <div class="candidate-record-titlebar">
+      <div class="candidate-record-identity">
+        <span class="candidate-avatar" aria-hidden="true">${escapeHtml(candidateInitials)}</span>
+        <div>
+          <p class="eyebrow">Candidate evidence record</p>
+          <h2>${escapeHtml(candidate.name)}</h2>
+          <p class="candidate-meta">${escapeHtml(candidate.leadProfile.targetRole)} · ${escapeHtml(candidate.school)} · ${escapeHtml(candidate.source)}</p>
+        </div>
+      </div>
+      <span class="status-pill ${candidate.readinessDecision.tone}">${escapeHtml(getHiringProcessStatus(candidate))}</span>
+    </div>
+    <nav class="candidate-record-tabs" aria-label="Candidate record sections">
+      <span class="candidate-record-tab"><b aria-hidden="true">▣</b> Profile</span>
+      <span class="candidate-record-tab active"><b aria-hidden="true">✣</b> AI matching</span>
+      <span class="candidate-record-tab"><b aria-hidden="true">▦</b> Interview <small>${state.interviewAcceptedIds.has(candidate.id) ? "1" : "0"}</small></span>
+      <span class="candidate-record-tab"><b aria-hidden="true">◇</b> HR decision <small>${manualDecision ? "1" : "0"}</small></span>
+      <span class="candidate-record-tab"><b aria-hidden="true">♧</b> Offer</span>
+      <span class="candidate-record-tab"><b aria-hidden="true">▤</b> CV <small>1</small></span>
+    </nav>
+    <section class="candidate-match-summary ${candidate.readinessDecision.tone}" aria-label="AI matching summary">
+      <aside class="candidate-match-score">
+        <div class="candidate-score-heading">
+          <span>Match score</span>
+          <span class="score-trend" aria-label="Score trend">↗</span>
+        </div>
+        <div class="candidate-score-value">
+          <strong>${candidate.score}</strong><span>/100</span>
+        </div>
+        <div class="candidate-score-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${candidate.score}">
+          <span style="width: ${candidate.score}%"></span>
+        </div>
+        <span class="candidate-score-status ${candidate.readinessDecision.tone}">${escapeHtml(candidate.readinessDecision.label)}</span>
+      </aside>
+      <div class="candidate-match-copy">
+        <div class="candidate-match-heading">
+          <div class="candidate-match-title">
+            <span class="matching-spark" aria-hidden="true">✣</span>
+            <div>
+              <p class="eyebrow">Assessment summary</p>
+              <h3>${escapeHtml(candidate.readinessDecision.label)} match</h3>
+            </div>
+          </div>
+          <button class="ghost-button candidate-rescan-button" type="button" data-rescan-candidate="${candidate.id}">
+            <span aria-hidden="true">↻</span> Scan again
+          </button>
+        </div>
+        <div class="candidate-summary-copy">
+          <p>
+            ${escapeHtml(candidate.readinessDecision.summary)}
+            The profile shows particularly strong evidence in
+            <mark>${escapeHtml(rankedCompetencies[0]?.label || "the core role requirements")}</mark>.
+          </p>
+          <p>
+            The main interview point to clarify is
+            <mark>${escapeHtml(primaryGap)}</mark>
+            This is a focused evidence check, not an automatic rejection signal.
+          </p>
+        </div>
+      </div>
+    </section>
+    <div class="candidate-evidence-overview">
+      <section class="candidate-requirements-card">
+        <div class="candidate-section-heading">
+          <div>
+            <p class="eyebrow">Role alignment</p>
+            <h3>Job requirement checklist</h3>
+          </div>
+          <span class="status-pill muted">${checklistItems.filter((item) => item.score >= 75).length}/${checklistItems.length} aligned</span>
+        </div>
+        <div class="candidate-requirement-list">
+          ${checklistItems.map((item, index) => {
+            const tone = item.score >= 80 ? "green" : item.score >= 68 ? "yellow" : "red";
+            const icon = tone === "green" ? "✓" : tone === "yellow" ? "−" : "!";
+            return `
+              <details class="candidate-requirement-row ${tone}" ${index === 0 ? "open" : ""}>
+                <summary>
+                  <span class="requirement-status" aria-hidden="true">${icon}</span>
+                  <span class="requirement-label">${escapeHtml(item.label)}</span>
+                  <span class="requirement-score">${item.score}</span>
+                  <span class="requirement-chevron" aria-hidden="true">⌄</span>
+                </summary>
+                <p>${escapeHtml(item.detail)}</p>
+              </details>
+            `;
+          }).join("")}
+        </div>
+      </section>
+      <section class="candidate-highlights-card">
+        <div class="candidate-section-heading">
+          <div>
+            <p class="eyebrow">Differentiators</p>
+            <h3>Additional highlights</h3>
+          </div>
+        </div>
+        <div class="candidate-highlight-list">
+          ${highlightItems.map((item) => `
+            <article class="candidate-highlight-row">
+              <span class="matching-spark small" aria-hidden="true">✣</span>
+              <div>
+                <strong>${escapeHtml(item.title)}</strong>
+                <p>${escapeHtml(item.detail)}</p>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    </div>
+    <div class="candidate-detail-divider">
+      <span>Decision and supporting evidence</span>
+    </div>
+    <div class="detail-header candidate-detail-legacy-header">
+      <div>
+        <p class="eyebrow">Decision workspace</p>
+        <h2>Human checkpoint</h2>
+        <p class="candidate-meta">Review the AI recommendation before any candidate communication is sent.</p>
+      </div>
+      <div class="decision-badges">
+        <span class="status-pill ${candidate.readinessDecision.tone}">${candidate.readinessDecision.confidence} confidence</span>
+        <span class="status-pill ${candidate.readinessDecision.humanReviewRequired ? "red" : "green"}">
+          ${candidate.readinessDecision.humanReviewRequired ? "HR review required" : "Candidate message drafted"}
+        </span>
+      </div>
+    </div>
+    <section class="human-decision-panel ${manualDecisionCopy.tone}" aria-label="Human decision">
+      <div class="human-decision-heading">
+        <div>
+          <p class="eyebrow">Human checkpoint</p>
+          <h3>${escapeHtml(manualDecisionCopy.label)}</h3>
+          <p>${escapeHtml(manualDecisionCopy.detail)}</p>
+        </div>
+        <span class="status-pill ${manualDecisionCopy.tone}">${manualDecision ? `Recorded ${escapeHtml(formatShortDateTime(manualDecision.recordedAt))}` : "AI is advisory"}</span>
+      </div>
+      <div class="human-decision-actions">
+        <button class="primary-button" type="button" data-record-decision="${candidate.id}" data-decision-action="APPROVE">${approveLabel}</button>
+        <button class="ghost-button small-button" type="button" data-record-decision="${candidate.id}" data-decision-action="REQUEST_EVIDENCE">Request evidence</button>
+        <button class="ghost-button small-button" type="button" data-record-decision="${candidate.id}" data-decision-action="HOLD">Place on hold</button>
+      </div>
+    </section>
     <div class="hr-key-signals">
       <div class="signal"><strong>${candidate.cvAnalysis.overall}</strong><span>CV match</span></div>
       <div class="signal"><strong>${candidate.leadProfile.assignmentScore}</strong><span>Assignment</span></div>
@@ -2203,7 +3276,7 @@ function renderCandidateDetail() {
     ${renderInterviewHandoff(candidate)}
     <details class="assessment-audit">
       <summary>
-        <span>Full assessment audit</span>
+        <span>Evidence audit</span>
         <small>CV, assignment, and optional learning evidence</small>
       </summary>
       <div class="assessment-audit-body">
@@ -2402,18 +3475,41 @@ function renderCandidateDetail() {
       await acceptInterviewAndPrepareQuestions(candidate);
     });
   }
+
+  const rescanCandidateButton = document.querySelector(`[data-rescan-candidate="${candidate.id}"]`);
+  if (rescanCandidateButton) {
+    rescanCandidateButton.addEventListener("click", async () => {
+      rescanCandidateButton.disabled = true;
+      rescanCandidateButton.innerHTML = '<span aria-hidden="true">↻</span> Scanning...';
+      try {
+        await runLiveAssignmentEvaluation(candidate);
+      } catch (error) {
+        saveProvisionalAssessment(candidate, "demo_fallback");
+      } finally {
+        loadCandidates();
+        state.selectedCandidateId = candidate.id;
+        renderCandidateList();
+        renderCandidateDetail();
+      }
+    });
+  }
+
+  document.querySelectorAll(`[data-record-decision="${candidate.id}"]`).forEach((button) => {
+    button.addEventListener("click", () => {
+      recordManualDecision(candidate.id, button.dataset.decisionAction);
+      renderCandidateList();
+      renderCandidateDetail();
+    });
+  });
 }
 
 function drawSignalChart() {
   const canvas = document.querySelector("#signalCanvas");
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const grid = ctx.createLinearGradient(0, 0, canvas.width, 0);
-  grid.addColorStop(0, "rgba(201, 150, 49, 0.14)");
-  grid.addColorStop(1, "rgba(36, 95, 168, 0.12)");
-  ctx.fillStyle = grid;
+  ctx.fillStyle = "#fafbfb";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = "rgba(18, 25, 24, 0.08)";
+  ctx.strokeStyle = "#e1e4e7";
   ctx.lineWidth = 1;
   for (let y = 26; y < 86; y += 18) {
     ctx.beginPath();
@@ -2426,17 +3522,13 @@ function drawSignalChart() {
   topFive.forEach((candidate, index) => {
     const x = 22 + index * 42;
     const height = Math.round(candidate.score * 0.72);
-    const bar = ctx.createLinearGradient(0, 84 - height, 0, 84);
-    bar.addColorStop(0, index < 2 ? "#f0c15b" : "#4b82c6");
-    bar.addColorStop(0.55, index < 2 ? "#16a269" : "#245fa8");
-    bar.addColorStop(1, "#121918");
-    ctx.fillStyle = bar;
+    ctx.fillStyle = index < 2 ? "#39785a" : "#526f88";
     ctx.fillRect(x, 84 - height, barWidth, height);
-    ctx.fillStyle = "#121918";
+    ctx.fillStyle = "#4f555b";
     ctx.font = "11px system-ui";
     ctx.fillText(String(candidate.score), x + 3, 94);
   });
-  ctx.fillStyle = "#17201c";
+  ctx.fillStyle = "#202327";
   ctx.font = "12px system-ui";
   ctx.fillText("Top readiness scores", 22, 14);
 }
@@ -2453,14 +3545,10 @@ function drawGrowthChart(weeklyData) {
   const maxApplicants = Math.max(...weeklyData.map((item) => item.applicants), 1);
   ctx.clearRect(0, 0, width, height);
 
-  const background = ctx.createLinearGradient(0, 0, width, height);
-  background.addColorStop(0, "rgba(255, 243, 216, 0.86)");
-  background.addColorStop(0.55, "rgba(228, 238, 251, 0.72)");
-  background.addColorStop(1, "rgba(218, 246, 232, 0.72)");
-  ctx.fillStyle = background;
+  ctx.fillStyle = "#fafbfb";
   ctx.fillRect(0, 0, width, height);
 
-  ctx.strokeStyle = "rgba(18, 25, 24, 0.1)";
+  ctx.strokeStyle = "#e1e4e7";
   ctx.lineWidth = 1;
   for (let index = 0; index < 4; index += 1) {
     const y = chartTop + ((chartBottom - chartTop) / 3) * index;
@@ -2476,14 +3564,11 @@ function drawGrowthChart(weeklyData) {
     const barWidth = gap * 0.34;
     const applicantHeight = (item.applicants / maxApplicants) * (chartBottom - chartTop);
     const qualifiedHeight = (item.qualified / maxApplicants) * (chartBottom - chartTop);
-    const applicantGradient = ctx.createLinearGradient(0, chartBottom - applicantHeight, 0, chartBottom);
-    applicantGradient.addColorStop(0, "#c99631");
-    applicantGradient.addColorStop(1, "#fff3d8");
-    ctx.fillStyle = applicantGradient;
+    ctx.fillStyle = "#9aa5ae";
     ctx.fillRect(x, chartBottom - applicantHeight, barWidth, applicantHeight);
-    ctx.fillStyle = "#16a269";
+    ctx.fillStyle = "#39785a";
     ctx.fillRect(x + barWidth + 5, chartBottom - qualifiedHeight, barWidth, qualifiedHeight);
-    ctx.fillStyle = "#68736f";
+    ctx.fillStyle = "#6f747b";
     ctx.font = "12px system-ui";
     ctx.fillText(item.label, x - 5, height - 14);
   });
@@ -2498,25 +3583,25 @@ function drawGrowthChart(weeklyData) {
       ctx.lineTo(x, y);
     }
   });
-  ctx.strokeStyle = "#245fa8";
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#526f88";
+  ctx.lineWidth = 2;
   ctx.stroke();
 
   weeklyData.forEach((item, index) => {
     const x = chartLeft + index * gap + gap * 0.56;
     const y = chartBottom - (item.highPotential / maxApplicants) * (chartBottom - chartTop);
-    ctx.fillStyle = "#245fa8";
+    ctx.fillStyle = "#526f88";
     ctx.beginPath();
     ctx.arc(x, y, 4, 0, Math.PI * 2);
     ctx.fill();
   });
 
-  ctx.fillStyle = "#121918";
+  ctx.fillStyle = "#4f555b";
   ctx.font = "700 13px system-ui";
   ctx.fillText("Applicants", chartLeft, 16);
-  ctx.fillStyle = "#16a269";
+  ctx.fillStyle = "#39785a";
   ctx.fillText("Qualified", chartLeft + 88, 16);
-  ctx.fillStyle = "#245fa8";
+  ctx.fillStyle = "#526f88";
   ctx.fillText("Ready", chartLeft + 172, 16);
 }
 
@@ -2617,6 +3702,7 @@ cvInput.addEventListener("change", () => {
     state.cvUpload = null;
     localStorage.removeItem("produckCvUpload");
     renderCvUpload();
+    renderStudentDashboard();
     return;
   }
   const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
@@ -2628,6 +3714,7 @@ cvInput.addEventListener("change", () => {
       <span>PDF required</span>
       <p>Please choose a PDF CV file for the demo application.</p>
     `;
+    renderStudentDashboard();
     return;
   }
   state.cvUpload = {
@@ -2638,6 +3725,7 @@ cvInput.addEventListener("change", () => {
   };
   localStorage.setItem("produckCvUpload", JSON.stringify(state.cvUpload));
   renderCvUpload();
+  renderStudentDashboard();
 });
 
 useSampleCv.addEventListener("click", () => {
@@ -2649,6 +3737,7 @@ useSampleCv.addEventListener("click", () => {
   };
   localStorage.setItem("produckCvUpload", JSON.stringify(state.cvUpload));
   renderCvUpload();
+  renderStudentDashboard();
 });
 
 applicationForm.addEventListener("submit", async (event) => {
@@ -2663,6 +3752,8 @@ applicationForm.addEventListener("submit", async (event) => {
   const applicant = buildCandidateFromForm(formData);
   const savedApplicants = JSON.parse(localStorage.getItem("produckApplicants") || "[]");
   localStorage.setItem("produckApplicants", JSON.stringify([applicant, ...savedApplicants]));
+  state.lastSubmittedApplicant = applicant;
+  localStorage.setItem("produckLastSubmittedApplicant", JSON.stringify(applicant));
   state.activePositionId = applicant.roleId;
   localStorage.setItem("produckActivePosition", state.activePositionId);
   state.selectedCandidateId = applicant.id;
@@ -2672,25 +3763,22 @@ applicationForm.addEventListener("submit", async (event) => {
 
   try {
     await runLiveAssignmentEvaluation(enrichedApplicant || applicant);
-    applicationMessage.textContent = `Application sent to ${applicant.targetRole}. The AI Agent was triggered and a structured row was added to HR.`;
+    applicationMessage.textContent = `Application received for ${applicant.targetRole}. Your evidence package is now being prepared for the hiring team.`;
   } catch (error) {
-    applicationMessage.textContent = `Application sent to ${applicant.targetRole}. A structured demo assessment was added to HR while the live Agent is unavailable.`;
+    applicationMessage.textContent = `Application received for ${applicant.targetRole}. Your evidence package is being prepared in demo mode.`;
   } finally {
     loadCandidates();
     state.selectedCandidateId = applicant.id;
-    state.activeHrTab = "hrReviewTab";
-    localStorage.setItem("produckHrTab", state.activeHrTab);
     applyButton.disabled = false;
     renderStudent();
-    switchView("hrView");
   }
 });
 
 document.querySelector("#runAgent").addEventListener("click", async () => {
   const runAgentButton = document.querySelector("#runAgent");
   runAgentButton.disabled = true;
-  runAgentButton.textContent = "Evaluating...";
-  agentMode.textContent = "Triggering Workspace Agent";
+  runAgentButton.textContent = "Scanning evidence...";
+  agentMode.textContent = "Scanning with AI support";
   agentMode.className = "status-pill blue";
 
   try {
@@ -2706,8 +3794,15 @@ document.querySelector("#runAgent").addEventListener("click", async () => {
     })));
   } finally {
     runAgentButton.disabled = false;
-    runAgentButton.textContent = "Run AI Agent";
+    runAgentButton.textContent = "Run queue scan";
     renderHr();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && state.candidateRecordOpen) {
+    event.preventDefault();
+    setCandidateRecordOpen(false);
   }
 });
 
@@ -2718,6 +3813,8 @@ document.querySelector("#resetDemo").addEventListener("click", () => {
   localStorage.removeItem("produckApplicant");
   localStorage.removeItem("produckApplicants");
   localStorage.removeItem("produckCvUpload");
+  localStorage.removeItem("produckLastSubmittedApplicant");
+  localStorage.removeItem("produckHumanDecisions");
   localStorage.removeItem("produckAssignmentEvaluations");
   localStorage.removeItem("produckInterviewAccepted");
   localStorage.removeItem("produckInterviewQuestionPacks");
@@ -2726,23 +3823,29 @@ document.querySelector("#resetDemo").addEventListener("click", () => {
   localStorage.removeItem("produckActivePosition");
   localStorage.removeItem("produckSelectedApplicationRole");
   localStorage.removeItem("produckHrTab");
+  localStorage.removeItem("produckCandidateRecordTab");
   state.completedLessons = new Set();
   state.moduleQuizResults = {};
   state.quizScore = 0;
   state.cvUpload = null;
   state.assignmentEvaluations = {};
+  state.manualDecisions = {};
+  state.lastSubmittedApplicant = null;
   state.interviewAcceptedIds = new Set();
   state.interviewQuestionPacks = {};
   state.activePositionId = "pmt";
   state.selectedApplicationRoleId = "pmt";
   state.activeHrTab = "hrOverviewTab";
+  state.activeCandidateRecordTab = "AI_MATCHING";
+  state.candidateRecordOpen = false;
   state.selectedLessonId = lessons[0].id;
-  state.activeStudentTab = "learningTab";
+  state.activeStudentTab = "studentHomeTab";
   state.selectedCandidateId = "mai";
   cvInput.value = "";
   applicationMessage.textContent = "";
   renderStudent();
   renderHr();
+  setCandidateRecordOpen(false);
 });
 
 loadCandidates();
