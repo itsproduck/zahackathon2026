@@ -126,6 +126,10 @@ button {
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
 }
 
+.nav-link {
+  text-decoration: none;
+}
+
 .nav-tab.active {
   background: #ffffff;
   color: var(--ink);

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import apiHandler from "./api/evaluate-assignment.mjs";
 import interviewQuestionHandler from "./api/prepare-interview-questions.mjs";
+import studentAgentsHandler from "./api/student-agents.mjs";
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 3000);
 
@@ -38,10 +39,16 @@ function loadEnvFile() {
 
 function serveStatic(req, res) {
   const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
-  const pathname = url.pathname === "/" ? "/index.html" : decodeURIComponent(url.pathname);
-  const requestedPath = path.normalize(path.join(rootDir, pathname));
+  const pathname = decodeURIComponent(url.pathname);
+  const isStudentPortal = ["/", "/index.html", "/student-portal.html"].includes(pathname);
+  const requestedPath = isStudentPortal
+    ? path.join(rootDir, "student-portal.html")
+    : path.normalize(path.join(rootDir, pathname));
 
-  if (!requestedPath.startsWith(rootDir) || requestedPath.includes(`${path.sep}.git${path.sep}`)) {
+  if (
+    !requestedPath.startsWith(rootDir) ||
+    requestedPath.includes(`${path.sep}.git${path.sep}`)
+  ) {
     res.writeHead(403);
     res.end("Forbidden");
     return;
@@ -66,6 +73,10 @@ function serveStatic(req, res) {
 loadEnvFile();
 
 const server = http.createServer((req, res) => {
+  if ((req.url || "").startsWith("/api/student-agents/")) {
+    studentAgentsHandler(req, res);
+    return;
+  }
   if ((req.url || "").startsWith("/api/evaluate-assignment")) {
     apiHandler(req, res);
     return;

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#005654">
+    <title>AI Talent Platform — TA Portal</title>
+    <link rel="stylesheet" href="./typography.css">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Lexend+Deca:wght@400;500;600&display=swap');
+      :root { --teal:#2fa1b3; --teal-deep:#005654; --teal-wash:#e3f1f3; --orange:#f05b2f; --orange-wash:#fde7df; --ink:#182126; --muted:#69777c; --line:#e6ecec; --page:#f6f9f9; --white:#fff; --green:#16876e; --green-wash:#e3f7f0; --gold:#b47713; --gold-wash:#fff5dd; --red:#c34b4b; --red-wash:#fce9e9; --shadow:0 12px 30px rgba(0,86,84,.08); }
+      * { box-sizing:border-box; }
+      body { margin:0; color:var(--ink); background:var(--page); font-family:Lexend,Arial,sans-serif; font-size:14px; }
+      button, input, select { font:inherit; }
+      button { cursor:pointer; }
+      .shell { min-height:100vh; display:grid; grid-template-columns:252px minmax(0,1fr); }
+      aside { background:var(--white); border-right:1px solid var(--line); padding:24px 16px; display:flex; flex-direction:column; min-height:100vh; position:sticky; top:0; height:100vh; }
+      .brand { display:flex; gap:11px; align-items:center; padding:0 8px 24px; border-bottom:1px solid var(--line); }
+      .brand-mark { width:38px; height:38px; border-radius:11px; color:white; background:var(--teal); display:grid; place-items:center; font-size:18px; font-weight:700; }
+      .brand strong { display:block; font-size:14px; letter-spacing:-.02em; }
+      .brand small, .nav-label, .caption, .eyebrow { font-family:"Lexend Deca",Arial,sans-serif; color:var(--muted); font-size:10px; letter-spacing:.09em; text-transform:uppercase; }
+      .brand small { display:block; margin-top:3px; }
+      nav { padding-top:24px; }
+      .nav-label { padding:0 10px 10px; font-weight:600; }
+      .nav-item { width:100%; border:0; background:transparent; border-radius:9px; color:#435257; display:flex; align-items:center; gap:11px; padding:11px 12px; margin:3px 0; text-align:left; transition:.18s; }
+      .nav-item:hover { background:#f4f8f8; }
+      .nav-item.active { color:var(--teal-deep); background:var(--teal-wash); font-weight:600; }
+      .nav-icon { width:20px; text-align:center; font-size:17px; }
+      .nav-count { margin-left:auto; border-radius:100px; min-width:22px; padding:3px 6px; text-align:center; background:var(--orange); color:#fff; font-size:10px; }
+      .nav-item.active .nav-count { background:var(--teal); }
+      .sidebar-foot { margin-top:auto; border-top:1px solid var(--line); padding:20px 8px 0; }
+      .profile { display:flex; gap:10px; align-items:center; }
+      .avatar { width:34px; height:34px; border-radius:50%; color:var(--teal-deep); background:#d4edef; display:grid; place-items:center; font-weight:600; font-size:12px; }
+      .profile strong { font-size:12px; display:block; } .profile small { display:block; margin-top:3px; color:var(--muted); font-size:10px; }
+      main { min-width:0; padding:28px 36px 44px; }
+      .topbar { display:flex; justify-content:space-between; align-items:center; gap:20px; margin-bottom:31px; }
+      .crumb { display:flex; gap:8px; align-items:center; color:var(--muted); font-size:12px; } .crumb b { color:var(--teal-deep); font-weight:500; }
+      .top-actions { display:flex; align-items:center; gap:12px; }
+      .notify { width:39px; height:39px; border:1px solid var(--line); background:#fff; border-radius:50%; color:var(--teal-deep); position:relative; } .notify:after { content:""; position:absolute; width:7px; height:7px; border-radius:50%; background:var(--orange); top:8px; right:9px; }
+      .student-link { color:var(--teal-deep); text-decoration:none; font-size:12px; font-weight:500; padding:10px 13px; border:1px solid var(--line); border-radius:99px; background:#fff; }
+      .student-link:hover { border-color:var(--teal); background:var(--teal-wash); }
+      .heading-row { display:flex; justify-content:space-between; gap:24px; align-items:end; margin-bottom:25px; }
+      .eyebrow { margin:0 0 8px; font-weight:600; } h1 { margin:0; color:var(--teal-deep); font-size:29px; line-height:1.25; letter-spacing:-.035em; } .subtitle { margin:9px 0 0; color:var(--muted); line-height:1.55; max-width:640px; }
+      .date-chip { border:1px solid var(--line); border-radius:99px; padding:10px 14px; background:#fff; color:var(--muted); white-space:nowrap; font:11px "Lexend Deca",Arial,sans-serif; }
+      .metrics { display:grid; grid-template-columns:repeat(4, minmax(130px,1fr)); gap:14px; margin-bottom:25px; }
+      .metric { background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px; min-height:128px; box-shadow:0 2px 6px rgba(0,0,0,.015); }
+      .metric .metric-top { display:flex; align-items:center; justify-content:space-between; color:var(--muted); font-size:11px; } .metric-mark { width:27px; height:27px; border-radius:8px; display:grid; place-items:center; background:var(--teal-wash); color:var(--teal-deep); }
+      .metric.orange .metric-mark { color:#bd461f; background:var(--orange-wash); } .metric.gold .metric-mark { color:#96600b; background:var(--gold-wash); } .metric.green .metric-mark { color:var(--green); background:var(--green-wash); }
+      .metric strong { display:block; margin-top:17px; font-size:27px; letter-spacing:-.06em; color:var(--ink); } .metric small { display:block; color:var(--muted); margin-top:7px; font-size:10px; }
+      .main-grid { display:grid; grid-template-columns:minmax(440px,1.5fr) minmax(300px,.85fr); gap:18px; }
+      .card { background:#fff; border:1px solid var(--line); border-radius:13px; box-shadow:var(--shadow); overflow:hidden; }
+      .card-header { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:20px 20px 16px; border-bottom:1px solid var(--line); }
+      .card-header h2 { margin:0; color:var(--teal-deep); font-size:16px; letter-spacing:-.025em; } .card-header p { margin:5px 0 0; color:var(--muted); font-size:11px; }
+      .text-button { border:0; background:transparent; color:var(--teal); font-weight:600; font-size:11px; padding:6px; }
+      .filters { display:flex; gap:8px; padding:14px 20px; border-bottom:1px solid var(--line); } .filters input, .filters select { border:1px solid var(--line); background:#fff; border-radius:7px; padding:9px 10px; color:#536268; outline:none; font-size:11px; } .filters input { min-width:0; flex:1; } .filters input:focus, .filters select:focus { border-color:var(--teal); box-shadow:0 0 0 3px var(--teal-wash); }
+      .candidate-list { padding:5px 10px 10px; max-height:515px; overflow:auto; }
+      .candidate { display:grid; grid-template-columns:36px minmax(0,1fr) auto; gap:11px; align-items:center; width:100%; padding:13px 10px; border:0; border-bottom:1px solid #edf1f1; background:#fff; color:inherit; text-align:left; border-radius:8px; } .candidate:hover, .candidate.selected { background:#f1f9fa; } .candidate.selected { outline:1px solid #b8e0e4; }
+      .candidate .avatar { width:36px; height:36px; font-size:11px; background:#fce4dc; color:#b34c27; } .candidate:nth-child(3n) .avatar { background:#eee5fa; color:#7052a0; } .candidate:nth-child(3n+1) .avatar { background:#dff1e9; color:#147154; }
+      .candidate-name { font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .candidate-meta { color:var(--muted); font-size:10px; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .score { text-align:right; } .score strong { display:block; color:var(--teal-deep); font-size:13px; } .score small { color:var(--muted); font-size:9px; }
+      .detail { display:flex; flex-direction:column; min-height:690px; } .detail-body { padding:20px; }
+      .candidate-hero { display:flex; gap:13px; align-items:center; } .candidate-hero .avatar { width:48px; height:48px; background:#fce4dc; color:#b34c27; font-size:13px; } .candidate-hero h2 { margin:0; color:var(--teal-deep); font-size:18px; } .candidate-hero p { margin:5px 0 0; color:var(--muted); font-size:11px; }
+      .pills { display:flex; flex-wrap:wrap; gap:7px; margin:17px 0; } .pill { border-radius:99px; padding:5px 9px; font:10px "Lexend Deca",Arial,sans-serif; background:var(--teal-wash); color:var(--teal-deep); } .pill.ready { background:var(--green-wash); color:var(--green); } .pill.review { background:var(--gold-wash); color:#9d640a; }
+      .section-title { margin:20px 0 10px; color:var(--muted); font:600 10px "Lexend Deca",Arial,sans-serif; letter-spacing:.09em; text-transform:uppercase; }
+      .assessment { border-radius:10px; padding:15px; background:#f5faf9; border:1px solid #e2eeeb; } .assessment-top { display:flex; justify-content:space-between; align-items:start; gap:12px; } .assessment strong { color:var(--teal-deep); font-size:12px; } .assessment p { margin:7px 0 0; color:#526267; font-size:11px; line-height:1.55; } .confidence { color:var(--green); font-size:10px; font-weight:600; white-space:nowrap; }
+      .skills { display:grid; gap:9px; } .skill { display:grid; grid-template-columns:98px minmax(0,1fr) 28px; gap:8px; align-items:center; color:#526267; font-size:10px; } .track { background:#e9eeee; height:6px; border-radius:99px; overflow:hidden; } .track i { display:block; height:100%; border-radius:99px; background:var(--teal); } .skill b { font-size:10px; text-align:right; color:var(--teal-deep); }
+      .timeline { display:grid; gap:0; } .event { padding:0 0 14px 18px; border-left:1px solid #d4e5e5; position:relative; font-size:11px; } .event:before { content:""; position:absolute; width:8px; height:8px; border-radius:50%; background:var(--teal); left:-4.5px; top:2px; } .event:last-child { padding-bottom:0; } .event b { color:#405054; display:block; font-size:11px; } .event span { color:var(--muted); font-size:10px; margin-top:3px; display:block; }
+      .actions { display:flex; gap:9px; margin-top:auto; padding:16px 20px; border-top:1px solid var(--line); } .primary, .secondary { flex:1; border-radius:8px; padding:11px 10px; font-weight:600; font-size:11px; } .primary { border:1px solid var(--orange); background:var(--orange); color:#fff; } .primary:hover { background:#d94e26; } .secondary { border:1px solid var(--teal); background:#fff; color:var(--teal-deep); } .secondary:hover { background:var(--teal-wash); }
+      .bottom-grid { display:grid; grid-template-columns:1.25fr .75fr; gap:18px; margin-top:18px; } .bar-chart { padding:20px; display:flex; gap:16px; align-items:end; min-height:220px; } .chart-labels { display:grid; gap:15px; flex:1; } .chart-row { display:grid; grid-template-columns:90px 1fr 30px; gap:10px; align-items:center; color:#607075; font-size:10px; } .chart-track { height:8px; border-radius:20px; background:#edf2f2; overflow:hidden; } .chart-track i { display:block; height:100%; background:var(--teal); border-radius:20px; } .chart-row:nth-child(2) i { background:var(--orange); } .chart-row:nth-child(3) i { background:#74b5bf; } .chart-row b { font-size:10px; color:var(--teal-deep); }
+      .attention { padding:6px 20px 18px; } .attention-item { padding:13px 0; border-bottom:1px solid var(--line); display:flex; gap:10px; align-items:flex-start; } .attention-item:last-child { border-bottom:0; } .dot { width:8px; height:8px; border-radius:50%; background:var(--orange); margin-top:4px; flex:none; } .attention-item b { display:block; font-size:11px; color:#45555a; } .attention-item span { display:block; color:var(--muted); font-size:10px; margin-top:3px; line-height:1.4; }
+      /* Shared typography role bindings */
+      body { font-family:var(--font-sans); font-size:var(--type-body-size); line-height:var(--type-body-line); font-weight:var(--weight-regular); }
+      button,input,select { font-family:var(--font-sans); }
+      h1 { font-size:var(--type-display-size); line-height:var(--type-display-line); font-weight:var(--weight-medium); letter-spacing:var(--tracking-display); }
+      .card-header h2 { font-size:var(--type-card-title-size); line-height:var(--type-card-title-line); font-weight:var(--weight-medium); letter-spacing:0; }
+      .candidate-hero h2 { font-size:var(--type-section-title-size); line-height:var(--type-section-title-line); font-weight:var(--weight-medium); letter-spacing:0; }
+      .brand strong,.candidate-name { font-size:var(--type-row-title-size); line-height:var(--type-row-title-line); font-weight:var(--weight-medium); letter-spacing:0; }
+      .subtitle,.assessment p { font-size:var(--type-body-size); line-height:var(--type-body-line); font-weight:var(--weight-light); }
+      .card-header p,.candidate-meta,.candidate-hero p,.filters input,.filters select,.attention-item span { font-size:var(--type-supporting-size); line-height:var(--type-supporting-line); font-weight:var(--weight-light); }
+      .crumb,.student-link,.metric .metric-top,.pill,.confidence,.skill b,.event b,.event span,.chart-row b { font-size:var(--type-meta-size); line-height:var(--type-meta-line); }
+      .profile strong,.skill,.chart-row { font-size:var(--type-supporting-size); line-height:var(--type-supporting-line); }
+      .date-chip,.metric small,.score small,.nav-count { font-size:var(--type-caption-size); line-height:var(--type-caption-line); }
+      .brand small,.nav-label,.caption,.eyebrow,.section-title { font-family:var(--font-sans); font-size:var(--type-meta-size); line-height:var(--type-meta-line); font-weight:var(--weight-semibold); letter-spacing:var(--tracking-label); text-transform:uppercase; }
+      .nav-item { font-size:var(--type-row-title-size); line-height:var(--type-row-title-line); font-weight:var(--weight-regular); }
+      .nav-item.active { font-weight:var(--weight-semibold); }
+      .profile small { font-size:var(--type-caption-size); line-height:var(--type-caption-line); }
+      .metric strong { font-size:var(--type-stat-xl-size); line-height:1; font-weight:var(--weight-semibold); letter-spacing:var(--tracking-heading); }
+      .score strong { font-size:var(--type-score-size); line-height:1.2; font-weight:var(--weight-semibold); }
+      .assessment strong,.attention-item b { font-size:var(--type-body-size); line-height:var(--type-body-line); font-weight:var(--weight-medium); }
+      .text-button { font-size:var(--type-meta-size); line-height:var(--type-meta-line); font-weight:var(--weight-semibold); }
+      .primary,.secondary { font-size:var(--type-body-size); line-height:1.2; font-weight:var(--weight-semibold); }
+      .empty-state { padding:20px; color:var(--muted); font-size:var(--type-supporting-size); line-height:var(--type-supporting-line); font-weight:var(--weight-light); }
+      .toast { position:fixed; right:24px; bottom:24px; padding:12px 15px; border-radius:9px; background:var(--teal-deep); color:#fff; box-shadow:0 10px 28px rgba(0,86,84,.25); font-size:var(--type-supporting-size); line-height:var(--type-supporting-line); opacity:0; transform:translateY(12px); pointer-events:none; transition:.22s; } .toast.show { opacity:1; transform:translateY(0); }
+      @media (max-width:1050px) { .metrics{grid-template-columns:repeat(2,1fr)} .main-grid,.bottom-grid{grid-template-columns:1fr} .detail{min-height:auto} }
+      @media (max-width:720px) { .shell{display:block} aside{position:static;height:auto;min-height:0} nav{display:flex;overflow:auto;padding:14px 0 0}.nav-label,.sidebar-foot{display:none}.nav-item{white-space:nowrap;width:auto}.nav-count{display:none} main{padding:22px 16px}.topbar,.heading-row{align-items:start;flex-direction:column}.top-actions{width:100%;justify-content:space-between}.date-chip{display:none}.metrics{grid-template-columns:1fr 1fr}.filters{flex-wrap:wrap}.filters input{flex-basis:100%} h1{font-size:var(--type-page-title-size)} }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside>
+        <div class="brand"><div class="brand-mark">A</div><div><strong>AI Talent Platform</strong><small>Talent acquisition</small></div></div>
+        <nav aria-label="TA navigation">
+          <div class="nav-label">Workspace</div>
+          <button class="nav-item active" data-section="overview"><span class="nav-icon">⌘</span>Overview</button>
+          <button class="nav-item" data-section="pipeline"><span class="nav-icon">◫</span>Talent pipeline <span class="nav-count">18</span></button>
+          <button class="nav-item" data-section="reviews"><span class="nav-icon">✓</span>Review queue <span class="nav-count">6</span></button>
+          <div class="nav-label" style="margin-top:24px">Manage</div>
+          <button class="nav-item" data-section="programs"><span class="nav-icon">◇</span>Programs</button>
+          <button class="nav-item" data-section="insights"><span class="nav-icon">⌁</span>Insights</button>
+        </nav>
+        <div class="sidebar-foot"><div class="profile"><div class="avatar">MN</div><div><strong>Minh Nguyen</strong><small>Talent Acquisition</small></div></div></div>
+      </aside>
+      <main>
+        <div class="topbar"><div class="crumb">AI Talent Platform <span>›</span> <b id="crumb">Overview</b></div><div class="top-actions"><a class="student-link" href="/student-portal.html">Open student portal ↗</a><button class="notify" aria-label="Notifications">♧</button></div></div>
+        <div class="heading-row"><div><p class="eyebrow">TA Command Center</p><h1 id="pageTitle">Make every candidate decision with context.</h1><p class="subtitle" id="subtitle">Review evidence, move promising talent forward, and keep human judgment where it matters.</p></div><div class="date-chip">25 July 2026 · This week</div></div>
+        <section class="metrics" aria-label="Hiring metrics"><article class="metric"><div class="metric-top"><span>Total candidates</span><span class="metric-mark">◎</span></div><strong>3,842</strong><small>+12.4% compared with last week</small></article><article class="metric orange"><div class="metric-top"><span>New this week</span><span class="metric-mark">↗</span></div><strong>186</strong><small>48 awaiting first review</small></article><article class="metric gold"><div class="metric-top"><span>Needs TA decision</span><span class="metric-mark">!</span></div><strong>24</strong><small>6 overdue for follow-up</small></article><article class="metric green"><div class="metric-top"><span>Interview ready</span><span class="metric-mark">✓</span></div><strong>37</strong><small>8 added by AI assessment</small></article></section>
+        <section class="main-grid">
+          <article class="card"><div class="card-header"><div><h2 id="listTitle">Priority candidates</h2><p id="listDescription">High-signal applications that benefit from your review.</p></div><button class="text-button" id="showAll">View all</button></div><div class="filters"><input id="search" type="search" placeholder="Search name, school or source"><select id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option><option value="ready">Interview ready</option><option value="review">Needs review</option><option value="new">New application</option></select></div><div class="candidate-list" id="candidateList"></div></article>
+          <article class="card detail"><div class="card-header"><div><h2>Evidence record</h2><p>AI explains; TA decides.</p></div><span class="pill review" id="detailStatus">Needs review</span></div><div class="detail-body" id="detail"></div><div class="actions"><button class="secondary" id="secondaryAction">Request evidence</button><button class="primary" id="primaryAction">Advance to interview</button></div></article>
+        </section>
+        <section class="bottom-grid"><article class="card"><div class="card-header"><div><h2>Pipeline health</h2><p>Candidate movement across Product Management Trainee 2026.</p></div><button class="text-button">Open pipeline</button></div><div class="bar-chart"><div class="chart-labels"><div class="chart-row"><span>Applications</span><div class="chart-track"><i style="width:100%"></i></div><b>842</b></div><div class="chart-row"><span>Qualified</span><div class="chart-track"><i style="width:61%"></i></div><b>512</b></div><div class="chart-row"><span>Interview ready</span><div class="chart-track"><i style="width:29%"></i></div><b>241</b></div><div class="chart-row"><span>In interviews</span><div class="chart-track"><i style="width:16%;background:#16876e"></i></div><b>136</b></div></div></div></article><article class="card"><div class="card-header"><div><h2>Needs attention</h2><p>Keep the experience moving.</p></div></div><div class="attention"><div class="attention-item"><span class="dot"></span><div><b>6 applications exceed review SLA</b><span>Oldest is waiting 2 days · assign an owner</span></div></div><div class="attention-item"><span class="dot" style="background:#b47713"></span><div><b>12 candidates have incomplete evidence</b><span>Send a focused request instead of rejecting</span></div></div><div class="attention-item"><span class="dot" style="background:#2fa1b3"></span><div><b>Interview panel needs 4 new slots</b><span>27 ready candidates are available next week</span></div></div></div></article></section>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+    <script>
+      const people=[
+        {id:'mai',name:'Mai Anh',initials:'MA',school:'Foreign Trade University',source:'Product Foundations course',status:'review',score:86,role:'PM Trainee 2026',signal:'Strong assignment evidence',summary:'Clear problem framing and thoughtful activation experiment. Learning evidence supports the recommendation.',skills:[['Product thinking',91],['Customer insight',84],['Communication',79]],timeline:[['Application submitted','Today, 09:42'],['AI evidence assessment','Today, 09:45'],['Finished Product Foundations','18 Jul 2026']]},
+        {id:'linh',name:'Linh Nguyen',initials:'LN',school:'RMIT Vietnam',source:'Campus workshop',status:'ready',score:92,role:'PM Trainee 2026',signal:'Ready for structured interview',summary:'High quality evidence across CV, motivation and mini case. No critical gaps found by the assessment.',skills:[['Product thinking',94],['Customer insight',90],['Communication',88]],timeline:[['TA review completed','Today, 10:20'],['AI evidence assessment','Today, 08:58'],['Application submitted','24 Jul 2026']]},
+        {id:'quang',name:'Quang Huy',initials:'QH',school:'Ho Chi Minh City University of Technology',source:'Community referral',status:'new',score:78,role:'Associate Product Manager',signal:'New application · assessment pending',summary:'Early career experience is promising. A portfolio walkthrough would make the product execution signal clearer.',skills:[['Product thinking',76],['Customer insight',73],['Communication',85]],timeline:[['Application submitted','Today, 08:16'],['CV extracted','Today, 08:17'],['Awaiting AI assessment','In progress']]},
+        {id:'thao',name:'Thao Pham',initials:'TP',school:'National Economics University',source:'Career fair',status:'review',score:83,role:'PM Trainee 2026',signal:'Evidence gap: product metrics',summary:'Customer empathy is strong. Ask for one concrete metric decision before confirming interview readiness.',skills:[['Product thinking',80],['Customer insight',89],['Communication',82]],timeline:[['TA follow-up due','Today, 16:00'],['AI evidence assessment','24 Jul 2026'],['Application submitted','23 Jul 2026']]},
+        {id:'duc',name:'Duc Tran',initials:'DT',school:'FPT University',source:'Referral',status:'ready',score:89,role:'Product Manager',signal:'Ready for structured interview',summary:'Relevant product delivery experience and consistent evidence. Recommended interview focus: stakeholder influence.',skills:[['Product thinking',88],['Customer insight',83],['Communication',92]],timeline:[['Interview invitation drafted','Today, 09:20'],['AI evidence assessment','24 Jul 2026'],['Application submitted','22 Jul 2026']]}
+      ];
+      let selected=people[0];
+      const list=document.querySelector('#candidateList'), detail=document.querySelector('#detail'), toast=document.querySelector('#toast');
+      const statusLabel={ready:'Interview ready',review:'Needs review',new:'New application'};
+      function render(){const q=document.querySelector('#search').value.toLowerCase(), f=document.querySelector('#statusFilter').value;const filtered=people.filter(p=>(f==='all'||p.status===f)&&(`${p.name} ${p.school} ${p.source}`).toLowerCase().includes(q));list.innerHTML=filtered.length?filtered.map(p=>`<button class="candidate ${p.id===selected.id?'selected':''}" data-id="${p.id}"><span class="avatar">${p.initials}</span><span><span class="candidate-name">${p.name}</span><span class="candidate-meta">${p.school} · ${p.signal}</span></span><span class="score"><strong>${p.score}%</strong><small>${statusLabel[p.status]}</small></span></button>`).join(''):'<p class="empty-state">No candidates match these filters.</p>';list.querySelectorAll('.candidate').forEach(b=>b.addEventListener('click',()=>{selected=people.find(p=>p.id===b.dataset.id);render();}));renderDetail();}
+      function renderDetail(){const p=selected;document.querySelector('#detailStatus').textContent=statusLabel[p.status];document.querySelector('#detailStatus').className='pill '+(p.status==='ready'?'ready':'review');document.querySelector('#primaryAction').textContent=p.status==='ready'?'Send interview invite':'Advance to interview'; detail.innerHTML=`<div class="candidate-hero"><span class="avatar">${p.initials}</span><div><h2>${p.name}</h2><p>${p.school} · ${p.role}</p></div></div><div class="pills"><span class="pill">${p.source}</span><span class="pill ${p.status==='ready'?'ready':'review'}">${p.score}% match</span></div><p class="section-title">AI assessment</p><div class="assessment"><div class="assessment-top"><strong>${p.signal}</strong><span class="confidence">High confidence</span></div><p>${p.summary}</p></div><p class="section-title">Competency evidence</p><div class="skills">${p.skills.map(s=>`<div class="skill"><span>${s[0]}</span><div class="track"><i style="width:${s[1]}%"></i></div><b>${s[1]}</b></div>`).join('')}</div><p class="section-title">Activity timeline</p><div class="timeline">${p.timeline.map(e=>`<div class="event"><b>${e[0]}</b><span>${e[1]}</span></div>`).join('')}</div>`;}
+      document.querySelector('#search').addEventListener('input',render);document.querySelector('#statusFilter').addEventListener('change',render);
+      function showToast(message){toast.textContent=message;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2600);}
+      document.querySelector('#primaryAction').addEventListener('click',()=>{selected.status='ready'; selected.signal='Interview invitation queued';render();showToast(`Interview invite queued for ${selected.name}.`);});
+      document.querySelector('#secondaryAction').addEventListener('click',()=>showToast(`Evidence request drafted for ${selected.name}.`));
+      document.querySelector('#showAll').addEventListener('click',()=>{document.querySelector('#statusFilter').value='all';document.querySelector('#search').value='';render();showToast('Showing all priority candidates.');});
+      document.querySelectorAll('.nav-item').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));button.classList.add('active');const section=button.dataset.section;const headings={overview:['Overview','Make every candidate decision with context.','Review evidence, move promising talent forward, and keep human judgment where it matters.'],pipeline:['Talent pipeline','See where promising talent is moving.','Use the pipeline to find bottlenecks and focus your team’s attention.'],reviews:['Review queue','Resolve decisions with the right evidence.','Prioritize candidate records that need a human decision today.'],programs:['Programs','Manage hiring programs clearly.','Keep each program’s criteria and candidate flow aligned.'],insights:['Insights','Turn hiring activity into better decisions.','Understand sources, quality signals and pipeline momentum.']};const h=headings[section];document.querySelector('#crumb').textContent=h[0];document.querySelector('#pageTitle').textContent=h[1];document.querySelector('#subtitle').textContent=h[2];document.querySelector('#listTitle').textContent=section==='reviews'?'Candidates needing review':'Priority candidates';document.querySelector('#listDescription').textContent=section==='reviews'?'Human decisions that are ready for your judgment.':'High-signal applications that benefit from your review.';showToast(`${h[0]} view selected.`);}));
+      render();
+    </script>
+  </body>
+</html>

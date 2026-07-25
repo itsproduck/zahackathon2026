@@ -1,0 +1,1605 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2fa1b3">
+  <title>AI Talent Platform — Student Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./typography.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root{
+      --brand:#2fa1b3;--brand-dark:#005654;--brand-soft:#e3f1f3;--orange:#f05b2f;
+      --orange-soft:#fff0e9;--green:#148269;--green-soft:#e7f5f0;--yellow:#f1ad38;
+      --ink:#202426;--muted:#747b7e;--subtle:#eef0f2;--line:#e6e9ea;--white:#fff;
+      --danger:#d94c3c;--danger-soft:#fff0ee;--sidebar:248px
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--subtle);color:var(--ink);font:14px/1.55 "Lexend",sans-serif}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{text-decoration:none;color:inherit}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:28px;line-height:1.25;letter-spacing:-.035em}
+    h2{font-size:18px;line-height:1.35;letter-spacing:-.025em}
+    h3{font-size:14px;line-height:1.4}
+    .hidden{display:none!important}
+    .muted{color:var(--muted)}
+    .tiny{font-size:11px;color:var(--muted)}
+    .eyebrow{margin:0 0 8px;color:var(--brand);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+    .btn{min-height:42px;border:0;border-radius:999px;padding:0 20px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:600;transition:.18s ease}
+    .btn:hover{transform:translateY(-1px)}
+    .btn:disabled{cursor:not-allowed;opacity:.42;transform:none}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-primary:hover{background:#278f9f}
+    .btn-dark{background:var(--brand-dark);color:#fff}
+    .btn-orange{background:var(--orange);color:#fff}
+    .btn-outline{border:1px solid #d9dfe0;background:#fff;color:var(--ink)}
+    .btn-ghost{background:transparent;color:var(--muted)}
+    .btn-sm{min-height:34px;padding:0 14px;font-size:11px}
+    .card{background:#fff;border:1px solid #eceeef;border-radius:8px}
+    .tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 10px;font-size:10px;font-weight:600;background:var(--brand-soft);color:var(--brand-dark)}
+    .tag.done{background:var(--green-soft);color:var(--green)}
+    .tag.locked{background:#f0f1f2;color:#909597}
+    .tag.current{background:var(--orange-soft);color:#b84926}
+    .progress{height:7px;border-radius:999px;background:#e7ebec;overflow:hidden}
+    .progress span{height:100%;display:block;border-radius:inherit;background:var(--brand);transition:width .35s ease}
+
+    /* Login */
+    .auth-page{min-height:100vh;padding:42px 20px;background:#fafafa;display:grid;place-items:center}
+    .auth-card{width:min(460px,100%);padding:40px 44px 36px;background:#fff;border:1px solid #f0f0f0;border-radius:16px;text-align:center;box-shadow:0 10px 30px rgba(34,67,72,.04)}
+    .auth-logo{width:44px;height:44px;border-radius:12px;margin:0 auto 18px;background:var(--brand);display:grid;place-items:center;color:#fff;font-size:21px;font-weight:700}
+    .auth-card h1{font-size:23px;margin-bottom:5px}
+    .auth-brand{color:var(--brand-dark);font-size:26px;font-weight:700;letter-spacing:-.035em}
+    .auth-copy{color:var(--muted);font-size:12px;line-height:1.7;margin:10px auto 18px;max-width:330px}
+    .login-visual{height:170px;width:240px;margin:0 auto 24px;position:relative;border-radius:22px;background:linear-gradient(145deg,#dff1f3,#f7fbfb);overflow:hidden}
+    .login-visual:before,.login-visual:after{content:"";position:absolute;border-radius:50%}
+    .login-visual:before{width:120px;height:120px;right:-25px;top:-32px;background:#c1e4e8}
+    .login-visual:after{width:95px;height:95px;left:-25px;bottom:-30px;background:#ffd9ca}
+    .visual-window{position:absolute;z-index:1;left:42px;right:42px;top:33px;bottom:27px;padding:14px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,86,84,.12);text-align:left}
+    .visual-row{height:7px;border-radius:5px;background:#e9eff0;margin-bottom:8px}
+    .visual-row:nth-child(2){width:66%;background:#7ac5ce}
+    .visual-row:nth-child(3){width:82%}
+    .visual-avatar{width:31px;height:31px;border-radius:50%;background:var(--orange);margin-bottom:12px}
+    .auth-actions{display:grid;gap:10px}
+    .auth-actions .btn{width:100%;position:relative}
+    .auth-actions .btn i,.provider-letter{position:absolute;left:17px}
+    .zalo-btn{background:var(--brand);color:#fff}
+    .provider-letter{width:19px;height:19px;border-radius:5px;background:#fff;color:var(--brand);display:grid;place-items:center;font-size:10px;font-weight:700}
+    .auth-divider{display:flex;align-items:center;gap:11px;margin:15px 0;color:#a0a5a7;font-size:10px}
+    .auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:var(--line)}
+    .auth-foot{margin:20px 0 0;color:var(--muted);font-size:11px}
+    .auth-foot button{border:0;background:none;color:var(--brand-dark);font-weight:600;padding:0}
+    .powered{margin:18px 0 0;color:#a1a6a8;font-size:9px}
+
+    /* Onboarding */
+    .onboarding-page{min-height:100vh;background:#fff}
+    .onboarding-top{height:74px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+    .onboarding-top-inner{width:min(900px,calc(100% - 40px));margin:auto;display:flex;align-items:center;justify-content:space-between}
+    .mini-brand{display:flex;align-items:center;gap:11px}
+    .mini-brand-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand-dark)}
+    .mini-brand b{display:block;font-size:13px}
+    .mini-brand small{display:block;color:var(--muted);font-size:9px;margin-top:1px}
+    .step-count{font-size:11px;color:var(--muted)}
+    .onboarding-body{width:min(820px,calc(100% - 40px));margin:0 auto;padding:38px 0 60px}
+    .step-rail{display:flex;align-items:center;margin:0 auto 46px;max-width:680px}
+    .rail-part{display:flex;align-items:center;flex:1}
+    .rail-part:last-child{flex:0}
+    .rail-dot{width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;background:#edf0f1;color:#8a9193;font-size:10px;font-weight:700}
+    .rail-dot.active{background:var(--brand);color:#fff;box-shadow:0 0 0 5px var(--brand-soft)}
+    .rail-dot.done{background:var(--brand-dark);color:#fff}
+    .rail-line{height:2px;flex:1;background:#e7eaeb}
+    .rail-line.done{background:var(--brand)}
+    .onboarding-content{max-width:640px;margin:auto}
+    .onboarding-heading{text-align:center;margin-bottom:28px}
+    .onboarding-heading h1{margin-bottom:8px}
+    .onboarding-heading p{color:var(--muted);font-size:12px;margin:0 auto;max-width:510px}
+    .persona-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .persona-card{min-height:176px;padding:24px;text-align:left;border:1px solid var(--line);border-radius:10px;background:#fff;position:relative}
+    .persona-card:hover,.persona-card.selected{border-color:var(--brand);box-shadow:0 0 0 3px rgba(47,161,179,.1)}
+    .persona-card.selected:after{content:"✓";position:absolute;right:16px;top:15px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--brand);color:#fff;font-size:10px}
+    .persona-icon{width:42px;height:42px;border-radius:11px;background:var(--brand-soft);color:var(--brand-dark);display:grid;place-items:center;margin-bottom:17px;font-size:17px}
+    .persona-card:nth-child(2) .persona-icon{background:var(--orange-soft);color:var(--orange)}
+    .persona-card b{display:block;font-size:15px;margin-bottom:6px}
+    .persona-card span{display:block;color:var(--muted);font-size:11px;line-height:1.65}
+    .fields{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    .field{display:grid;gap:7px}
+    .field.full{grid-column:1/-1}
+    .field label{font-size:10px;color:#555d60;font-weight:600}
+    .field input,.field select,.field textarea{width:100%;border:1px solid #dde2e3;border-radius:7px;background:#fff;color:var(--ink);outline:0;padding:11px 12px;font-size:12px}
+    .field textarea{min-height:92px;resize:vertical}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(47,161,179,.1)}
+    .upload{border:1px dashed #bfd7da;border-radius:9px;padding:25px;text-align:center;background:#f9fcfc}
+    .upload i{font-size:22px;color:var(--brand);margin-bottom:10px}
+    .upload b{display:block;font-size:12px;margin-bottom:5px}
+    .upload p{font-size:10px;color:var(--muted);margin-bottom:13px}
+    .upload-state{margin-top:10px;color:var(--green);font-size:10px;font-weight:600}
+    .info-note{display:flex;gap:10px;margin-top:14px;padding:12px 14px;border-radius:7px;background:var(--brand-soft);color:#49676b;font-size:10px}
+    .onboarding-actions{display:flex;justify-content:space-between;align-items:center;margin-top:28px}
+    .analysis-wrap{text-align:center}
+    .analysis-ring{width:128px;height:128px;margin:0 auto 28px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--brand) calc(var(--value)*1%),#e8edef 0);position:relative}
+    .analysis-ring:before{content:"";position:absolute;inset:10px;background:#fff;border-radius:50%}
+    .analysis-ring strong{position:relative;color:var(--brand-dark);font-size:22px}
+    .analysis-list{max-width:410px;margin:auto;text-align:left}
+    .analysis-item{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #eef0f1;font-size:11px}
+    .analysis-item i{width:20px;color:#bbc1c3}
+    .analysis-item.done i{color:var(--green)}
+    .review-section{padding:18px 0;border-bottom:1px solid var(--line)}
+    .review-section:first-child{padding-top:0}
+    .review-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .review-title h3{margin:0}
+    .review-title button{border:0;background:none;color:var(--brand);font-size:10px;font-weight:600}
+    .review-card{padding:14px;border-radius:7px;background:#f7f9f9}
+    .review-card b{display:block;font-size:11px}
+    .review-card span{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+    .skill-pills{display:flex;flex-wrap:wrap;gap:7px}
+    .skill-pills span{border:1px solid #d9e2e3;border-radius:999px;padding:6px 10px;font-size:10px;color:#506063;background:#fff}
+    .career-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+    .career-option{padding:15px;border:1px solid var(--line);border-radius:8px;background:#fff;text-align:left}
+    .career-option.selected{border-color:var(--brand);background:#f4fbfb}
+    .career-option i{color:var(--brand);width:24px}
+    .career-option b{font-size:11px}
+    .journey-box{padding:22px;border-radius:10px;background:linear-gradient(135deg,#e7f4f5,#f9fcfc)}
+    .journey-box h2{margin-bottom:5px}
+    .journey-box p{color:var(--muted);font-size:11px}
+    .journey-list{display:grid;gap:9px;margin-top:20px}
+    .journey-row{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #e5ebec;border-radius:7px;padding:11px 13px;font-size:11px}
+    .journey-row i{color:var(--green)}
+
+    /* Application shell */
+    .portal{min-height:100vh}
+    .sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:#fff;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;z-index:10}
+    .side-brand{display:flex;align-items:center;gap:12px;padding:8px 10px 24px}
+    .side-brand .logo{width:40px;height:40px;border-radius:11px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;font-size:17px}
+    .side-brand b{display:block;color:#292f31;font-size:16px;font-weight:600}
+    .side-brand small{display:block;color:#959a9c;font-size:8px;letter-spacing:.08em;text-transform:uppercase}
+    .side-label{padding:0 12px;margin:9px 0 7px;color:#a0a5a7;font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+    .side-nav{display:grid;gap:3px}
+    .side-nav button{width:100%;min-height:42px;padding:11px 14px;border:0;border-radius:8px;background:#fff;color:#657073;display:flex;align-items:center;gap:12px;text-align:left;font-size:15px;font-weight:400}
+    .side-nav button i{width:18px;text-align:center;font-size:14px;color:#a0a6a8}
+    .side-nav button:hover{background:#f5f9f9;color:var(--brand-dark)}
+    .side-nav button.active{background:var(--brand-soft);color:var(--brand-dark);font-weight:600}
+    .side-nav button.active i{color:var(--brand-dark)}
+    .side-nav button.locked{color:#b4b9ba}
+    .side-nav .nav-badge{margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--orange)}
+    .side-user{margin-top:auto;border-top:1px solid var(--line);padding:17px 7px 0;display:flex;align-items:center;gap:10px}
+    .avatar{width:32px;height:32px;border-radius:50%;background:var(--orange-soft);color:#a84827;display:grid;place-items:center;font-size:10px;font-weight:700}
+    .side-user b{display:block;font-size:10px}
+    .side-user small{display:block;color:var(--muted);font-size:8px}
+    .portal-main{margin-left:var(--sidebar);min-height:100vh;padding:28px 36px 56px}
+    .page{max-width:1100px;margin:auto}
+    .page-top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:24px}
+    .page-top h1{margin-bottom:5px}
+    .page-top p{margin:0;color:var(--muted);font-size:11px}
+    .page-actions{display:flex;gap:9px}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+    .metric{padding:16px 17px}
+    .metric small{display:block;color:var(--muted);font-size:9px}
+    .metric strong{display:block;margin-top:8px;color:var(--brand-dark);font-size:22px;letter-spacing:-.04em}
+    .metric span{display:block;color:var(--muted);font-size:9px;margin-top:2px}
+    .home-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:14px}
+    .welcome-card{padding:27px 30px;background:linear-gradient(125deg,#fff 45%,#e8f4f5);position:relative;overflow:hidden}
+    .welcome-card:after{content:"";position:absolute;right:-45px;top:-55px;width:180px;height:180px;border-radius:50%;border:30px solid rgba(47,161,179,.1)}
+    .welcome-card>*{position:relative;z-index:1}
+    .welcome-card h1{max-width:560px;margin-bottom:9px}
+    .welcome-card p{max-width:570px;color:var(--muted);font-size:11px}
+    .welcome-card .btn{margin-top:11px}
+    .score-card{padding:23px;text-align:center}
+    .score-ring{width:118px;height:118px;margin:4px auto 14px;border-radius:50%;background:conic-gradient(var(--brand) calc(var(--score)*1%),#e8edee 0);display:grid;place-items:center;position:relative}
+    .score-ring:before{content:"";position:absolute;inset:9px;border-radius:50%;background:#fff}
+    .score-ring div{position:relative}
+    .score-ring strong{display:block;color:var(--brand-dark);font-size:24px;line-height:1}
+    .score-ring span{font-size:8px;color:var(--muted)}
+    .section-card{margin-top:14px}
+    .section-head{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:15px}
+    .section-head h2{margin:0}
+    .section-head p{margin:3px 0 0;color:var(--muted);font-size:10px}
+    .section-body{padding:18px 19px}
+    .next-course{display:flex;align-items:center;gap:17px}
+    .course-number{width:52px;height:52px;border-radius:9px;background:var(--brand-soft);color:var(--brand-dark);display:grid;place-items:center;font-weight:700;font-size:18px}
+    .next-course div:nth-child(2){flex:1}
+    .next-course h3{margin-bottom:3px}
+    .next-course p{margin:0;color:var(--muted);font-size:10px}
+    .competency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .competency-card{padding:14px;border:1px solid var(--line);border-radius:7px}
+    .competency-card span{display:block;color:var(--muted);font-size:9px;margin-bottom:7px}
+    .competency-card b{display:block;font-size:11px;margin-bottom:8px}
+
+    /* Learning index */
+    .summary-strip{display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:14px}
+    .summary-strip div{padding:14px 18px;border-right:1px solid var(--line)}
+    .summary-strip div:last-child{border:0}
+    .summary-strip strong{display:block;color:var(--brand-dark);font-size:18px}
+    .summary-strip span{font-size:9px;color:var(--muted)}
+    .assessment-row{margin-bottom:14px;padding:15px 18px;display:flex;align-items:center;gap:12px}
+    .assessment-row i{width:30px;height:30px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center}
+    .assessment-row b{font-size:11px}
+    .assessment-row span{display:block;color:var(--muted);font-size:9px}
+    .course-list{display:grid;gap:10px}
+    .course-row{padding:18px;display:grid;grid-template-columns:48px minmax(0,1fr) 190px 118px;gap:16px;align-items:center}
+    .course-row.current{border-color:#a9d8dd;box-shadow:inset 3px 0 var(--brand)}
+    .course-row.locked{background:#f8f9f9;color:#919799}
+    .course-index{width:42px;height:42px;border-radius:9px;background:var(--brand-soft);color:var(--brand-dark);display:grid;place-items:center;font-size:15px;font-weight:700}
+    .course-row.done .course-index{background:var(--green-soft);color:var(--green)}
+    .course-row.locked .course-index{background:#eceeef;color:#9ba1a3}
+    .course-row h3{margin:0 0 4px}
+    .course-meta{display:flex;gap:14px;color:var(--muted);font-size:9px}
+    .course-points{text-align:right}
+    .course-points strong{display:block;color:var(--brand-dark);font-size:14px}
+    .course-points span{font-size:9px;color:var(--muted)}
+    .course-row.locked .course-points strong{color:#919799}
+    .course-action{text-align:right}
+    .unlock-note{margin:13px 0 0;padding:11px 14px;border-radius:7px;background:#f7f9f9;color:var(--muted);font-size:9px}
+
+    /* Learning index — canonical course-list layout */
+    .learning-index-portal .portal-main{background:#f5f6f7;padding:32px 36px 52px}
+    .learning-index-portal .page{max-width:1100px}
+    .li-title{margin:0;color:#111416;font-size:var(--type-display-size);line-height:1.2;font-weight:var(--weight-medium);letter-spacing:var(--tracking-display)}
+    .li-subtitle{margin:10px 0 0;color:#777f82;font-size:var(--type-row-title-size);line-height:1.7;font-weight:var(--weight-light)}
+    .li-summary{display:flex;align-items:center;gap:26px;margin-top:22px;padding:22px 26px;border:1px solid #eceeef;border-radius:8px;background:#fff}
+    .li-summary-count{flex:none;text-align:center}
+    .li-summary-count strong{display:block;color:#292f31;font-size:var(--type-page-title-size);line-height:1;font-weight:var(--weight-semibold)}
+    .li-summary-count span{display:block;margin-top:6px;color:#777f82;font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-light);white-space:nowrap}
+    .li-summary-progress{flex:1;min-width:0}
+    .li-summary-labels{display:flex;align-items:center;justify-content:space-between;gap:16px;color:#4e5659;font-size:var(--type-body-size);line-height:var(--type-body-line)}
+    .li-summary-labels b{color:#292f31;font-weight:var(--weight-semibold);white-space:nowrap}
+    .li-summary-track{height:8px;margin-top:10px;border-radius:999px;background:#e9ecef;overflow:hidden}
+    .li-summary-track span{display:block;height:100%;border-radius:inherit;background:var(--brand);transition:width .3s ease}
+    .li-panel{margin-top:20px;padding:22px 26px;border:1px solid #eceeef;border-radius:8px;background:#fff}
+    .li-assessment{display:flex;align-items:center;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+    .li-assessment-icon{width:34px;height:34px;border-radius:8px;background:#eaf7f4;color:#00a989;display:grid;place-items:center;font-size:14px;flex:none}
+    .li-assessment-title{flex:1;min-width:0;color:#343a3c;font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .li-assessment-status{display:inline-flex;align-items:center;gap:7px;color:#008886;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-semibold);white-space:nowrap}
+    .li-assessment-status i{font-size:11px}
+    .li-course{display:flex;align-items:flex-start;gap:18px;padding:22px 0;border-bottom:1px solid var(--line)}
+    .li-course.current{padding-left:20px;border-left:3px solid var(--brand);border-radius:0 8px 8px 0;background:#fafafa}
+    .li-course.locked{opacity:.72}
+    .li-course-icon{width:52px;height:52px;border-radius:8px;display:grid;place-items:center;font-size:20px;flex:none}
+    .li-course.done .li-course-icon{background:#eaf7f4;color:#00a989}
+    .li-course.current .li-course-icon{background:var(--brand-soft);color:var(--brand)}
+    .li-course.locked .li-course-icon{background:#f5f6f7;color:#8f9698}
+    .li-course-copy{flex:1;min-width:0}
+    .li-course-tag{display:inline-flex;align-items:center;min-height:24px;padding:0 12px;border-radius:999px;font-size:var(--type-meta-size);line-height:1;font-weight:var(--weight-semibold)}
+    .li-course.done .li-course-tag{background:#eaf7f4;color:#008886}
+    .li-course.current .li-course-tag{background:var(--brand-soft);color:var(--brand-dark)}
+    .li-course.locked .li-course-tag{background:#f1f2f2;color:#555d60}
+    .li-course-name{margin-top:10px;color:#181b1d;font-size:var(--type-feature-title-size);line-height:var(--type-feature-title-line);font-weight:var(--weight-semibold)}
+    .li-course.locked .li-course-name{color:#555d60}
+    .li-course-description{margin-top:6px;color:#777f82;font-size:var(--type-body-size);line-height:1.7;font-weight:var(--weight-light)}
+    .li-course-meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:12px}
+    .li-course-meta span{display:inline-flex;align-items:center;gap:7px;color:#777f82;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line)}
+    .li-course-meta i{font-size:12px}
+    .li-course-meta span:nth-child(1) i{color:var(--brand)}
+    .li-course-meta span:nth-child(2) i{color:#c79a3a}
+    .li-course-meta span:nth-child(3) i{color:#777f82}
+    .li-segments{display:flex;gap:6px;margin-top:13px}
+    .li-segments span{width:34px;height:6px;border-radius:999px;background:var(--line)}
+    .li-segments span.done{background:#00b295}
+    .li-segments span.current{background:var(--brand)}
+    .li-course-side{min-width:150px;flex:none;text-align:right}
+    .li-course-points{color:#292f31;font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-semibold)}
+    .li-course.locked .li-course-points{color:#8f9698}
+    .li-course-side .btn{min-height:44px;margin-top:14px}
+    .li-lock-note{display:inline-flex;align-items:flex-start;gap:7px;max-width:150px;margin-top:12px;color:#777f82;text-align:left;font-size:var(--type-meta-size);line-height:var(--type-meta-line)}
+    .li-lock-note i{margin-top:4px;font-size:10px;flex:none}
+    .li-note{display:flex;align-items:flex-start;gap:10px;padding-top:20px;color:#777f82;font-size:var(--type-supporting-size);line-height:1.7;font-weight:var(--weight-light)}
+    .li-note i{margin-top:4px;color:#c79a3a;flex:none}
+
+    /* Course */
+    .course-header{padding:21px 23px}
+    .course-header-top{display:flex;justify-content:space-between;gap:20px}
+    .course-header h1{font-size:22px;margin-bottom:5px}
+    .course-header p{color:var(--muted);font-size:10px;margin-bottom:0}
+    .module-track{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:20px}
+    .module-tile{padding:12px;border:1px solid var(--line);border-radius:7px}
+    .module-tile.done{background:var(--green-soft);border-color:transparent}
+    .module-tile.current{background:var(--brand-soft);border-color:transparent}
+    .module-tile.locked{background:#f5f6f6;color:#9da2a4}
+    .module-tile b{display:block;font-size:10px}
+    .module-tile span{display:block;font-size:8px;margin-top:3px;color:var(--muted)}
+    .course-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:14px;margin-top:14px}
+    .lesson-card{padding:23px}
+    .lesson-card h2{font-size:19px;margin-bottom:7px}
+    .lesson-intro{color:var(--muted);font-size:10px}
+    .task-list{margin:20px 0}
+    .task{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #eef0f0}
+    .task:last-child{border:0}
+    .task-icon{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#eff1f2;color:#8d9496;font-size:9px}
+    .task.done .task-icon{background:var(--green-soft);color:var(--green)}
+    .task.current .task-icon{background:var(--brand);color:#fff}
+    .task b{font-size:10px}
+    .task span{display:block;color:var(--muted);font-size:8px}
+    .case-box{padding:17px;border-radius:7px;background:#f5f9f9;border-left:3px solid var(--brand)}
+    .case-box h3{color:var(--brand-dark);margin-bottom:6px}
+    .case-box p{margin:0;color:#586568;font-size:10px;line-height:1.75}
+    .answer-hints{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:16px 0}
+    .answer-hint{padding:10px;border:1px solid var(--line);border-radius:7px}
+    .answer-hint b{font-size:9px}
+    .answer-hint span{display:block;color:var(--muted);font-size:8px;margin-top:2px}
+    .answer-box{width:100%;min-height:150px;border:1px solid #dce1e2;border-radius:7px;padding:12px;resize:vertical;outline:0;font-size:11px;line-height:1.65}
+    .answer-box:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(47,161,179,.1)}
+    .submit-row{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:12px}
+    .rubric-card{padding:19px;height:max-content;position:sticky;top:20px}
+    .rubric-card h2{font-size:15px}
+    .rubric-levels{display:grid;gap:8px;margin:14px 0 20px}
+    .rubric-level{display:flex;align-items:center;gap:9px;font-size:9px;color:var(--muted)}
+    .rubric-level span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#eef1f2;color:#7a8284;font-weight:700}
+    .rubric-level.target{color:var(--brand-dark);font-weight:600}
+    .rubric-level.target span{background:var(--brand);color:#fff}
+    .reward{padding:14px;border-radius:7px;background:var(--orange-soft)}
+    .reward b{display:block;color:#a84827;font-size:10px}
+    .reward p{margin:4px 0 0;color:#8f604f;font-size:8px}
+
+    /* Results */
+    .result-layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:14px}
+    .result-score-card{padding:27px;text-align:center}
+    .stars{color:var(--yellow);letter-spacing:3px;font-size:18px;margin:10px 0}
+    .result-number{font-size:36px;font-weight:700;color:var(--brand-dark);line-height:1}
+    .result-number small{font-size:13px;color:var(--muted)}
+    .result-score-card p{color:var(--muted);font-size:10px}
+    .point-gain{display:inline-flex;border-radius:999px;padding:6px 11px;background:var(--green-soft);color:var(--green);font-size:10px;font-weight:600}
+    .point-gain.fail{background:var(--danger-soft);color:var(--danger)}
+    .feedback-card{padding:23px}
+    .feedback-card blockquote{margin:14px 0;padding:13px 15px;background:#f6f9f9;border-left:3px solid var(--brand);color:#526164;font-size:10px;line-height:1.7}
+    .trace{display:grid;gap:8px;margin:16px 0}
+    .trace-row{display:flex;gap:9px;align-items:flex-start;font-size:10px}
+    .trace-row i{color:var(--green);margin-top:3px}
+    .trace-row.fail i{color:var(--danger)}
+    .result-bottom{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+    .result-bottom .card{padding:19px}
+    .result-bottom ul{padding-left:17px;margin:9px 0 0;color:var(--muted);font-size:10px;line-height:1.8}
+
+    /* Learning Result — pass and retry states from the uploaded source */
+    .learning-result-portal .portal-main{background:#f5f6f7;padding:30px 40px 56px}
+    .learning-result-portal .page{max-width:916px}
+    .lr-breadcrumb{margin-bottom:18px}
+    .lr-score,.lr-coach,.lr-structure,.lr-progress-card{background:#fff;border:1px solid #eceeef;border-radius:8px}
+    .lr-score{padding:34px 30px;text-align:center}
+    .lr-score-icon{width:62px;height:62px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-size:27px}
+    .lr-score.pass .lr-score-icon{background:#eaf7f4;color:#00a989}
+    .lr-score.fail .lr-score-icon{background:#fdf4e3;color:#c79a3a}
+    .lr-score-title{margin-top:16px;color:#121416;font-size:var(--type-page-title-size);line-height:var(--type-page-title-line);font-weight:var(--weight-medium);letter-spacing:var(--tracking-heading)}
+    .lr-stars{display:flex;justify-content:center;gap:6px;margin-top:14px}
+    .lr-stars i{font-size:25px;color:#c79a3a}
+    .lr-stars i.empty{color:#dfe4e6}
+    .lr-score-target{margin-top:12px;color:#777f82;font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-light)}
+    .lr-score-target b{color:#252a2c;font-weight:var(--weight-semibold)}
+    .lr-score.pass .lr-score-target strong{color:#008886}
+    .lr-score.fail .lr-score-target strong{color:#c79a3a}
+    .lr-result-pill{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 22px;margin-top:16px;border-radius:999px;font-size:var(--type-row-title-size);line-height:1;font-weight:var(--weight-semibold)}
+    .lr-result-pill.pass{background:#eaf7f4;color:#008886}
+    .lr-result-pill.fail{background:#f5f6f7;color:#4f5659}
+    .lr-result-pill i{font-size:13px}
+    .lr-agent-note{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:15px;color:#777f82;font-size:var(--type-meta-size);line-height:var(--type-meta-line)}
+    .lr-agent-note i{color:var(--brand)}
+    .lr-coach{margin-top:20px;overflow:hidden;border-color:rgba(47,161,179,.34)}
+    .lr-coach-head{display:flex;align-items:center;gap:14px;padding:20px 26px;background:var(--brand-soft)}
+    .lr-coach-icon{width:42px;height:42px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:17px;flex:none}
+    .lr-coach-title{flex:1;min-width:0}
+    .lr-coach-title b{display:block;color:#202426;font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-semibold)}
+    .lr-coach-title span{display:block;margin-top:2px;color:var(--brand-dark);font-size:var(--type-meta-size);line-height:var(--type-meta-line)}
+    .lr-coach-status{display:inline-flex;align-items:center;gap:7px;min-height:26px;padding:0 12px;border-radius:999px;background:#fff;color:var(--brand-dark);font-size:var(--type-meta-size);line-height:1;font-weight:var(--weight-semibold);white-space:nowrap}
+    .lr-coach-status.pass{color:#008886}
+    .lr-coach-status-dot{width:6px;height:6px;border-radius:50%;background:var(--brand)}
+    .lr-coach-status.pass .lr-coach-status-dot{background:#00b295}
+    .lr-coach-body{padding:22px 26px 26px}
+    .lr-rubric-quote,.lr-evidence{border-radius:0 8px 8px 0;border-left:3px solid #dfe4e6;padding:16px 20px;background:#f5f6f7}
+    .lr-evidence{margin-top:14px;border-left-color:var(--brand);background:var(--brand-soft)}
+    .lr-block-label{color:#777f82;font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-label);text-transform:uppercase}
+    .lr-evidence .lr-block-label{color:var(--brand-dark)}
+    .lr-block-copy{margin-top:8px;color:#535b5e;font-size:var(--type-row-title-size);line-height:1.75;font-weight:var(--weight-light);font-style:italic}
+    .lr-evidence .lr-block-copy{color:#175f68}
+    .lr-tip{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:16px 20px;border-radius:8px;background:#fde7df;color:#50585a;font-size:var(--type-body-size);line-height:var(--type-body-line)}
+    .lr-tip i{margin-top:5px;color:var(--orange);flex:none}
+    .lr-gap-label{margin-top:22px;color:#777f82;font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-label);text-transform:uppercase}
+    .lr-gap-list{display:grid;gap:12px;margin-top:12px}
+    .lr-gap{display:flex;gap:14px;padding:15px 18px;border-radius:8px;background:#fdf4e3}
+    .lr-gap i{margin-top:4px;color:#c79a3a;flex:none}
+    .lr-gap b{display:block;color:#292f31;font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .lr-gap span{display:block;margin-top:3px;color:#666e71;font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .lr-plan{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+    .lr-plan-head{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .lr-plan-head b{font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium)}
+    .lr-plan-head span{color:#777f82;font-size:var(--type-meta-size);line-height:var(--type-meta-line)}
+    .lr-plan-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+    .lr-plan-number{width:28px;height:28px;border-radius:50%;background:var(--brand-soft);color:var(--brand-dark);display:grid;place-items:center;font-size:var(--type-meta-size);font-weight:var(--weight-semibold)}
+    .lr-plan-copy b{display:block;font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .lr-plan-copy span,.lr-plan-time{color:#777f82;font-size:var(--type-meta-size);line-height:var(--type-meta-line)}
+    .lr-coach-ask{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+    .lr-ask-label{color:#777f82;font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-label);text-transform:uppercase}
+    .lr-ask-row{display:flex;gap:10px;margin-top:12px}
+    .lr-coach-input{flex:1;min-width:0;height:46px;padding:0 16px;border:1px solid #d9dfe0;border-radius:999px;background:#fff;color:#343a3c;font-size:var(--type-body-size);outline:0}
+    .lr-coach-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(47,161,179,.13)}
+    .lr-send{width:46px;height:46px;border:0;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center}
+    .lr-prompt-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .lr-prompt{border:0;border-radius:999px;padding:7px 12px;background:#f5f6f7;color:#5d6568;font-size:var(--type-meta-size);line-height:var(--type-meta-line)}
+    .lr-prompt i{margin-right:6px;color:var(--brand);font-size:10px}
+    .lr-structure,.lr-progress-card{margin-top:20px;padding:26px 28px}
+    .lr-card-head{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .lr-card-head h2{margin:0;color:#202426;font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium)}
+    .lr-card-head span{color:#777f82;font-size:var(--type-meta-size);line-height:var(--type-meta-line)}
+    .lr-structure-list{margin-top:8px}
+    .lr-structure-row{display:flex;gap:14px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--line)}
+    .lr-structure-row>i{width:16px;margin-top:4px;text-align:center;flex:none}
+    .lr-structure-row.ok>i{color:#00b295}
+    .lr-structure-row.partial>i{color:#c79a3a}
+    .lr-structure-row.missing>i{color:#ed1c24}
+    .lr-structure-copy b{display:block;color:#292f31;font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .lr-structure-copy span{display:block;margin-top:3px;color:#777f82;font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .lr-progress-list{margin-top:20px}
+    .lr-progress-row{margin-bottom:18px}
+    .lr-progress-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .lr-progress-top span{color:#343a3c;font-size:var(--type-row-title-size);line-height:var(--type-row-title-line)}
+    .lr-progress-top b{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-semibold);white-space:nowrap}
+    .lr-progress-track{height:8px;margin-top:9px;border-radius:999px;background:var(--line);overflow:hidden}
+    .lr-progress-track span{display:block;height:100%;border-radius:inherit;background:var(--brand)}
+    .lr-progress-card.fail .lr-progress-track span{background:#aeb6bb}
+    .lr-progress-delta{margin-top:6px;color:#008886;font-size:var(--type-meta-size);line-height:var(--type-meta-line)}
+    .lr-progress-card.fail .lr-progress-delta{color:#777f82}
+    .lr-actions{display:flex;gap:14px;margin-top:8px}
+    .lr-actions .btn{min-height:48px;flex:1}
+    .lr-actions .btn:last-child{flex:1.4}
+
+    /* Profile */
+    .profile-card{padding:23px;display:flex;align-items:center;gap:17px}
+    .profile-avatar{width:62px;height:62px;border-radius:50%;background:var(--orange-soft);color:#ae4b29;display:grid;place-items:center;font-size:18px;font-weight:700}
+    .profile-main{flex:1}
+    .profile-main h1{font-size:20px;margin-bottom:2px}
+    .profile-main p{color:var(--muted);font-size:9px;margin:0}
+    .profile-stats{display:flex;gap:27px}
+    .profile-stat strong{display:block;color:var(--brand-dark);font-size:19px}
+    .profile-stat span{display:block;color:var(--muted);font-size:8px}
+    .tabs{display:flex;gap:0;margin:14px 0;border-bottom:1px solid #dfe3e4}
+    .tabs button{border:0;border-bottom:2px solid transparent;background:transparent;padding:12px 15px;color:var(--muted);font-size:10px}
+    .tabs button.active{border-color:var(--brand);color:var(--brand-dark);font-weight:600}
+    .profile-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    .highlight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .highlight{padding:15px;border:1px solid var(--line);border-radius:7px}
+    .highlight strong{display:block;color:var(--brand-dark);font-size:21px}
+    .highlight b{font-size:10px}
+    .highlight p{color:var(--muted);font-size:8px;margin:3px 0 0}
+    .recommendation{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid #edf0f0}
+    .recommendation:last-child{border:0}
+    .recommendation i{width:28px;height:28px;border-radius:8px;background:var(--brand-soft);color:var(--brand-dark);display:grid;place-items:center}
+    .recommendation b{display:block;font-size:10px}
+    .recommendation span{display:block;color:var(--muted);font-size:8px;margin-top:2px}
+    .privacy-note{display:flex;gap:10px;margin-top:14px;padding:13px 15px;border:1px solid #e3e8e9;border-radius:7px;color:var(--muted);font-size:9px;background:#f9fafa}
+
+    /* PMT ready */
+    .ready-hero{padding:31px;text-align:center;background:linear-gradient(135deg,var(--brand-dark),#167f87);color:#fff;overflow:hidden;position:relative}
+    .ready-hero:before,.ready-hero:after{content:"";position:absolute;border:26px solid rgba(255,255,255,.08);border-radius:50%}
+    .ready-hero:before{width:150px;height:150px;left:-70px;bottom:-90px}
+    .ready-hero:after{width:190px;height:190px;right:-80px;top:-100px}
+    .ready-hero>*{position:relative;z-index:1}
+    .ready-mark{width:57px;height:57px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;background:#fff;color:var(--brand-dark);font-size:22px}
+    .ready-hero h1{font-size:27px;margin-bottom:7px}
+    .ready-hero p{color:#cce9ea;font-size:10px;margin-bottom:20px}
+    .ready-metrics{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px}
+    .ready-metrics div{padding:16px;text-align:center;border-right:1px solid var(--line)}
+    .ready-metrics div:last-child{border:0}
+    .ready-metrics strong{display:block;color:var(--brand-dark);font-size:20px}
+    .ready-metrics span{font-size:8px;color:var(--muted)}
+    .verified-list{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .verified{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:7px;font-size:10px}
+    .verified i{color:var(--green)}
+    .certificate{padding:22px;border:1px solid #b7dadd;background:linear-gradient(135deg,#fff,#eaf5f6);position:relative;overflow:hidden}
+    .certificate:after{content:"A";position:absolute;right:15px;bottom:-28px;font-size:120px;font-weight:700;color:rgba(47,161,179,.08)}
+    .certificate>*{position:relative;z-index:1}
+    .certificate h2{color:var(--brand-dark);margin-bottom:4px}
+    .certificate p{font-size:9px;color:var(--muted)}
+    .tracking{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px}
+    .track-step{position:relative;text-align:center}
+    .track-step:not(:last-child):after{content:"";position:absolute;height:2px;background:#e1e5e6;top:14px;left:50%;right:-50%}
+    .track-step.done:not(:last-child):after{background:var(--brand)}
+    .track-dot{position:relative;z-index:1;width:29px;height:29px;border-radius:50%;margin:auto;display:grid;place-items:center;background:#eef1f2;color:#8f9698;font-size:9px}
+    .track-step.done .track-dot{background:var(--brand);color:#fff}
+    .track-step b{display:block;font-size:9px;margin-top:8px}
+    .track-step span{display:block;color:var(--muted);font-size:8px}
+    /* Alignment and scale from the uploaded design source */
+    .persona-card>.persona-icon{display:grid;place-items:center}
+    .track-step>.track-dot{display:grid;place-items:center}
+    .course-breadcrumb{display:flex;align-items:center;gap:10px;font-size:14px;margin-bottom:20px}
+    .course-breadcrumb button{display:inline-flex;align-items:center;gap:7px;border:0;background:none;padding:0;color:#777f82;font-size:14px}
+    .course-breadcrumb>i{font-size:9px;color:#c0c5c7}
+    .course-breadcrumb span{font-weight:500;color:#343a3c}
+    .course-header.reference{padding:28px 30px}
+    .course-header.reference .course-title{font-size:30px;font-weight:500;color:#171b1d;line-height:1.25;margin-top:14px}
+    .course-header.reference .course-description{font-size:14px;font-weight:300;color:#777f82;line-height:1.7;margin:10px 0 0;max-width:760px}
+    .course-header.reference .module-track{display:flex;gap:14px;margin-top:22px}
+    .course-header.reference .module-tile{flex:1;padding:16px 18px;display:flex;align-items:center;gap:14px}
+    .module-tile>.module-state-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:13px}
+    .module-tile.done .module-state-icon{background:var(--green);color:#fff}
+    .module-tile.current .module-state-icon{background:var(--brand);color:#fff}
+    .module-tile.locked .module-state-icon{background:var(--subtle);color:#abb1b3}
+    .course-header.reference .module-tile b{font-size:15px;font-weight:500}
+    .course-header.reference .module-tile span{font-size:12px;margin-top:4px}
+    .course-summary-line{display:flex;justify-content:space-between;align-items:center;margin-top:24px;color:#747b7e;font-size:13px}
+    .course-summary-line b{color:#343a3c}
+    .course-layout.reference{display:flex;gap:20px;margin-top:20px;align-items:flex-start}
+    .course-layout.reference .lesson-card{flex:1.55;min-width:0;padding:26px 28px}
+    .course-layout.reference .course-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px}
+    .lesson-module-head{display:flex;align-items:center;gap:14px}
+    .lesson-module-number{width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:600;flex:none}
+    .lesson-module-head h2{font-size:21px;font-weight:500;color:#171b1d;flex:1;margin:0}
+    .lesson-target{display:flex;align-items:center;gap:9px;margin-top:14px;font-size:14px;color:#596164}
+    .lesson-target .target-icon{color:var(--orange);font-size:13px}
+    .lesson-target .target-stars{display:inline-flex;gap:2px;color:var(--yellow)}
+    .lesson-target .target-stars i{font-size:13px}
+    .course-layout.reference .task-list{margin-top:20px}
+    .course-layout.reference .task{gap:14px;padding:15px 0;border-top:1px solid var(--line);border-bottom:0}
+    .course-layout.reference .task>.task-status{width:16px;display:grid;place-items:center;flex:none;font-size:14px}
+    .course-layout.reference .task.done>.task-status{color:var(--green)}
+    .course-layout.reference .task.current>.task-status{color:var(--orange);font-size:12px}
+    .course-layout.reference .task>div{display:flex;align-items:center;flex:1;gap:12px;min-width:0}
+    .course-layout.reference .task b{font-size:15px;font-weight:400;flex:1}
+    .course-layout.reference .task span{display:block;color:#747b7e;font-size:13px;flex:none}
+    .course-layout.reference .task a{font-size:13px;font-weight:500;color:var(--brand)}
+    .case-reference{margin-top:22px;padding-top:22px;border-top:1px solid var(--line)}
+    .case-reference .case-label,.hint-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+    .case-reference .case-label{color:var(--orange)}
+    .case-reference p{font-size:15px;font-weight:300;color:#596164;line-height:1.8;margin:12px 0 0}
+    .hint-label{margin-top:24px;color:#9aa0a2}
+    .course-layout.reference .answer-hints{grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 0}
+    .course-layout.reference .answer-hint{border:0;background:var(--subtle);padding:14px 10px;text-align:center}
+    .course-layout.reference .answer-hint span{width:26px;height:26px;margin:auto;border-radius:50%;background:#fff;color:var(--brand-dark);display:grid;place-items:center;font-size:12px;font-weight:600}
+    .course-layout.reference .answer-hint b{display:block;font-size:14px;font-weight:500;margin-top:9px}
+    .course-layout.reference .answer-box{height:132px;min-height:132px;margin-top:20px;padding:14px 16px;font-size:14px;font-weight:300}
+    .answer-help{font-size:13px;font-weight:300;color:#777f82;margin-top:10px}
+    .course-submit{margin-top:20px;min-height:46px;padding:0 26px;background:var(--orange);font-size:15px;font-weight:500}
+    .course-side .rubric-card{padding:24px 26px;position:static}
+    .course-side .rubric-card h2{font-size:17px;font-weight:500}
+    .rubric-stars-list{margin-top:14px}
+    .rubric-stars-row{display:flex;gap:16px;padding:15px 0;border-top:1px solid var(--line)}
+    .rubric-stars{display:flex;gap:2px;flex:none;padding-top:2px;color:var(--yellow)}
+    .rubric-stars i{font-size:12px}
+    .rubric-stars i.empty{color:#cfd4d5}
+    .rubric-stars-row p{margin:0;font-size:14px;font-weight:300;color:#596164;line-height:1.65}
+    .rewards-card{border-radius:8px;background:var(--brand-soft);border:1px solid rgba(47,161,179,.25);padding:24px 26px}
+    .rewards-card h2{font-size:17px;font-weight:500}
+    .reward-list{display:grid;gap:14px;margin-top:16px}
+    .reward-row{display:flex;align-items:center;gap:12px;color:var(--brand-dark);font-size:14px}
+    .reward-row i{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none}
+    /* Talent Profile — exact uploaded overview */
+    .profile-portal{--sidebar:236px;font-family:"Lexend",sans-serif;-webkit-font-smoothing:antialiased}
+    .tp-header{padding:26px 28px}
+    .tp-identity{display:flex;align-items:center;gap:20px}
+    .tp-avatar{width:76px;height:76px;border-radius:50%;background:#fde7df;color:#d94e26;display:grid;place-items:center;font-size:30px;font-weight:600;flex:none}
+    .tp-name{font-size:26px;font-weight:500;color:#171b1d;line-height:1.2}
+    .tp-role{font-size:16px;color:#596164;margin-top:5px;white-space:nowrap}
+    .tp-member{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#777f82;margin-top:9px;white-space:nowrap}
+    .tp-member i{color:var(--brand);font-size:12px}
+    .tp-divider{height:1px;background:var(--line);margin:22px 0 18px}
+    .tp-stats{display:flex;gap:44px}
+    .tp-stat strong{display:block;font-size:24px;font-weight:600;color:#292f31;line-height:1}
+    .tp-stat span{display:block;font-size:12px;font-weight:300;color:#777f82;margin-top:7px;white-space:nowrap}
+    .tp-level{width:206px;border-radius:8px;background:var(--brand-soft);padding:16px 18px;display:flex;align-items:center;gap:13px;margin-bottom:18px}
+    .tp-level-icon{width:38px;height:38px;border-radius:50%;background:#fff;color:#d2a438;display:grid;place-items:center;font-size:15px;flex:none}
+    .tp-level b{display:block;font-size:16px;font-weight:600;color:#292f31}
+    .tp-level a{font-size:13px;font-weight:500;color:var(--brand);display:inline-block;margin-top:3px;white-space:nowrap}
+    .tp-goal-row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .tp-goal{display:inline-flex;align-items:center;gap:10px;font-size:15px;color:#596164}
+    .tp-goal i{color:var(--orange);font-size:14px}
+    .tp-goal b{color:#292f31}
+    .tp-tabs{display:flex;gap:34px;margin-top:24px;border-bottom:1px solid var(--line)}
+    .tp-tabs button{border:0;border-bottom:3px solid transparent;background:transparent;padding:0 2px 14px;color:#777f82;font-size:16px;font-weight:400}
+    .tp-tabs button.active{border-bottom-color:var(--orange);margin-bottom:-1px;color:#171b1d;font-weight:600}
+    .tp-layout{display:flex;gap:20px;margin-top:24px;align-items:flex-start}
+    .tp-left{flex:1.5;min-width:0;display:flex;flex-direction:column;gap:20px}
+    .tp-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px}
+    .tp-readiness{padding:26px 28px}
+    .tp-readiness-head{display:flex;align-items:center;gap:22px}
+    .tp-ring{position:relative;width:104px;height:104px;border-radius:50%;background:conic-gradient(var(--brand) 0 38%,var(--line) 38% 100%);display:grid;place-items:center;flex:none}
+    .tp-ring:before{content:"";position:absolute;inset:9px;border-radius:50%;background:#fff}
+    .tp-ring-center{position:relative;text-align:center}
+    .tp-ring-center strong{display:block;font-size:27px;font-weight:600;color:#292f31;line-height:1}
+    .tp-ring-center span{font-size:11px;color:#a0a6a8}
+    .tp-readiness-copy h2{font-size:18px;font-weight:500;color:#292f31;margin:0}
+    .tp-readiness-copy p{font-size:14px;font-weight:300;color:#777f82;line-height:1.7;margin:7px 0 0}
+    .tp-link{display:inline-block;margin-top:12px;color:var(--brand);font-size:14px;font-weight:500}
+    .tp-section-title{font-size:17px;font-weight:500;color:#292f31;margin-top:18px}
+    .tp-highlight{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+    .tp-highlight-icon{width:40px;height:40px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:15px;flex:none}
+    .tp-highlight-copy{flex:1;min-width:0}
+    .tp-highlight-copy b{display:block;font-size:15px;font-weight:500;color:#292f31}
+    .tp-highlight-copy span{display:block;font-size:13px;font-weight:300;color:#777f82;margin-top:3px}
+    .tp-highlight-score{text-align:right;flex:none}
+    .tp-highlight-score strong{display:block;font-size:17px;font-weight:600}
+    .tp-mini-bar{width:96px;height:6px;border-radius:999px;background:var(--line);margin-top:7px;overflow:hidden}
+    .tp-mini-bar span{display:block;height:100%;border-radius:inherit}
+    .tp-agent{border-color:rgba(47,161,179,.3);overflow:hidden}
+    .tp-agent-head{display:flex;align-items:center;gap:14px;padding:18px 26px;background:var(--brand-soft)}
+    .tp-agent-icon{width:38px;height:38px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:15px;flex:none}
+    .tp-agent-title{flex:1}
+    .tp-agent-title b{display:block;font-size:16px;color:#292f31}
+    .tp-agent-title span{display:block;font-size:12px;color:var(--brand-dark);margin-top:3px}
+    .tp-update-pill{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 12px;border-radius:999px;background:#fff;color:var(--brand-dark);font-size:12px;font-weight:600}
+    .tp-update-pill:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand)}
+    .tp-agent-body{padding:18px 26px 24px}
+    .tp-list-row{display:flex;align-items:flex-start;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
+    .tp-list-icon{width:32px;height:32px;border-radius:50%;background:var(--subtle);color:var(--brand-dark);display:grid;place-items:center;font-size:13px;flex:none}
+    .tp-list-icon.teal{background:var(--brand-soft);color:var(--brand)}
+    .tp-list-copy{flex:1;min-width:0}
+    .tp-list-copy b{display:block;font-size:14px;font-weight:500;color:#292f31;line-height:1.5}
+    .tp-list-copy span{display:block;font-size:12px;color:#777f82;margin-top:4px;line-height:1.5}
+    .tp-list-copy.large b{font-size:15px}
+    .tp-list-copy.large span{font-size:13px;font-weight:300;margin-top:3px}
+    .tp-gain{font-size:14px;font-weight:600;color:#078c7f;flex:none}
+    .tp-side-card{padding:24px 26px}
+    .tp-side-card h2{font-size:17px;font-weight:500;color:#292f31;margin:0 0 10px}
+    .tp-visibility{border-radius:8px;background:#fde7df;padding:22px 24px}
+    .tp-visibility h2{display:flex;align-items:center;gap:12px;font-size:16px;color:#292f31}
+    .tp-visibility h2 i{color:var(--orange);font-size:15px}
+    .tp-visibility p{font-size:14px;font-weight:300;color:#596164;line-height:1.7;margin:10px 0 0}
+    .tp-empty-tab{padding:30px}
+    .tp-tab-layout{display:flex;gap:20px;margin-top:24px;align-items:flex-start}
+    .tp-tab-main{flex:1.5;min-width:0;display:flex;flex-direction:column;gap:20px}
+    .tp-tab-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px}
+    .tp-tab-card{padding:24px 26px}
+    .tp-card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+    .tp-card-heading h2{font-size:17px;font-weight:500;color:#292f31;margin:0}
+    .tp-card-heading p{font-size:13px;font-weight:300;line-height:1.5;color:#777f82;margin:4px 0 0}
+    .tp-status{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+    .tp-status.done{background:#eaf7f4;color:#078c7f}
+    .tp-status.current{background:var(--brand-soft);color:var(--brand-dark)}
+    .tp-status.locked{background:#f0f1f2;color:#8c9395}
+    .tp-status.waiting{background:#fff1e9;color:#c6542f}
+    .tp-competency-row{display:flex;align-items:center;gap:14px;padding:17px 0;border-bottom:1px solid var(--line)}
+    .tp-competency-icon{width:42px;height:42px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:15px;flex:none}
+    .tp-competency-copy{flex:1;min-width:0}
+    .tp-competency-copy b{display:block;font-size:15px;font-weight:500;color:#292f31}
+    .tp-competency-copy span{display:block;font-size:13px;font-weight:300;color:#777f82;margin-top:3px}
+    .tp-competency-value{width:112px;flex:none;text-align:right}
+    .tp-competency-value strong{display:block;font-size:17px}
+    .tp-competency-value .tp-mini-bar{width:112px}
+    .tp-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+    .tp-summary-item{padding:17px 18px;border-right:1px solid var(--line)}
+    .tp-summary-item:last-child{border:0}
+    .tp-summary-item strong{display:block;font-size:21px;font-weight:600;color:#292f31}
+    .tp-summary-item span{display:block;font-size:12px;font-weight:300;color:#777f82;margin-top:7px}
+    .tp-distribution{display:grid;gap:14px;margin-top:17px}
+    .tp-distribution-row{display:grid;grid-template-columns:105px 1fr 34px;gap:10px;align-items:center;font-size:13px}
+    .tp-distribution-row span:first-child{color:#596164}
+    .tp-distribution-row b{text-align:right;color:#292f31}
+    .tp-focus{padding:20px 22px;border-radius:8px;background:var(--brand-soft)}
+    .tp-focus h2{font-size:16px;margin-bottom:7px}
+    .tp-focus p{font-size:14px;font-weight:300;color:#596164;line-height:1.7;margin-bottom:15px}
+    .tp-rubric-group{padding:0 0 4px}
+    .tp-rubric-group+.tp-rubric-group{padding-top:20px;margin-top:16px;border-top:1px solid var(--line)}
+    .tp-rubric-group-head{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:7px}
+    .tp-rubric-group-head h3{font-size:15px;margin:0}
+    .tp-rubric-group-head span{font-size:12px;font-weight:300;color:#777f82}
+    .tp-rubric-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:14px;align-items:center;padding:15px 0;border-bottom:1px solid #f0f1f2}
+    .tp-rubric-dot{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#f0f2f2;color:#949a9c;font-size:12px}
+    .tp-rubric-dot.done{background:#eaf7f4;color:#078c7f}
+    .tp-rubric-dot.current{background:var(--brand-soft);color:var(--brand-dark)}
+    .tp-rubric-copy b{display:block;font-size:14px;font-weight:500;line-height:1.5}
+    .tp-rubric-copy span{display:block;color:#777f82;font-size:12px;font-weight:300;margin-top:3px}
+    .tp-rubric-points{font-size:13px;font-weight:600;color:#078c7f}
+    .tp-legend{display:grid;gap:12px;margin-top:14px}
+    .tp-legend-row{display:flex;align-items:center;gap:10px;font-size:13px;color:#596164}
+    .tp-legend-row .tp-rubric-dot{width:26px;height:26px}
+    .tp-timeline{position:relative;margin-top:10px}
+    .tp-event{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;padding:15px 0;position:relative}
+    .tp-event:not(:last-child):after{content:"";position:absolute;left:21px;top:51px;bottom:-8px;width:1px;background:var(--line)}
+    .tp-event-icon{width:42px;height:42px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;z-index:1}
+    .tp-event-copy b{display:block;font-size:14px;font-weight:500;line-height:1.5}
+    .tp-event-copy span{display:block;font-size:12px;color:#777f82;margin-top:3px}
+    .tp-event-time{font-size:12px;font-weight:300;color:#949a9c;white-space:nowrap;padding-top:3px}
+    .tp-filter-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+    .tp-filter-pills button{height:32px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#697174;padding:0 13px;font-size:12px}
+    .tp-filter-pills button.active{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-dark);font-weight:600}
+    .tp-month-stat{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)}
+    .tp-month-stat span{font-size:13px;font-weight:300;color:#596164}
+    .tp-month-stat b{font-size:15px;font-weight:500}
+    .tp-assessment{padding:18px 0;border-bottom:1px solid var(--line)}
+    .tp-assessment:first-of-type{padding-top:10px}
+    .tp-assessment-head{display:flex;align-items:flex-start;gap:13px}
+    .tp-assessment-icon{width:40px;height:40px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:none}
+    .tp-assessment-copy{flex:1}
+    .tp-assessment-copy h3{font-size:15px;margin:0}
+    .tp-assessment-copy p{font-size:13px;font-weight:300;color:#777f82;margin:4px 0 0;line-height:1.6}
+    .tp-assessment-result{display:flex;align-items:center;gap:18px;margin:13px 0 0 53px}
+    .tp-assessment-result div{font-size:12px;font-weight:300;color:#777f82}
+    .tp-assessment-result strong{display:block;color:#292f31;font-size:14px}
+    .tp-score-impact{display:flex;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+    .tp-score-impact i{width:30px;height:30px;border-radius:50%;background:#eaf7f4;color:#078c7f;display:grid;place-items:center}
+    .tp-score-impact div{flex:1}
+    .tp-score-impact b{display:block;font-size:14px;font-weight:500}
+    .tp-score-impact span{display:block;color:#777f82;font-size:12px;font-weight:300;margin-top:3px}
+
+    /* Student Home — two learning-status states */
+    .home-portal .portal-main{background:#fff;padding:34px 44px 56px}
+    .sh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+    .sh-greeting{margin:0;color:#171b1d;font-size:var(--type-page-title-size);line-height:var(--type-page-title-line);font-weight:var(--weight-medium);letter-spacing:var(--tracking-heading)}
+    .sh-intro{margin:8px 0 0;color:#777f82;font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .sh-top-actions{display:flex;align-items:center;gap:12px;flex:none}
+    .sh-round-action{position:relative;width:36px;height:36px;border:0;border-radius:50%;background:#f5f6f6;color:#777f82;display:grid;place-items:center;font-size:14px}
+    .sh-notice{position:absolute;top:-2px;right:-2px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#e54848;color:#fff;font-size:10px;font-weight:600;display:grid;place-items:center;border:2px solid #fff}
+    .sh-user{width:36px;height:36px;border-radius:50%;background:#fde7df;color:#d94e26;display:grid;place-items:center;font-size:15px;font-weight:600}
+    .sh-goal-hero{margin-top:26px;border-radius:8px;background:var(--brand-soft);border:1px solid rgba(47,161,179,.25);padding:30px 32px;display:flex;align-items:center;gap:32px}
+    .sh-goal-copy{flex:1;min-width:0}
+    .sh-goal-label{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--orange)}
+    .sh-goal-title{font-size:var(--type-display-size);line-height:var(--type-display-line);font-weight:var(--weight-medium);color:#171b1d;margin-top:10px}
+    .sh-goal-description{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light);color:var(--brand-dark);margin-top:10px;max-width:580px}
+    .sh-goal-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+    .sh-goal-pill{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 16px;border-radius:999px;background:#fff;color:#343a3c;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line)}
+    .sh-goal-pill i{font-size:12px;color:var(--brand)}
+    .sh-goal-visual{width:132px;height:132px;border-radius:50%;background:#fff;color:var(--orange);display:grid;place-items:center;flex:none;font-size:54px}
+    .sh-goal-strip{margin-top:26px;border-radius:8px;background:var(--brand-soft);border:1px solid rgba(47,161,179,.25);padding:20px 24px;display:flex;align-items:center;gap:18px}
+    .sh-goal-strip-icon{width:48px;height:48px;border-radius:8px;background:#fff;color:var(--orange);display:grid;place-items:center;font-size:21px;flex:none}
+    .sh-goal-strip-copy{flex:1;min-width:0}
+    .sh-goal-strip-copy b{display:block;font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium)}
+    .sh-goal-strip-copy span{display:block;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);color:var(--brand-dark);margin-top:5px}
+    .sh-two-col{display:flex;gap:20px;margin-top:20px;align-items:stretch}
+    .sh-course-card{flex:1.35;border-radius:8px;background:#fff;border:3px solid #47b4c3;padding:24px;display:flex;gap:18px}
+    .sh-course-icon{width:56px;height:56px;border-radius:8px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:22px;flex:none}
+    .sh-course-copy{flex:1;min-width:0}
+    .sh-course-tag{display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:999px;background:var(--brand-soft);color:var(--brand-dark);font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold)}
+    .sh-course-title{font-size:var(--type-feature-title-size);line-height:var(--type-feature-title-line);font-weight:var(--weight-medium);color:#292f31;margin-top:12px}
+    .sh-course-description{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light);color:#777f82;margin-top:6px}
+    .sh-course-progress{height:6px;border-radius:999px;background:var(--line);margin-top:14px;max-width:280px;overflow:hidden}
+    .sh-course-progress span{display:block;height:100%;border-radius:inherit;background:var(--brand)}
+    .sh-course-meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px}
+    .sh-course-meta span{display:inline-flex;align-items:center;gap:7px;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);color:#777f82}
+    .sh-course-meta i{font-size:12px;color:#a0a6a8}
+    .sh-progress-card{flex:1;border-radius:8px;background:#fff;border:1px solid var(--line);padding:24px;display:flex;flex-direction:column}
+    .sh-progress-head{display:flex;align-items:center;gap:20px}
+    .sh-ring{position:relative;width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--brand) calc(var(--value)*1%),var(--line) 0);display:grid;place-items:center;flex:none}
+    .sh-ring:before{content:"";position:absolute;inset:9px;border-radius:50%;background:#fff}
+    .sh-ring-copy{position:relative;text-align:center}
+    .sh-ring-copy strong{display:block;font-size:var(--type-page-title-size);line-height:1;font-weight:var(--weight-semibold)}
+    .sh-ring-copy span{display:block;font-size:var(--type-caption-size);line-height:var(--type-caption-line);color:#a0a6a8;margin-top:2px}
+    .sh-progress-copy{flex:1;min-width:0}
+    .sh-progress-copy b{display:block;font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium)}
+    .sh-progress-copy span{display:block;font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light);color:#777f82;margin-top:6px}
+    .sh-progress-divider{height:1px;background:var(--line);margin:20px 0 16px}
+    .sh-progress-stats{display:flex;justify-content:space-between}
+    .sh-progress-stat strong{display:block;font-size:var(--type-feature-title-size);line-height:1;font-weight:var(--weight-semibold)}
+    .sh-progress-stat span{display:block;font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-light);color:#777f82;margin-top:4px}
+    .sh-score-link{align-self:flex-end;margin-top:auto;padding-top:16px;border:0;background:none;color:var(--brand);font-size:var(--type-supporting-size);font-weight:var(--weight-medium)}
+    .sh-guide{margin-top:20px;border-radius:8px;background:#fff;border:1px solid var(--line);padding:24px 28px}
+    .sh-guide-title{font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium)}
+    .sh-guide-steps{display:flex;align-items:flex-start;margin-top:20px}
+    .sh-guide-step{flex:1;display:flex;align-items:flex-start;gap:8px}
+    .sh-guide-copy{flex:1;text-align:center;padding:0 6px}
+    .sh-guide-icon{width:48px;height:48px;margin:auto;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:18px}
+    .sh-guide-copy b{display:block;font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-medium);margin-top:12px}
+    .sh-guide-copy span{display:block;font-size:var(--type-meta-size);line-height:var(--type-supporting-line);font-weight:var(--weight-light);color:#777f82;margin-top:5px}
+    .sh-guide-arrow{color:#c8cdce;font-size:13px;margin-top:18px;flex:none}
+    .sh-guide-link{display:inline-block;margin-top:20px;border:0;background:none;color:var(--brand);font-size:var(--type-body-size);font-weight:var(--weight-medium)}
+    .sh-section-head{display:flex;align-items:center;gap:14px;margin-top:40px}
+    .sh-section-bar{width:5px;height:30px;background:var(--orange);flex:none}
+    .sh-section-title{font-size:var(--type-page-title-size);line-height:var(--type-page-title-line);font-weight:var(--weight-medium);color:#171b1d}
+    .sh-section-description{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light);color:#777f82;margin-top:10px}
+    .sh-competency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+    .sh-competency{border-radius:8px;background:#fff;border:1px solid var(--line);padding:22px 20px}
+    .sh-competency-icon{width:44px;height:44px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:17px}
+    .sh-competency-name{font-size:var(--type-tab-size);line-height:var(--type-tab-line);font-weight:var(--weight-medium);color:#292f31;margin-top:16px}
+    .sh-competency-meta{font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);color:#777f82;margin-top:7px}
+    .sh-competency-progress{height:6px;border-radius:999px;background:var(--line);margin-top:14px;overflow:hidden}
+    .sh-competency-progress span{display:block;height:100%;border-radius:inherit;background:var(--brand)}
+    .sh-competency-status{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);color:#777f82}
+    .sh-status-dot{width:7px;height:7px;border-radius:50%;background:#aeb6b8;flex:none}
+    .sh-competency-status.learning{color:var(--brand-dark);font-weight:var(--weight-medium)}
+    .sh-competency-status.learning .sh-status-dot{background:var(--brand)}
+    .sh-competency-status.pending{color:#c8952f}
+    .sh-competency-status.pending .sh-status-dot{background:#c8952f}
+    .sh-competency-note{font-size:var(--type-supporting-size);line-height:var(--type-meta-line);font-weight:var(--weight-medium);color:var(--brand-dark);margin-top:10px}
+
+    /* Shared typography role bindings */
+    body{font-family:var(--font-sans);font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-regular)}
+    button,input,select,textarea{font-family:var(--font-sans)}
+    h1,.auth-card h1,.auth-brand,.tp-name{font-size:var(--type-page-title-size);line-height:var(--type-page-title-line);font-weight:var(--weight-medium);letter-spacing:var(--tracking-heading)}
+    .course-header.reference .course-title,.ready-hero h1{font-size:var(--type-display-size);line-height:var(--type-display-line);font-weight:var(--weight-medium);letter-spacing:var(--tracking-display)}
+    h2,.wizard-card h2,.tp-readiness-copy h2{font-size:var(--type-section-title-size);line-height:var(--type-section-title-line);font-weight:var(--weight-medium);letter-spacing:0}
+    .section-head h2,.rubric-card h2,.rewards-card h2,.tp-side-card h2,.tp-card-heading h2,.tp-focus h2,.tp-visibility h2,.tp-assessment-copy h3{font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium);letter-spacing:0}
+    h3,.next-course h3,.course-row h3,.tp-highlight-copy b,.tp-list-copy.large b,.tp-competency-copy b,.tp-rubric-group-head h3,.tp-assessment-copy h3{font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium);letter-spacing:0}
+    p,.subtitle,.course-description,.case-reference p,.tp-readiness-copy p,.tp-visibility p,.tp-focus p{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .auth-copy,.onboarding-heading p,.persona-card span,.info-note,.review-card span,.lesson-intro,.answer-help,.tp-highlight-copy span,.tp-list-copy.large span,.tp-card-heading p,.tp-competency-copy span,.tp-assessment-copy p{font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-light)}
+    .tiny,.field label,.upload p,.review-title button,.skill-pills span,.course-meta,.course-points span,.module-tile span,.task span,.tp-member,.tp-stat span,.tp-list-copy span,.tp-rubric-group-head span,.tp-rubric-copy span,.tp-event-copy span,.tp-event-time,.tp-assessment-result div,.tp-score-impact span{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-regular)}
+    .tag,.tp-status,.tp-update-pill{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-regular)}
+    .unlock-note{font-size:var(--type-caption-size);line-height:var(--type-caption-line);font-weight:var(--weight-regular)}
+    .powered{font-size:var(--type-micro-size);line-height:var(--type-micro-line);font-weight:var(--weight-regular)}
+    .eyebrow,.case-reference .case-label,.hint-label,.side-label{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-label);text-transform:uppercase}
+    .side-nav button{font-size:var(--type-row-title-size);line-height:var(--type-row-title-line)}
+    .course-breadcrumb,.course-breadcrumb button{font-size:var(--type-body-size);line-height:var(--type-body-line)}
+    .tp-tabs button{font-size:var(--type-tab-size);line-height:var(--type-tab-line)}
+    .btn,.tp-filter-pills button{font-size:var(--type-body-size);line-height:1;font-weight:var(--weight-medium)}
+    .tp-stats strong,.metric strong{font-size:var(--type-stat-size);line-height:1;font-weight:var(--weight-semibold)}
+    .result-number{font-size:var(--type-stat-xl-size);line-height:1;font-weight:var(--weight-semibold)}
+    .tp-highlight-score strong,.tp-competency-value strong{font-size:var(--type-score-size);line-height:1.2;font-weight:var(--weight-semibold)}
+    .toast{position:fixed;right:22px;bottom:22px;z-index:100;background:var(--brand-dark);color:#fff;padding:11px 15px;border-radius:7px;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-regular);box-shadow:0 10px 25px rgba(0,86,84,.25);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}
+    .toast.show{opacity:1;transform:none}
+
+    @media(max-width:980px){
+      :root{--sidebar:210px}.portal-main{padding:24px 22px 45px}.metric-grid{grid-template-columns:repeat(2,1fr)}
+      .course-row{grid-template-columns:44px minmax(0,1fr) 110px}.course-meta{grid-column:2}.course-action{grid-column:3;grid-row:1/3}.course-points{grid-column:3;grid-row:1;text-align:right}.course-row .course-action{grid-row:2}
+      .course-layout{grid-template-columns:1fr}.course-layout.reference{display:grid;grid-template-columns:1fr}.rubric-card{position:static}.home-grid,.profile-grid{grid-template-columns:1fr}.tp-layout,.tp-tab-layout{display:grid;grid-template-columns:1fr}.sh-two-col{flex-direction:column}.learning-result-portal .portal-main{padding:26px 24px 50px}.learning-index-portal .portal-main{padding:28px 24px 48px}
+    }
+    @media(max-width:720px){
+      :root{--sidebar:0px}.sidebar{position:sticky;top:0;width:100%;height:64px;padding:0 14px;display:flex;flex-direction:row;align-items:center;border-right:0;border-bottom:1px solid var(--line)}
+      .side-brand{padding:0}.side-brand b,.side-brand small,.side-label,.side-user{display:none}.side-nav{display:flex;margin-left:auto}.side-nav button{width:40px;padding:0;justify-content:center}.side-nav button span:not(.nav-badge){display:none}
+      .portal-main{margin-left:0;padding:22px 15px 45px}.persona-grid,.fields,.career-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
+      .step-rail{overflow:hidden}.rail-dot{width:24px;height:24px}.onboarding-body{width:min(100% - 30px,820px)}
+      .course-row{grid-template-columns:42px minmax(0,1fr);gap:11px}.course-points,.course-action,.course-meta{grid-column:2;text-align:left;grid-row:auto}.course-action{justify-self:start}
+      .module-track,.competency-grid,.ready-metrics{grid-template-columns:1fr 1fr}.course-header.reference .module-track{display:grid;grid-template-columns:1fr}.result-layout,.result-bottom{grid-template-columns:1fr}.profile-card{align-items:flex-start;flex-wrap:wrap}.profile-stats{width:100%}.verified-list{grid-template-columns:1fr}.tp-goal-row{align-items:flex-start;flex-direction:column}.tp-tabs{gap:18px;overflow:auto}.tp-tabs button{white-space:nowrap}.home-portal .portal-main{padding:26px 20px 44px}.sh-goal-hero{align-items:flex-start}.sh-goal-visual{width:96px;height:96px;font-size:40px}.sh-competency-grid{grid-template-columns:1fr 1fr}.sh-guide-steps{display:grid;grid-template-columns:1fr 1fr;gap:20px}.sh-guide-arrow{display:none}.learning-result-portal .portal-main{padding:22px 16px 44px}.lr-score{padding:28px 20px}.lr-coach-head,.lr-coach-body{padding-left:20px;padding-right:20px}.learning-index-portal .portal-main{padding:24px 16px 44px}.li-panel{padding:20px}.li-course-side{min-width:120px}
+    }
+    @media(max-width:480px){
+      .auth-card{padding:32px 22px}.page-top{display:block}.page-actions{margin-top:13px}.metric-grid,.summary-strip,.highlight-grid,.answer-hints{grid-template-columns:1fr}
+      .summary-strip div{border-right:0;border-bottom:1px solid var(--line)}.summary-strip div:last-child{border:0}.next-course{align-items:flex-start;flex-wrap:wrap}
+      .module-track,.competency-grid,.ready-metrics{grid-template-columns:1fr}.course-layout.reference .answer-hints{grid-template-columns:1fr 1fr}.ready-metrics div{border-right:0;border-bottom:1px solid var(--line)}.submit-row{align-items:flex-start;flex-direction:column}.tp-header{padding:22px 18px}.tp-identity{align-items:flex-start}.tp-avatar{width:60px;height:60px}.tp-role,.tp-member{white-space:normal}.tp-stats{gap:20px;flex-wrap:wrap}.tp-readiness-head{align-items:flex-start;flex-direction:column}.tp-agent-head{align-items:flex-start;flex-wrap:wrap}.tp-update-pill{margin-left:52px}.tp-summary-grid{grid-template-columns:1fr}.tp-summary-item{border-right:0;border-bottom:1px solid var(--line)}.tp-competency-value{width:90px}.tp-competency-value .tp-mini-bar{width:90px}.tp-event{grid-template-columns:42px minmax(0,1fr)}.tp-event-time{grid-column:2}.sh-top{align-items:flex-start}.sh-goal-hero{padding:24px 20px;display:block}.sh-goal-visual{display:none}.sh-goal-strip{align-items:flex-start;flex-wrap:wrap}.sh-course-card{display:block}.sh-course-icon{margin-bottom:16px}.sh-progress-head{align-items:flex-start;flex-direction:column}.sh-competency-grid,.sh-guide-steps{grid-template-columns:1fr}.sh-progress-stats{gap:18px;flex-wrap:wrap}.lr-coach-head{align-items:flex-start;flex-wrap:wrap}.lr-coach-status{margin-left:56px}.lr-plan-row{grid-template-columns:28px minmax(0,1fr)}.lr-plan-time{grid-column:2}.lr-structure,.lr-progress-card{padding:22px 18px}.lr-card-head{align-items:flex-start;flex-direction:column}.lr-actions{flex-direction:column}.lr-actions .btn{width:100%}.lr-score-title{font-size:22px}.li-summary{align-items:flex-start;flex-direction:column}.li-summary-count{text-align:left}.li-summary-progress{width:100%}.li-panel{padding:18px}.li-assessment{align-items:flex-start;flex-wrap:wrap}.li-assessment-status{margin-left:48px}.li-course{display:grid;grid-template-columns:52px minmax(0,1fr)}.li-course.current{padding-left:14px}.li-course-side{grid-column:2;min-width:0;text-align:left}.li-lock-note{max-width:none}.li-course-side .btn{margin-top:6px}
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const state={
+      view:"login",persona:"student",onboardingIndex:0,cvUploaded:false,analysisProgress:0,
+      career:"Product Management Trainee",homeStage:"fresh",coursesCompleted:0,
+      criteriaCompleted:0,points:0,answer:"",result:null,retries:2,profileTab:"overview",
+      certificate:false,applicationStatus:"not-started",agentBusy:false,cvReview:null,
+      journey:null,assignmentEvaluation:null,improvementPlan:null,nextAction:null
+    };
+
+    const icons={
+      home:"fa-house",learning:"fa-book-open",assessment:"fa-list-check",
+      profile:"fa-user",community:"fa-users"
+    };
+
+    const onboardingStudent=["persona","details","cv","analysis","review","career","journey"];
+    const onboardingWorking=["persona","details","cv","analysis","review","journey"];
+    const app=document.querySelector("#app");
+    const toast=document.querySelector("#toast");
+
+    function notify(message){
+      toast.textContent=message;
+      toast.classList.add("show");
+      clearTimeout(notify.timer);
+      notify.timer=setTimeout(()=>toast.classList.remove("show"),2200);
+    }
+
+    function escapeHtml(value){
+      return String(value??"").replace(/[&<>"']/g,(character)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      })[character]);
+    }
+
+    async function callStudentAgent(agent,payload){
+      const response=await fetch(`/api/student-agents/${agent}`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({payload:{studentId:"demo-linh",...payload}})
+      });
+      const body=await response.json().catch(()=>({}));
+      if(!response.ok) throw new Error(body.error||"AI Agent chưa thể hoàn thành yêu cầu.");
+      return body;
+    }
+
+    function route(view){
+      state.view=view;
+      render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function login(){
+      return `<main class="auth-page">
+        <section class="auth-card" aria-labelledby="login-title">
+          <div class="auth-logo">A</div>
+          <h1 id="login-title">Chào mừng bạn đến với</h1>
+          <div class="auth-brand">AI Talent DAIDAIDI</div>
+          <p class="auth-copy">Nền tảng giúp bạn hiểu năng lực bản thân và phát triển sự nghiệp</p>
+          <div class="login-visual" aria-hidden="true"><div class="visual-window"><div class="visual-avatar"></div><div class="visual-row"></div><div class="visual-row"></div><div class="visual-row"></div></div></div>
+          <div class="auth-actions">
+            <button class="btn zalo-btn" onclick="startOnboarding()"><span class="provider-letter">Z</span>Tiếp tục với Zalo</button>
+            <button class="btn btn-outline" onclick="startOnboarding()"><i class="fa-brands fa-google" style="color:#e24a36"></i>Tiếp tục với Google</button>
+            <button class="btn btn-outline" onclick="startOnboarding()"><i class="fa-regular fa-envelope"></i>Tiếp tục với Email</button>
+          </div>
+          <p class="auth-foot">Chưa có tài khoản? <button onclick="startOnboarding()">Đăng ký ngay</button></p>
+          <p class="powered">Powered by ZA</p>
+        </section>
+      </main>`;
+    }
+
+    function startOnboarding(){
+      state.persona="student";
+      state.onboardingIndex=0;
+      state.cvUploaded=false;
+      route("onboarding");
+    }
+
+    function onboardingFlow(){
+      return state.persona==="student"?onboardingStudent:onboardingWorking;
+    }
+
+    function onboardingMeta(step){
+      const meta={
+        persona:["Bạn đang ở giai đoạn nào?","Chọn mô tả phù hợp nhất để chúng tôi cá nhân hóa lộ trình cho bạn."],
+        details:[state.persona==="student"?"Một chút về bạn":"Kinh nghiệm của bạn","Thông tin này giúp AI hiểu bối cảnh học tập và mục tiêu hiện tại."],
+        cv:["Tải lên CV của bạn",state.persona==="student"?"Không bắt buộc — bạn có thể bổ sung sau.":"CV là thông tin cần thiết để AI phân tích kinh nghiệm đã có."],
+        analysis:["AI đang phân tích hồ sơ","Chúng tôi đang tổng hợp kinh nghiệm, kỹ năng và nền tảng học tập của bạn."],
+        review:["Kiểm tra thông tin đã trích xuất","Bạn luôn có quyền xem và chỉnh sửa trước khi tiếp tục."],
+        career:["Bạn muốn phát triển theo hướng nào?","Chọn mục tiêu nghề nghiệp để AI thiết kế lộ trình phù hợp."],
+        journey:["Lộ trình của bạn đã sẵn sàng","AI đã tạo hành trình học tập dựa trên hồ sơ và mục tiêu của bạn."]
+      };
+      return meta[step];
+    }
+
+    function rail(){
+      const flow=onboardingFlow();
+      return `<div class="step-rail">${flow.map((_,i)=>`<div class="rail-part"><span class="rail-dot ${i<state.onboardingIndex?"done":i===state.onboardingIndex?"active":""}">${i<state.onboardingIndex?'<i class="fa-solid fa-check"></i>':i+1}</span>${i<flow.length-1?`<span class="rail-line ${i<state.onboardingIndex?"done":""}"></span>`:""}</div>`).join("")}</div>`;
+    }
+
+    function personaStep(){
+      return `<div class="persona-grid">
+        <button class="persona-card ${state.persona==="student"?"selected":""}" onclick="selectPersona('student')">
+          <span class="persona-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+          <b>Sinh viên</b><span>Tôi đang học đại học hoặc mới tốt nghiệp và muốn bắt đầu sự nghiệp.</span>
+        </button>
+        <button class="persona-card ${state.persona==="working"?"selected":""}" onclick="selectPersona('working')">
+          <span class="persona-icon"><i class="fa-solid fa-briefcase"></i></span>
+          <b>Đã có kinh nghiệm</b><span>Tôi đã đi làm và muốn chuyển hướng hoặc phát triển trong Product.</span>
+        </button>
+      </div>`;
+    }
+
+    function detailsStep(){
+      if(state.persona==="student") return `<div class="fields">
+        <div class="field"><label>Năm học</label><select><option>Năm 3</option><option>Năm 1</option><option>Năm 2</option><option>Năm 4</option><option>Mới tốt nghiệp</option></select></div>
+        <div class="field"><label>Chuyên ngành</label><input value="Kinh doanh quốc tế"></div>
+        <div class="field full"><label>Trường</label><input value="Đại học Ngoại thương"></div>
+        <div class="field full"><label>Mục tiêu hiện tại</label><textarea>Tìm hiểu Product Management và chuẩn bị cho chương trình Product Management Trainee.</textarea></div>
+      </div>`;
+      return `<div class="fields">
+        <div class="field"><label>Số năm kinh nghiệm</label><select><option>1–2 năm</option><option>Dưới 1 năm</option><option>3–5 năm</option><option>Trên 5 năm</option></select></div>
+        <div class="field"><label>Vai trò hiện tại</label><input value="Business Analyst"></div>
+        <div class="field full"><label>Công ty gần nhất</label><input value="ZaloPay"></div>
+        <div class="field full"><label>Mục tiêu hiện tại</label><textarea>Tôi muốn chuyển sang Product Management và hệ thống hóa những kỹ năng đã có.</textarea></div>
+      </div>`;
+    }
+
+    function cvStep(){
+      return `<div class="upload">
+        <i class="fa-regular fa-file-pdf"></i>
+        <b>${state.cvUploaded?"CV đã được tải lên":state.persona==="student"?"Tải CV hoặc portfolio":"Tải CV để tiếp tục"}</b>
+        <p>Định dạng PDF hoặc DOCX · Tối đa 10MB</p>
+        <input id="cvInput" type="file" accept=".pdf,.doc,.docx" class="hidden" onchange="uploadCv(this)">
+        <button class="btn btn-outline btn-sm" onclick="document.querySelector('#cvInput').click()"><i class="fa-solid fa-arrow-up-from-bracket"></i>${state.cvUploaded?"Thay tệp":"Chọn tệp"}</button>
+        ${state.cvUploaded?'<div class="upload-state"><i class="fa-solid fa-circle-check"></i> CV_Linh_Nguyen.pdf</div>':""}
+      </div>
+      <div class="info-note"><i class="fa-solid fa-shield-halved"></i><span>CV chỉ được dùng để cá nhân hóa hồ sơ năng lực. Bạn có thể kiểm tra và chỉnh sửa mọi thông tin AI trích xuất.</span></div>`;
+    }
+
+    function analysisStep(){
+      const progress=state.analysisProgress;
+      const phases=[["Đọc thông tin hồ sơ",20],["Nhận diện kinh nghiệm",45],["Phân tích kỹ năng",70],["Tạo hồ sơ năng lực",100]];
+      return `<div class="analysis-wrap">
+        <div class="analysis-ring" style="--value:${progress}"><strong>${progress}%</strong></div>
+        <div class="analysis-list">${phases.map(([label,threshold])=>`<div class="analysis-item ${progress>=threshold?"done":""}"><i class="fa-solid ${progress>=threshold?"fa-circle-check":"fa-circle"}"></i><span>${label}</span></div>`).join("")}</div>
+        ${progress===0?'<button class="btn btn-primary" style="margin-top:24px" onclick="runAnalysis()">Bắt đầu phân tích</button>':progress<100?'<p class="tiny" style="margin-top:20px">Vui lòng giữ trang này mở trong giây lát…</p>':'<div class="info-note" style="max-width:410px;margin:20px auto 0"><i class="fa-solid fa-sparkles"></i><span>Phân tích hoàn tất. Hồ sơ khởi tạo đã sẵn sàng để bạn kiểm tra.</span></div>'}
+      </div>`;
+    }
+
+    function reviewStep(){
+      const review=state.cvReview;
+      const experience=review?.experiences?.[0];
+      const education=review?.education?.[0];
+      const skills=review?.skills?.length?review.skills.map(item=>item.name):["Problem Solving","Communication","User Research","Data Analysis","Teamwork"];
+      const experienceTitle=experience?`${experience.title}${experience.organization?` · ${experience.organization}`:""}`:(state.persona==="student"?"Product Lead · CLB Khởi nghiệp":"Business Analyst · ZaloPay");
+      const experienceEvidence=experience?.evidence||(state.persona==="student"?"08/2025 – nay · Nghiên cứu người dùng, điều phối nhóm 5 thành viên":"2024 – nay · Phân tích yêu cầu và phối hợp Product, Design, Engineering");
+      return `<div>
+        <section class="review-section"><div class="review-title"><h3>Kinh nghiệm</h3><button>Chỉnh sửa</button></div><div class="review-card"><b>${escapeHtml(experienceTitle)}</b><span>${escapeHtml(experienceEvidence)}</span></div></section>
+        <section class="review-section"><div class="review-title"><h3>Kỹ năng nổi bật</h3><button>Thêm kỹ năng</button></div><div class="skill-pills">${skills.map(skill=>`<span>${escapeHtml(skill)}</span>`).join("")}</div></section>
+        <section class="review-section"><div class="review-title"><h3>Học vấn</h3><button>Chỉnh sửa</button></div><div class="review-card"><b>${escapeHtml(education?.institution||"Đại học Ngoại thương")}</b><span>${escapeHtml(education?.field||"Kinh doanh quốc tế")} · 2023–2027</span></div></section>
+      </div>`;
+    }
+
+    function careerStep(){
+      const careers=[["fa-diagram-project","Product Management Trainee"],["fa-mobile-screen","Product Manager"],["fa-chart-line","Business Analyst"],["fa-pen-ruler","Product Designer"],["fa-database","Data Analyst"],["fa-bullhorn","Product Marketing"]];
+      return `<div class="career-grid">${careers.map(([icon,label])=>`<button class="career-option ${state.career===label?"selected":""}" onclick="state.career='${label}';render()"><i class="fa-solid ${icon}"></i><b>${label}</b></button>`).join("")}</div>`;
+    }
+
+    function journeyStep(){
+      const journey=state.journey||{
+        title:"Lộ trình 4 khóa học để đạt PMT Ready",
+        criteriaTotal:13,
+        pointsTotal:65,
+        courses:[
+          {id:"course-1",title:"Product Fundamentals"},
+          {id:"course-2",title:"Structured & Critical Thinking"},
+          {id:"course-3",title:"User & Data Sense"},
+          {id:"course-4",title:"Ownership & Execution"}
+        ]
+      };
+      return `<div class="journey-box">
+        <p class="eyebrow">AI Journey · ${escapeHtml(state.career)}</p>
+        <h2>${escapeHtml(journey.title)}</h2>
+        <p>Hoàn thành ${journey.criteriaTotal} tiêu chí, tối đa ${journey.pointsTotal} điểm và bài đánh giá cuối lộ trình.</p>
+        <div class="journey-list">
+          ${journey.courses.map((course,index)=>`<div class="journey-row"><i class="fa-solid fa-circle-check"></i><span>Course ${index+1} · ${escapeHtml(course.title)}</span></div>`).join("")}
+        </div>
+      </div>`;
+    }
+
+    function onboarding(){
+      const flow=onboardingFlow();
+      const step=flow[state.onboardingIndex];
+      const [title,description]=onboardingMeta(step);
+      const bodies={persona:personaStep,details:detailsStep,cv:cvStep,analysis:analysisStep,review:reviewStep,career:careerStep,journey:journeyStep};
+      const canContinue=step!=="analysis"||state.analysisProgress===100;
+      const cvRequired=step==="cv"&&state.persona==="working"&&!state.cvUploaded;
+      return `<main class="onboarding-page">
+        <header class="onboarding-top"><div class="onboarding-top-inner"><div class="mini-brand"><span class="mini-brand-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span><b>AI Talent Platform</b><small>Student onboarding</small></span></div><span class="step-count">Bước ${state.onboardingIndex+1} / ${flow.length}</span></div></header>
+        <div class="onboarding-body">${rail()}<section class="onboarding-content">
+          <div class="onboarding-heading"><p class="eyebrow">Thiết lập hồ sơ</p><h1>${title}</h1><p>${description}</p></div>
+          ${bodies[step]()}
+          <div class="onboarding-actions">
+            <button class="btn btn-ghost" ${state.onboardingIndex===0?'style="visibility:hidden"':""} onclick="previousOnboarding()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+            <button class="btn btn-primary" ${(cvRequired||!canContinue)?"disabled":""} onclick="nextOnboarding()">${step==="journey"?"Vào Dashboard":"Tiếp tục"} <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </section></div>
+      </main>`;
+    }
+
+    function selectPersona(persona){
+      state.persona=persona;
+      state.cvUploaded=false;
+      render();
+    }
+
+    function uploadCv(input){
+      if(input.files.length){state.cvUploaded=true;render();notify("CV đã được tải lên.");}
+    }
+
+    async function runAnalysis(){
+      if(state.agentBusy) return;
+      state.agentBusy=true;
+      state.analysisProgress=8;
+      render();
+      const timer=setInterval(()=>{
+        state.analysisProgress=Math.min(88,state.analysisProgress+Math.ceil(Math.random()*12));
+        render();
+      },360);
+      try{
+        const response=await callStudentAgent("cv-review",{
+          persona:state.persona,
+          cvUploaded:state.cvUploaded,
+          cvFileName:state.cvUploaded?"CV_Linh_Nguyen.pdf":"",
+          onboarding:{
+            school:"Đại học Ngoại thương",
+            field:"Kinh doanh quốc tế",
+            currentGoal:"Chuẩn bị cho chương trình Product Management Trainee"
+          }
+        });
+        state.cvReview=response.output;
+        notify(response.source==="openai_responses_api"?"AI đã hoàn tất phân tích hồ sơ.":"Đã hoàn tất bằng chế độ demo.");
+      }catch(error){
+        state.cvReview=null;
+        notify(error.message);
+      }finally{
+        clearInterval(timer);
+        state.analysisProgress=100;
+        state.agentBusy=false;
+        render();
+      }
+    }
+
+    function previousOnboarding(){
+      if(state.onboardingIndex>0){state.onboardingIndex--;render();}
+    }
+
+    async function nextOnboarding(){
+      const flow=onboardingFlow();
+      const step=flow[state.onboardingIndex];
+      if(step==="cv"&&state.persona==="working"&&!state.cvUploaded){notify("Vui lòng tải CV để tiếp tục.");return;}
+      if(step==="analysis"&&state.analysisProgress<100){return;}
+      if(step==="career"&&!state.journey&&!state.agentBusy){
+        state.agentBusy=true;
+        notify("AI đang thiết kế lộ trình của bạn.");
+        try{
+          const response=await callStudentAgent("journey-designer",{
+            persona:state.persona,
+            target:state.career,
+            verifiedProfile:state.cvReview,
+            readinessRules:{criteriaTotal:13,pointsTotal:65,targetStatus:"PMT Ready"},
+            courseCatalog:[
+              {id:"course-1",title:"Product Fundamentals",criteria:3,points:15},
+              {id:"course-2",title:"Structured & Critical Thinking",criteria:3,points:15},
+              {id:"course-3",title:"User & Data Sense",criteria:3,points:15},
+              {id:"course-4",title:"Ownership & Execution",criteria:4,points:20}
+            ]
+          });
+          state.journey=response.output;
+        }catch(error){
+          notify(error.message);
+        }finally{
+          state.agentBusy=false;
+        }
+      }
+      if(state.onboardingIndex<flow.length-1){state.onboardingIndex++;render();window.scrollTo({top:0,behavior:"smooth"});}
+      else{state.homeStage="fresh";route("home");notify("AI Journey của bạn đã sẵn sàng.");}
+    }
+
+    function sidebar(brand="ZA AI Talent"){
+      const nav=[["home","fa-solid fa-house","Home"],["learning","fa-solid fa-book-open","Learning"],["assessment","fa-solid fa-clipboard-list","Assessments"],["profile","fa-regular fa-id-badge","Talent Profile"],["community","fa-solid fa-globe","Community"]];
+      return `<aside class="sidebar">
+        <a class="side-brand" href="#" onclick="route('home');return false"><span class="logo">${brand==="Zalo Talent"?"Z":"A"}</span><span><b>${brand}</b></span></a>
+        <nav class="side-nav">${nav.map(([view,icon,label])=>`<button class="${state.view===view||(view==="learning"&&["course","result"].includes(state.view))?"active":""} ${["assessment","community"].includes(view)?"locked":""}" onclick="${["assessment","community"].includes(view)?`notify('Tính năng sẽ mở trong phiên bản tiếp theo.')`:`route('${view}')`}"><i class="${icon}"></i><span>${label}</span></button>`).join("")}</nav>
+      </aside>`;
+    }
+
+    function shell(content,portalClass="",brand="ZA AI Talent"){
+      return `<div class="portal ${portalClass}">${sidebar(brand)}<main class="portal-main"><div class="page">${content}</div></main></div>`;
+    }
+
+    function readinessScore(){
+      if(isReady()) return 100;
+      if(state.result==="pass") return 55;
+      return state.coursesCompleted>=1?38:0;
+    }
+
+    function isReady(){return state.coursesCompleted>=4&&state.criteriaCompleted>=13&&state.points>=65}
+
+    function home(){
+      const active=state.coursesCompleted>=1;
+      const score=active?(isReady()?100:38):0;
+      const courseNo=active?Math.min(state.coursesCompleted+1,4):1;
+      const courseMap={
+        1:["fa-regular fa-lightbulb","Product Fundamentals","Nền tảng tư duy và kiến thức sản phẩm dành cho mọi PM."],
+        2:["fa-solid fa-brain","Structured & Critical Thinking","Còn 2/3 bài · khoảng 30 phút để hoàn thành."],
+        3:["fa-solid fa-users-viewfinder","User & Data Sense","Tiếp tục xây dựng năng lực Customer Focus và Data Analytics."],
+        4:["fa-solid fa-rocket","Ownership & Execution","Hoàn thành khóa cuối để mở trạng thái PMT Ready."]
+      };
+      const [courseIcon,courseTitle,courseDescription]=courseMap[courseNo];
+      const freshRows=[
+        ["fa-regular fa-lightbulb","Product Thinking","0/3 tiêu chí · 0/15đ",0,"notstarted",""],
+        ["fa-solid fa-puzzle-piece","Problem Solving","0/4 tiêu chí · 0/20đ",0,"notstarted",""],
+        ["fa-solid fa-chart-column","Data Analytics","0/1 tiêu chí · 0/5đ",0,"notstarted",""],
+        ["fa-regular fa-comment-dots","Communication","Đang cập nhật tiêu chí",0,"pending",""],
+        ["fa-solid fa-rocket","Execution","0/3 tiêu chí · 0/15đ",0,"notstarted",""],
+        ["fa-solid fa-users","Stakeholder Management","0/2 tiêu chí · 0/10đ",0,"notstarted",""]
+      ];
+      const activeRows=[
+        ["fa-regular fa-lightbulb","Product Thinking","2/3 tiêu chí · 12/15đ",67,"learning","Còn 1 tiêu chí nữa để hoàn thành"],
+        ["fa-solid fa-puzzle-piece","Problem Solving","1/4 tiêu chí · 5/20đ",25,"learning","Còn 3 tiêu chí nữa để hoàn thành"],
+        ["fa-solid fa-chart-column","Data Analytics","0/1 tiêu chí · 0/5đ",0,"notstarted",""],
+        ["fa-regular fa-comment-dots","Communication","Đang cập nhật tiêu chí",0,"pending",""],
+        ["fa-solid fa-rocket","Execution","0/3 tiêu chí · 0/15đ",0,"notstarted",""],
+        ["fa-solid fa-users","Stakeholder Management","0/2 tiêu chí · 0/10đ",0,"notstarted",""]
+      ];
+      const competencies=active?activeRows:freshRows;
+      const stats=active?[[`${state.coursesCompleted}/4`,"khóa học"],[`${Math.max(state.criteriaCompleted,3)}/13`,"tiêu chí"],[`${Math.max(state.points,27)}/65`,"điểm"]]:[["0/4","khóa học"],["0/13","tiêu chí"],["0/65","điểm"]];
+      const goal=active?`<section class="sh-goal-strip"><span class="sh-goal-strip-icon"><i class="fa-solid fa-bullseye"></i></span><div class="sh-goal-strip-copy"><b>Mục tiêu: Product Management Trainee (PMT)</b><span>13 tiêu chí · 65 điểm tối đa</span></div><button class="btn btn-outline" style="background:#fff" onclick="route('learning')">Xem lộ trình chi tiết <i class="fa-solid fa-arrow-right"></i></button></section>`:
+      `<section class="sh-goal-hero"><div class="sh-goal-copy"><div class="sh-goal-label">Mục tiêu của bạn</div><div class="sh-goal-title">Product Management Trainee (PMT)</div><div class="sh-goal-description">Hoàn thành 4 khóa học và 13 tiêu chí rubric để đạt trạng thái “PMT Ready”.</div><div class="sh-goal-pills"><span class="sh-goal-pill"><i class="fa-solid fa-book-open"></i><b>4</b> khóa học</span><span class="sh-goal-pill"><i class="fa-solid fa-puzzle-piece"></i><b>13</b> tiêu chí rubric</span><span class="sh-goal-pill"><i class="fa-solid fa-flag"></i><b>PMT Ready</b> mục tiêu</span></div><button class="btn btn-orange" style="margin-top:22px" onclick="startLearning()">Bắt đầu Course 1 <i class="fa-solid fa-arrow-right"></i></button></div><span class="sh-goal-visual"><i class="fa-solid fa-bullseye"></i></span></section>`;
+      const guide=active?"":`<section class="sh-guide"><div class="sh-guide-title">Cách đạt PMT Ready</div><div class="sh-guide-steps">${[["fa-book-open","Học khóa học","Bài học, quiz, bài tập"],["fa-puzzle-piece","Hoàn thành rubric","Đạt điểm từng tiêu chí"],["fa-regular fa-star","Tích điểm","Tối đa 65đ / 13 rubric"],["fa-flag","PMT Ready","Đủ điều kiện ứng tuyển"]].map(([icon,title,desc],i)=>`<div class="sh-guide-step"><div class="sh-guide-copy"><span class="sh-guide-icon"><i class="${icon.startsWith("fa-regular")?icon:`fa-solid ${icon}`}"></i></span><b>${title}</b><span>${desc}</span></div>${i<3?'<i class="fa-solid fa-arrow-right sh-guide-arrow"></i>':""}</div>`).join("")}</div><button class="sh-guide-link" onclick="route('learning')">Xem lộ trình & rubric chi tiết →</button></section>`;
+      const body=`<header class="sh-top"><div><h1 class="sh-greeting">Chào Linh</h1><p class="sh-intro">${active?"Bạn đang ở mức Baseline của lộ trình Product Management — còn 1 tiêu chí nữa để hoàn thành Product Thinking.":"Chào mừng bạn đến với lộ trình Product Management."}</p></div><div class="sh-top-actions"><button class="sh-round-action" onclick="notify('${active?"Bạn có 2 cập nhật mới.":"Bạn chưa có thông báo mới."}')"><i class="fa-regular fa-bell"></i>${active?'<span class="sh-notice">2</span>':""}</button><span class="sh-user">L</span></div></header>
+      ${goal}
+      <section class="sh-two-col"><article class="sh-course-card"><span class="sh-course-icon"><i class="${courseIcon}"></i></span><div class="sh-course-copy"><span class="sh-course-tag">Course ${courseNo}</span><div class="sh-course-title">${courseTitle}</div><div class="sh-course-description">${courseDescription}</div>${active?'<div class="sh-course-progress"><span style="width:33%"></span></div>':""}<div class="sh-course-meta">${active?'<span><i class="fa-solid fa-puzzle-piece"></i>3 rubrics</span><span><i class="fa-regular fa-star"></i>15 điểm</span>':'<span><i class="fa-regular fa-clock"></i>~2 giờ</span><span><i class="fa-solid fa-puzzle-piece"></i>3 rubrics</span><span><i class="fa-regular fa-star"></i>15 điểm</span>'}</div><button class="btn btn-orange" style="margin-top:20px" onclick="startLearning()">${active?"Tiếp tục":"Bắt đầu học"} <i class="fa-solid fa-arrow-right"></i></button></div></article>
+      <article class="sh-progress-card"><div class="sh-progress-head"><div class="sh-ring" style="--value:${score}"><div class="sh-ring-copy"><strong>${score}</strong><span>/100</span></div></div><div class="sh-progress-copy"><b>Tiến độ hiện tại</b><span>${active?"Baseline — cần thêm điểm ở Mindset & Management.":"Bạn chưa có hoạt động nào."}</span></div></div><div class="sh-progress-divider"></div><div class="sh-progress-stats">${stats.map(([value,label])=>`<div class="sh-progress-stat"><strong>${value}</strong><span>${label}</span></div>`).join("")}</div><button class="sh-score-link" onclick="route('profile')">Hiểu cách chấm điểm →</button></article></section>
+      ${guide}
+      <section class="sh-section-head"><span class="sh-section-bar"></span><div class="sh-section-title">6 năng lực cốt lõi của PM</div></section><div class="sh-section-description">Mỗi năng lực gồm 1 hoặc nhiều tiêu chí rubric — hoàn thành hết mới tính là đạt năng lực đó.</div>
+      <section class="sh-competency-grid">${competencies.map(([icon,name,meta,pct,status,note])=>`<article class="sh-competency"><span class="sh-competency-icon"><i class="${icon}"></i></span><div class="sh-competency-name">${name}</div><div class="sh-competency-meta">${meta}</div><div class="sh-competency-progress"><span style="width:${pct}%"></span></div><div class="sh-competency-status ${status}"><span class="sh-status-dot"></span>${status==="learning"?"Đang học":status==="pending"?"Chưa có bài đánh giá":"Chưa bắt đầu"}</div>${note?`<div class="sh-competency-note">${note}</div>`:""}</article>`).join("")}</section>`;
+      return shell(body,"home-portal",active?"AI Talent":"ZA AI Talent");
+    }
+
+    function startLearning(){
+      state.homeStage="progress";
+      route(state.coursesCompleted===1?"course":"learning");
+    }
+
+    function courseStatus(n){
+      if(n<=state.coursesCompleted) return "done";
+      if(n===state.coursesCompleted+1) return "current";
+      return "locked";
+    }
+
+    function learning(){
+      const courses=[
+        {title:"Product Fundamentals",description:"Nền tảng tư duy và kiến thức sản phẩm dành cho mọi PM.",icon:"fa-regular fa-lightbulb",criteria:3,max:15,time:"~2 giờ"},
+        {title:"Structured & Critical Thinking",description:"Rèn tư duy logic, phản biện và hệ thống trước khi ra quyết định.",icon:"fa-solid fa-brain",criteria:3,max:15,time:"~2.5 giờ"},
+        {title:"User & Data Sense",description:"Hiểu người dùng và ra quyết định dựa trên dữ liệu.",icon:"fa-solid fa-chart-column",criteria:3,max:15,time:"~2.5 giờ"},
+        {title:"Ownership & Execution",description:"Ưu tiên, thực thi và tạo tác động — năng lực quản lý sản phẩm.",icon:"fa-solid fa-rocket",criteria:4,max:20,time:"~3 giờ"}
+      ];
+      const progressPct=Math.min(100,Math.round((state.points/65)*100));
+      const rows=courses.map((course,index)=>{
+        const n=index+1,status=courseStatus(n);
+        const earned=status==="done"?course.max:(status==="current"&&n===2?(state.result==="pass"?12:8):0);
+        const points=status==="locked"?`–/${course.max}đ`:`${earned}/${course.max}đ`;
+        const tag=status==="done"?`Course ${n} · Hoàn thành`:status==="current"?`Course ${n} · Đang học`:`Course ${n} · Chưa mở khoá`;
+        const action=status==="done"
+          ?`<button class="btn btn-outline" onclick="reviewLearningCourse(${n})">Xem lại <i class="fa-solid fa-arrow-right"></i></button>`
+          :status==="current"
+            ?`<button class="btn btn-orange" onclick="openLearningCourse(${n})">${n===1?"Bắt đầu":"Tiếp tục"} <i class="fa-solid fa-arrow-right"></i></button>`
+            :`<div class="li-lock-note"><i class="fa-solid fa-lock"></i>Hoàn thành Course ${n-1} để mở khoá</div>`;
+        const segments=status==="current"&&n===2?`<div class="li-segments"><span class="done"></span><span class="current"></span><span></span></div>`:"";
+        return `<article class="li-course ${status}">
+          <span class="li-course-icon"><i class="${course.icon}"></i></span>
+          <div class="li-course-copy"><span class="li-course-tag">${tag}</span><div class="li-course-name">${course.title}</div><div class="li-course-description">${course.description}</div><div class="li-course-meta"><span><i class="fa-solid fa-puzzle-piece"></i>${course.criteria} tiêu chí</span><span><i class="fa-solid fa-star"></i>${course.max} điểm</span><span><i class="fa-regular fa-clock"></i>${course.time}</span></div>${segments}</div>
+          <div class="li-course-side"><div class="li-course-points">${points}</div>${action}</div>
+        </article>`;
+      }).join("");
+      const body=`<h1 class="li-title">Learning</h1>
+      <p class="li-subtitle">Lộ trình 4 khóa học để đạt PMT Ready — hoàn thành 13 tiêu chí, tối đa 65 điểm.</p>
+      <section class="li-summary"><div class="li-summary-count"><strong>${state.coursesCompleted}/4</strong><span>course xong</span></div><div class="li-summary-progress"><div class="li-summary-labels"><span>${state.criteriaCompleted}/13 tiêu chí</span><b>${state.points}/65 điểm</b></div><div class="li-summary-track"><span style="width:${progressPct}%"></span></div></div></section>
+      <section class="li-panel"><div class="li-assessment"><span class="li-assessment-icon"><i class="fa-solid fa-clipboard-list"></i></span><div class="li-assessment-title">Bài đánh giá đầu vào</div><span class="li-assessment-status"><i class="fa-solid fa-check"></i>Đã hoàn thành</span></div>${rows}<div class="li-note"><i class="fa-regular fa-lightbulb"></i><span>Course mở tuần tự — hoàn thành đủ tiêu chí của course trước để mở course tiếp theo. Điểm rubric cộng trực tiếp vào readiness của bạn.</span></div></section>`;
+      return shell(body,"learning-index-portal","Zalo Talent");
+    }
+
+    function openLearningCourse(n){
+      if(n!==state.coursesCompleted+1) return;
+      if(n===2) route("course");
+      else completeCourse(n);
+    }
+
+    function reviewLearningCourse(n){
+      if(n===2) route("course");
+      else notify(`Đang mở lại Course ${n}.`);
+    }
+
+    function completeCourse(n){
+      if(n!==state.coursesCompleted+1) return;
+      state.coursesCompleted=n;
+      state.criteriaCompleted=({1:3,2:6,3:9,4:13})[n];
+      state.points=({1:27,2:30,3:45,4:65})[n];
+      state.homeStage="progress";
+      notify(`Course ${n} đã hoàn thành.`);
+      if(isReady()) route("ready"); else render();
+    }
+
+    function course(){
+      const rubric=[
+        [5,"Lập luận đa tầng, tự phản biện giả định, có phương án dự phòng."],
+        [4,"Lập luận chặt chẽ, xét giả định & rủi ro, dẫn chứng cụ thể."],
+        [3,"Có cấu trúc cơ bản, chưa xét trường hợp ngoại lệ."],
+        [2,"Lập luận rời rạc, thiếu liên kết giữa các bước."],
+        [1,"Chỉ đưa ra kết luận, không có lập luận rõ ràng."]
+      ];
+      const stars=n=>Array.from({length:5},(_,i)=>`<i class="${i<n?"fa-solid":"fa-regular"} fa-star ${i<n?"":"empty"}"></i>`).join("");
+      const body=`<nav class="course-breadcrumb" aria-label="Breadcrumb">
+        <button onclick="route('home')"><i class="fa-solid fa-house"></i>Home</button><i class="fa-solid fa-chevron-right"></i>
+        <button onclick="route('learning')"><i class="fa-solid fa-book-open"></i>Learning</button><i class="fa-solid fa-chevron-right"></i><span>Course 2</span>
+      </nav>
+      <section class="card course-header reference">
+        <span class="tag">Course 2 · Đang học</span>
+        <div class="course-title">Structured & Critical Thinking</div>
+        <p class="course-description">Bạn sẽ phát triển 3 năng lực cốt lõi trong khóa học này — đóng góp vào năng lực Problem Solving.</p>
+        <div class="module-track">
+          <div class="module-tile done"><span class="module-state-icon"><i class="fa-solid fa-check"></i></span><div><b>1. Critical Thinking</b><span>Hoàn thành</span></div></div>
+          <div class="module-tile current"><span class="module-state-icon"><i class="fa-solid fa-play"></i></span><div><b>2. Logical Thinking</b><span>Đang học</span></div></div>
+          <div class="module-tile locked"><span class="module-state-icon"><i class="fa-solid fa-lock"></i></span><div><b>3. System Thinking</b><span>Chưa mở khoá</span></div></div>
+        </div>
+        <div class="course-summary-line"><span>2/3 module hoàn thành</span><b>8/15đ</b></div>
+        <div class="progress" style="margin-top:10px;height:8px"><span style="width:53%"></span></div>
+      </section>
+      <section class="course-layout reference">
+        <article class="card lesson-card">
+          <div class="lesson-module-head"><span class="lesson-module-number">2</span><h2>Logical Thinking</h2><span class="tag">Đang học</span></div>
+          <p class="course-description" style="margin-top:12px">Trình bày lập luận có cấu trúc và đưa ra quyết định dựa trên logic.</p>
+          <div class="lesson-target"><i class="fa-solid fa-bullseye target-icon"></i><span>Mục tiêu: đạt tối thiểu</span><span class="target-stars">${stars(4)}</span><span class="muted">(4/5)</span></div>
+          <div class="task-list">
+            <div class="task done"><i class="fa-solid fa-check task-status"></i><div><b>Bài đọc</b><span>Đã hoàn thành</span></div></div>
+            <div class="task done"><i class="fa-solid fa-check task-status"></i><div><b>Quiz củng cố</b><span>5/5 điểm</span></div></div>
+            <div class="task current"><i class="fa-solid fa-play task-status"></i><div><b>Case thực hành</b><a href="#caseAnswer">Quyết định điểm rubric của bạn →</a></div></div>
+          </div>
+          <div class="case-reference"><div class="case-label">Case study</div><p>Zalo đang cân nhắc thêm tính năng “Nhắc lịch tự động” vào Zalo Chat. Dữ liệu: 40% người dùng quên trả lời tin nhắn quan trọng, nhưng đội kỹ thuật chỉ có 2 tuần để làm MVP. Bạn sẽ quyết định nên làm hay không nên làm — và vì sao?</p></div>
+          <div class="hint-label">Gợi ý cấu trúc trả lời</div>
+          <div class="answer-hints">${["Vấn đề","Lựa chọn","Đánh đổi","Đề xuất"].map((label,i)=>`<div class="answer-hint"><span>${i+1}</span><b>${label}</b></div>`).join("")}</div>
+          <textarea id="caseAnswer" class="answer-box" placeholder="Nhập câu trả lời của bạn...">${state.answer}</textarea>
+          <div class="answer-help">Trả lời càng bám theo cấu trúc trên, điểm rubric càng cao.</div>
+          <button class="btn course-submit" onclick="submitCase()" ${state.agentBusy?"disabled":""}>${state.agentBusy?"AI đang chấm bài…":'Nộp bài chấm điểm <i class="fa-solid fa-arrow-right"></i>'}</button>
+        </article>
+        <aside class="course-side">
+          <div class="card rubric-card"><h2>Rubric: Logical Thinking</h2><div class="rubric-stars-list">${rubric.map(([n,desc])=>`<div class="rubric-stars-row"><span class="rubric-stars">${stars(n)}</span><p>${desc}</p></div>`).join("")}</div></div>
+          <div class="rewards-card"><h2>Sau khi hoàn thành</h2><div class="reward-list"><div class="reward-row"><i class="fa-regular fa-star"></i><span>+5 điểm rubric</span></div><div class="reward-row"><i class="fa-solid fa-lock-open"></i><span>Mở khoá: System Thinking</span></div><div class="reward-row"><i class="fa-solid fa-arrow-trend-up"></i><span>Tăng readiness tổng của bạn</span></div></div></div>
+        </aside>
+      </section>`;
+      return shell(body);
+    }
+
+    async function submitCase(){
+      if(state.agentBusy) return;
+      const textarea=document.querySelector("#caseAnswer");
+      state.answer=textarea.value.trim();
+      if(!state.answer){notify("Vui lòng nhập câu trả lời trước khi nộp.");return;}
+      state.agentBusy=true;
+      render();
+      let evaluation;
+      try{
+        const response=await callStudentAgent("assignment-evaluator",{
+          courseId:"course-2",
+          moduleId:"logical-thinking",
+          answer:state.answer,
+          passThreshold:4,
+          rubric:[
+            {score:5,description:"Lập luận đa tầng, tự phản biện giả định, có phương án dự phòng."},
+            {score:4,description:"Lập luận chặt chẽ, xét giả định & rủi ro, dẫn chứng cụ thể."},
+            {score:3,description:"Có cấu trúc cơ bản, chưa xét trường hợp ngoại lệ."},
+            {score:2,description:"Lập luận rời rạc, thiếu liên kết giữa các bước."},
+            {score:1,description:"Chỉ đưa ra kết luận, không có lập luận rõ ràng."}
+          ]
+        });
+        evaluation=response.output;
+      }catch(error){
+        const hasStructure=["vấn đề","lựa chọn","đánh đổi","đề xuất"].filter(word=>state.answer.toLowerCase().includes(word)).length;
+        evaluation={status:state.answer.length>=180&&hasStructure>=3?"pass":"not_pass",confidence:"low",gaps:[]};
+        notify(`${error.message} Đang dùng chấm điểm demo.`);
+      }
+      state.assignmentEvaluation=evaluation;
+      state.result=evaluation.status==="pass"?"pass":"fail";
+      if(state.result==="pass"){
+        state.points=Math.max(state.points,31);
+        state.criteriaCompleted=Math.max(state.criteriaCompleted,4);
+        state.homeStage="progress";
+      }else{
+        try{
+          const response=await callStudentAgent("improvement-coach",{
+            courseId:"course-2",
+            moduleId:"logical-thinking",
+            evaluation,
+            availableResources:["Bài đọc: Khung phân tích đánh đổi","Case luyện cùng AI Coach","Làm lại case Logical Thinking"],
+            retriesRemaining:state.retries
+          });
+          state.improvementPlan=response.output;
+        }catch(error){
+          state.improvementPlan=null;
+        }
+      }
+      try{
+        const response=await callStudentAgent("next-action",{
+          target:state.career,
+          result:evaluation.status,
+          coursesCompleted:state.coursesCompleted,
+          criteriaCompleted:state.criteriaCompleted,
+          points:state.points,
+          availableActions:[
+            {id:"continue-system-thinking",title:"Tiếp tục: System Thinking",locked:state.result!=="pass",minutes:30},
+            {id:"retry-logical-thinking",title:"Làm lại case Logical Thinking",locked:state.result==="pass",minutes:25},
+            {id:"review-tradeoffs",title:"Xem lại khung phân tích đánh đổi",locked:false,minutes:8}
+          ]
+        });
+        state.nextAction=response.output;
+      }catch(error){
+        state.nextAction=null;
+      }
+      state.agentBusy=false;
+      route("result");
+      notify("AI đã hoàn tất chấm điểm.");
+    }
+
+    function result(){
+      const passed=state.result==="pass";
+      const evaluation=state.assignmentEvaluation;
+      const score=Number(evaluation?.score||(passed?4:3));
+      const stars=Array.from({length:5},(_,i)=>`<i class="${i<score?"fa-solid":"fa-regular"} fa-star ${i<score?"":"empty"}"></i>`).join("");
+      const structure=passed?[
+        ["ok","fa-solid fa-check","Vấn đề","Đã nêu rõ vấn đề cần quyết định"],
+        ["ok","fa-solid fa-check","Lựa chọn","Có đề cập lựa chọn thay thế"],
+        ["ok","fa-solid fa-check","Đánh đổi","Đã cân nhắc tốc độ vs. chất lượng"],
+        ["ok","fa-solid fa-check","Đề xuất","Kết luận rõ ràng, có lý do"]
+      ]:[
+        ["ok","fa-solid fa-check","Vấn đề","Đã nêu rõ vấn đề cần quyết định"],
+        ["ok","fa-solid fa-check","Lựa chọn","Có đề cập lựa chọn thay thế"],
+        ["partial","fa-solid fa-circle-half-stroke","Đánh đổi","Có nhắc nhưng chưa định lượng được"],
+        ["missing","fa-solid fa-xmark","Đề xuất","Thiếu phương án dự phòng cho giả định"]
+      ];
+      const progress=passed?[
+        ["Course 2: Structured & Critical Thinking","12/15đ","80%","+4đ từ bài này"],
+        ["Năng lực Problem Solving","17/20đ","85%","+4đ · còn 1 tiêu chí để hoàn thành"]
+      ]:[
+        ["Course 2: Structured & Critical Thinking","8/15đ","53%","Chưa cộng điểm — cần tối thiểu 4/5★"],
+        ["Năng lực Problem Solving","13/20đ","65%","Giữ nguyên sau bài này"]
+      ];
+      const promptLabels=["Vì sao tôi không được 5/5?","Cho tôi một bài mẫu 5/5","Luyện thêm case tương tự"];
+      const improvementActions=state.improvementPlan?.actions?.length
+        ?state.improvementPlan.actions.map((action,index)=>[
+          String(index+1),action.title,action.reason,`~${action.minutes} phút`
+        ])
+        :[
+          ["1","Đọc lại: Khung phân tích đánh đổi","Phần 2 của bài đọc — cách định lượng trade-off","~8 phút"],
+          ["2","Luyện 1 case ngắn cùng agent","Agent sẽ hỏi ngược để bạn tập nêu giả định","~10 phút"],
+          ["3","Làm lại case này",`Còn ${state.retries} lần làm lại · giữ nguyên cấu trúc 4 phần`,"~7 phút"]
+        ];
+      const coachBody=passed?`
+        <div class="lr-rubric-quote"><div class="lr-block-label">Mức 4/5 — theo rubric</div><div class="lr-block-copy">“Lập luận chặt chẽ, xét giả định &amp; rủi ro, dẫn chứng cụ thể.”</div></div>
+        <div class="lr-evidence"><div class="lr-block-label">Dẫn chứng agent trích từ bài của bạn</div><div class="lr-block-copy">“Mặc dù 40% người dùng quên trả lời, việc build trong 2 tuần sẽ đánh đổi chất lượng — vì vậy tôi đề xuất làm bản MVP giới hạn chỉ nhắc 1 lần thay vì nhắc liên tục, giảm rủi ro kỹ thuật.”</div></div>
+        <div class="lr-tip"><i class="fa-regular fa-lightbulb"></i><div>Để đạt <b>5/5</b> lần sau: nêu thêm phương án dự phòng nếu giả định “40% người dùng quên trả lời” không chính xác.</div></div>
+        <div class="lr-coach-ask"><div class="lr-ask-label">Hỏi lại agent</div><div class="lr-ask-row"><input class="lr-coach-input" type="text" placeholder="Hỏi AI Coach về nhận xét này…"><button class="lr-send" aria-label="Gửi câu hỏi" onclick="askCoach()"><i class="fa-solid fa-paper-plane"></i></button></div><div class="lr-prompt-row">${promptLabels.map(label=>`<button class="lr-prompt" onclick='useCoachPrompt(${JSON.stringify(label)})'><i class="fa-solid fa-arrow-right"></i>${label}</button>`).join("")}</div></div>`:
+        `<div class="lr-rubric-quote"><div class="lr-block-label">Mức 3/5 — theo rubric</div><div class="lr-block-copy">“Có cấu trúc cơ bản, chưa xét trường hợp ngoại lệ.”</div></div>
+        <div class="lr-gap-label">Agent chỉ ra khoảng trống</div>
+        <div class="lr-gap-list">
+          <div class="lr-gap"><i class="fa-solid fa-triangle-exclamation"></i><div><b>Thiếu phương án dự phòng</b><span>Bài làm không nêu sẽ làm gì nếu giả định “40% người dùng quên trả lời” không đúng.</span></div></div>
+          <div class="lr-gap"><i class="fa-solid fa-triangle-exclamation"></i><div><b>Đánh đổi chưa định lượng</b><span>Có nhắc tốc độ vs. chất lượng nhưng chưa nói rõ mất gì, được gì trong 2 tuần.</span></div></div>
+        </div>
+        <div class="lr-plan"><div class="lr-plan-head"><b>Kế hoạch cải thiện do agent lập</b><span>tổng ~${state.improvementPlan?.estimatedMinutes||25} phút</span></div>
+          ${improvementActions.map(([n,title,desc,time])=>`<div class="lr-plan-row"><span class="lr-plan-number">${escapeHtml(n)}</span><div class="lr-plan-copy"><b>${escapeHtml(title)}</b><span>${escapeHtml(desc)}</span></div><span class="lr-plan-time">${escapeHtml(time)}</span></div>`).join("")}
+        </div>`;
+      const recommendedAction=escapeHtml(state.nextAction?.title||(passed?"Tiếp tục: System Thinking":"Làm lại case"));
+      const body=`<nav class="course-breadcrumb lr-breadcrumb" aria-label="Breadcrumb">
+        <button onclick="route('home')">Home</button><i class="fa-solid fa-chevron-right"></i>
+        <button onclick="route('learning')">Learning</button><i class="fa-solid fa-chevron-right"></i>
+        <button onclick="route('course')">Course 2</button><i class="fa-solid fa-chevron-right"></i>
+        <span>Logical Thinking · Kết quả</span>
+      </nav>
+      <section class="lr-score ${passed?"pass":"fail"}">
+        <span class="lr-score-icon"><i class="fa-solid ${passed?"fa-circle-check":"fa-circle-exclamation"}"></i></span>
+        <div class="lr-score-title">${passed?"Đã chấm điểm xong!":"Chưa đạt mục tiêu — thử lại nhé"}</div>
+        <div class="lr-stars">${stars}</div>
+        <div class="lr-score-target">Mục tiêu: tối thiểu <b>4/5★</b> — bạn đạt <strong>${score}/5★</strong></div>
+        <div class="lr-result-pill ${passed?"pass":"fail"}"><i class="${passed?"fa-regular fa-star":"fa-solid fa-lock"}"></i>${passed?`+${score}/5 điểm rubric`:"Chưa cộng điểm rubric"}</div>
+        ${passed?"":`<div class="lr-agent-note"><i class="fa-solid fa-wand-magic-sparkles"></i>AI Agent đã tạo kế hoạch cải thiện riêng cho bạn · còn ${state.retries} lần làm lại</div>`}
+      </section>
+      <section class="lr-coach">
+        <div class="lr-coach-head"><span class="lr-coach-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div class="lr-coach-title"><b>AI Coach</b><span>${passed?"Talent Agent · đã đọc bài làm 218 từ của bạn":"Đã tìm ra 2 điểm khiến bạn mất điểm"}</span></div><span class="lr-coach-status ${passed?"pass":""}"><span class="lr-coach-status-dot"></span>${passed?"Hoàn tất":"Đã phân tích"}</span></div>
+        <div class="lr-coach-body">${coachBody}</div>
+      </section>
+      <section class="lr-structure"><div class="lr-card-head"><h2>Cấu trúc bài làm của bạn</h2>${passed?'<span>agent đối chiếu 4/4 phần</span>':""}</div><div class="lr-structure-list">${structure.map(([status,icon,label,note])=>`<div class="lr-structure-row ${status}"><i class="${icon}"></i><div class="lr-structure-copy"><b>${label}</b><span>${note}</span></div></div>`).join("")}</div></section>
+      <section class="lr-progress-card ${passed?"pass":"fail"}"><div class="lr-card-head"><h2>${passed?"Cập nhật tiến độ":"Tiến độ chưa thay đổi"}</h2></div><div class="lr-progress-list">${progress.map(([label,value,width,delta])=>`<div class="lr-progress-row"><div class="lr-progress-top"><span>${label}</span><b>${value}</b></div><div class="lr-progress-track"><span style="width:${width}"></span></div><div class="lr-progress-delta">${delta}</div></div>`).join("")}</div><div class="lr-actions"><button class="btn btn-outline" onclick="route('course')">${passed?"Xem lại bài làm":"Xem lại bài đọc"}</button><button class="btn btn-orange" onclick="${passed?"continueAfterPass()":"retryCase()"}">${recommendedAction} <i class="fa-solid ${passed?"fa-arrow-right":"fa-rotate-right"}"></i></button></div></section>`;
+      return shell(body,"learning-result-portal","AI Talent");
+    }
+
+    function useCoachPrompt(prompt){
+      const input=document.querySelector(".lr-coach-input");
+      if(!input) return;
+      input.value=prompt;
+      input.focus();
+    }
+
+    function askCoach(){
+      const input=document.querySelector(".lr-coach-input");
+      if(!input||!input.value.trim()) return notify("Hãy nhập câu hỏi cho AI Coach.");
+      notify("AI Coach đang chuẩn bị câu trả lời.");
+    }
+
+    function continueAfterPass(){
+      route("learning");
+      notify("System Thinking đã được mở khóa.");
+    }
+
+    function retryCase(){
+      state.retries=Math.max(0,state.retries-1);
+      route("course");
+      notify("Case đã sẵn sàng để bạn làm lại.");
+    }
+
+    function profile(){
+      const tabs=[["overview","Tổng quan"],["competency","Năng lực"],["rubric","Rubric"],["history","Lịch sử hoạt động"],["assessment","Đánh giá"]];
+      const profileHeader=`<section class="card tp-header">
+        <div class="tp-identity"><span class="tp-avatar">L</span><div><div class="tp-name">Linh</div><div class="tp-role">Product Management Trainee (PMT)</div><div class="tp-member"><i class="fa-solid fa-graduation-cap"></i>Student · Tham gia từ 12/05/2025</div></div></div>
+        <div class="tp-divider"></div>
+        <div class="tp-stats"><div class="tp-stat"><strong>27</strong><span>điểm rubric</span></div><div class="tp-stat"><strong>3/13</strong><span>rubric xong</span></div><div class="tp-stat"><strong>38/100</strong><span>readiness</span></div></div>
+        <div class="tp-divider" style="margin:20px 0 18px"></div>
+        <div class="tp-level"><span class="tp-level-icon"><i class="fa-solid fa-star"></i></span><div><b>Baseline</b><a href="#" onclick="notify('Baseline là cấp độ khởi tạo của hồ sơ.');return false">Tìm hiểu cấp độ →</a></div></div>
+        <div class="tp-goal-row"><div class="tp-goal"><i class="fa-solid fa-bullseye"></i><span>Mục tiêu học tập hiện tại:</span><b>Product Management</b></div><button class="btn btn-outline" style="min-height:44px" onclick="notify('Bạn có thể đổi mục tiêu sau khi hoàn thành khóa hiện tại.')"><i class="fa-solid fa-bullseye" style="color:var(--orange)"></i>Đổi mục tiêu học tập <i class="fa-solid fa-arrow-right"></i></button></div>
+      </section>
+      <nav class="tp-tabs">${tabs.map(([key,label])=>`<button class="${state.profileTab===key?"active":""}" onclick="state.profileTab='${key}';render()">${label}</button>`).join("")}</nav>`;
+      const achievements=[
+        ["fa-solid fa-puzzle-piece","Hoàn thành rubric “Phân tích vấn đề”","2 ngày trước","+5đ"],
+        ["fa-solid fa-book-open","Hoàn thành khóa học “Product Fundamentals”","5 ngày trước","+10đ"],
+        ["fa-regular fa-star","Đạt 4/5★ rubric “Logical Thinking”","1 tuần trước","+4đ"]
+      ];
+      const history=[
+        ["fa-solid fa-bullseye","Xác nhận mục tiêu học tập","Product Management · 12/05/2025"],
+        ["fa-solid fa-chart-line","Readiness cập nhật 34 → 38","2 ngày trước"],
+        ["fa-regular fa-file-lines","Tải lên CV (không bắt buộc)","12/05/2025"]
+      ];
+      const agentActions=[
+        ["fa-solid fa-arrow-right-long","Hoàn thành module System Thinking","Mở khoá 1 tiêu chí của Problem Solving","+5đ"],
+        ["fa-solid fa-clipboard-list","Làm bài đánh giá Execution","Năng lực chưa có dữ liệu để chấm","+15đ"],
+        ["fa-solid fa-comment-dots","Nộp case Communication","Đang chờ hệ thống mở tiêu chí","sắp có"]
+      ];
+      const overview=`<section class="tp-layout">
+        <div class="tp-left">
+          <article class="card tp-readiness">
+            <div class="tp-readiness-head"><div class="tp-ring"><div class="tp-ring-center"><strong>38</strong><span>/100</span></div></div><div class="tp-readiness-copy"><h2>Readiness hiện tại</h2><p>Baseline — cần thêm điểm ở Mindset & Management để đạt ngưỡng PMT Ready.</p><a class="tp-link" href="#" onclick="notify('Readiness được tổng hợp từ 13 rubric.');return false">Hiểu cách chấm điểm →</a></div></div>
+            <div class="tp-divider" style="margin:22px 0 4px"></div><div class="tp-section-title">Năng lực nổi bật</div>
+            <div>
+              <div class="tp-highlight"><span class="tp-highlight-icon"><i class="fa-regular fa-lightbulb"></i></span><div class="tp-highlight-copy"><b>Product Thinking</b><span>Mạnh nhất</span></div><div class="tp-highlight-score"><strong style="color:#078c7f">80%</strong><div class="tp-mini-bar"><span style="width:80%;background:#078c7f"></span></div></div></div>
+              <div class="tp-highlight"><span class="tp-highlight-icon"><i class="fa-solid fa-puzzle-piece"></i></span><div class="tp-highlight-copy"><b>Problem Solving</b><span>Cần cải thiện</span></div><div class="tp-highlight-score"><strong style="color:#d2a438">25%</strong><div class="tp-mini-bar"><span style="width:25%;background:#d2a438"></span></div></div></div>
+            </div>
+            <a class="tp-link" href="#" onclick="state.profileTab='competency';render();return false" style="margin-top:16px">Xem chi tiết 6 năng lực →</a>
+          </article>
+          <article class="card tp-agent"><div class="tp-agent-head"><span class="tp-agent-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div class="tp-agent-title"><b>Agent gợi ý để tăng readiness</b><span>Dựa trên 3 rubric bạn đã hoàn thành</span></div><span class="tp-update-pill">Cập nhật hôm nay</span></div><div class="tp-agent-body">${agentActions.map(([icon,title,why,gain])=>`<div class="tp-list-row"><span class="tp-list-icon"><i class="${icon}"></i></span><div class="tp-list-copy large"><b>${title}</b><span>${why}</span></div><span class="tp-gain">${gain}</span></div>`).join("")}</div></article>
+        </div>
+        <div class="tp-right">
+          <article class="card tp-side-card"><h2>Thành tích gần đây</h2>${achievements.map(([icon,title,when,pts])=>`<div class="tp-list-row"><span class="tp-list-icon teal"><i class="${icon}"></i></span><div class="tp-list-copy"><b>${title}</b><span>${when}</span></div><span class="tp-gain">${pts}</span></div>`).join("")}<a class="tp-link" href="#" onclick="state.profileTab='history';render();return false" style="margin-top:16px">Xem tất cả →</a></article>
+          <article class="card tp-side-card"><h2>Lịch sử cập nhật</h2>${history.map(([icon,title,meta])=>`<div class="tp-list-row"><span class="tp-list-icon"><i class="${icon}"></i></span><div class="tp-list-copy"><b>${title}</b><span>${meta}</span></div></div>`).join("")}</article>
+          <article class="tp-visibility"><h2><i class="fa-regular fa-eye-slash"></i>Chưa hiển thị với nhà tuyển dụng</h2><p>Hồ sơ sẽ được đề xuất cho nhà tuyển dụng khi bạn đạt <b>PMT Ready</b> (còn 10 rubric).</p><button class="btn btn-orange" style="margin-top:16px" onclick="route('learning')">Xem điều kiện PMT Ready <i class="fa-solid fa-arrow-right"></i></button></article>
+        </div>
+      </section>`;
+      const competencies=[
+        ["fa-regular fa-lightbulb","Product Thinking","Mạnh nhất · 2 rubric đã xác minh",80,"#078c7f"],
+        ["fa-solid fa-puzzle-piece","Problem Solving","Đang phát triển · 1/3 rubric",25,"#d2a438"],
+        ["fa-regular fa-user","Customer Focus","Có tín hiệu từ bài đánh giá đầu vào",38,"#2fa1b3"],
+        ["fa-solid fa-chart-column","Data Sense","Cần thêm bằng chứng từ Course 3",32,"#2fa1b3"],
+        ["fa-regular fa-comment-dots","Communication","Có tín hiệu nền tảng",44,"#2fa1b3"],
+        ["fa-solid fa-flag-checkered","Ownership","Chưa có bài đánh giá xác minh",20,"#a0a6a8"]
+      ];
+      const competencyTab=`<section class="tp-tab-layout"><div class="tp-tab-main">
+        <article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>6 năng lực cốt lõi</h2><p>Điểm được tổng hợp từ rubric, khóa học và bài đánh giá.</p></div><span class="tp-status current">Baseline</span></div>
+        ${competencies.map(([icon,name,note,value,color])=>`<div class="tp-competency-row"><span class="tp-competency-icon"><i class="${icon}"></i></span><div class="tp-competency-copy"><b>${name}</b><span>${note}</span></div><div class="tp-competency-value"><strong style="color:${color}">${value}%</strong><div class="tp-mini-bar"><span style="width:${value}%;background:${color}"></span></div></div></div>`).join("")}</article>
+      </div><aside class="tp-tab-side">
+        <article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Phân bổ cấp độ</h2><p>Tình trạng hiện tại của 6 năng lực.</p></div></div><div class="tp-distribution"><div class="tp-distribution-row"><span>Mạnh</span><div class="progress"><span style="width:17%;background:#078c7f"></span></div><b>1</b></div><div class="tp-distribution-row"><span>Đang phát triển</span><div class="progress"><span style="width:50%"></span></div><b>3</b></div><div class="tp-distribution-row"><span>Khởi tạo</span><div class="progress"><span style="width:33%;background:#a0a6a8"></span></div><b>2</b></div></div></article>
+        <article class="tp-focus"><span class="tp-status current">Ưu tiên tiếp theo</span><h2 style="margin-top:12px">Problem Solving</h2><p>Hoàn thành System Thinking để mở khóa thêm 1 rubric và tăng khoảng 5 điểm readiness.</p><button class="btn btn-primary btn-sm" onclick="route('course')">Tiếp tục học <i class="fa-solid fa-arrow-right"></i></button></article>
+        <article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Nguồn bằng chứng</h2><p>Những hoạt động đang đóng góp vào hồ sơ.</p></div></div><div class="tp-score-impact"><i class="fa-solid fa-book-open"></i><div><b>Khóa học</b><span>1 khóa hoàn thành</span></div><b>+15đ</b></div><div class="tp-score-impact"><i class="fa-solid fa-clipboard-check"></i><div><b>Rubric</b><span>3 tiêu chí đã xác minh</span></div><b>+12đ</b></div><div class="tp-score-impact"><i class="fa-solid fa-list-check"></i><div><b>Đánh giá</b><span>1 bài đầu vào</span></div><b>Baseline</b></div></article>
+      </aside></section>`;
+      const rubricGroups=[
+        ["Product Thinking","2/3 hoàn thành",[["done","fa-check","Problem Framing","Đạt 5/5","+5đ"],["done","fa-check","Value Thinking","Đạt 5/5","+5đ"],["current","fa-play","Solution Evaluation","Đang phát triển","2/5"]]],
+        ["Problem Solving","1/3 hoàn thành",[["done","fa-check","Phân tích vấn đề","Đạt 5/5","+5đ"],["current","fa-play","Logical Thinking","Đạt 4/5","+4đ"],["locked","fa-lock","System Thinking","Chưa mở khóa","—"]]],
+        ["Customer & Data","0/3 hoàn thành",[["current","fa-circle-half-stroke","User Insight","Có tín hiệu ban đầu","2/5"],["locked","fa-lock","Metrics Thinking","Mở ở Course 3","—"],["locked","fa-lock","Data Interpretation","Mở ở Course 3","—"]]],
+        ["Execution & Management","0/4 hoàn thành",[["current","fa-circle-half-stroke","Ownership","Có tín hiệu ban đầu","1/5"],["locked","fa-lock","Prioritization","Mở ở Course 4","—"],["locked","fa-lock","Communication","Chờ case thực hành","—"],["locked","fa-lock","Stakeholder Management","Chưa mở khóa","—"]]]
+      ];
+      const rubricTab=`<section class="card tp-summary-grid" style="margin-top:24px"><div class="tp-summary-item"><strong>3/13</strong><span>Rubric hoàn thành</span></div><div class="tp-summary-item"><strong>27/65</strong><span>Điểm rubric</span></div><div class="tp-summary-item"><strong>10</strong><span>Rubric còn lại</span></div></section>
+      <section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Bộ rubric PMT Ready</h2><p>13 tiêu chí được xác minh bằng bằng chứng cụ thể.</p></div><span class="tp-status current">3/13 xong</span></div>
+      ${rubricGroups.map(([group,meta,rows])=>`<div class="tp-rubric-group"><div class="tp-rubric-group-head"><h3>${group}</h3><span>${meta}</span></div>${rows.map(([status,icon,name,note,points])=>`<div class="tp-rubric-row"><span class="tp-rubric-dot ${status}"><i class="fa-solid ${icon}"></i></span><div class="tp-rubric-copy"><b>${name}</b><span>${note}</span></div><span class="tp-rubric-points" style="${status==="locked"?"color:#949a9c":""}">${points}</span></div>`).join("")}</div>`).join("")}</article></div>
+      <aside class="tp-tab-side"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Trạng thái rubric</h2><p>Cách đọc tiến độ của từng tiêu chí.</p></div></div><div class="tp-legend"><div class="tp-legend-row"><span class="tp-rubric-dot done"><i class="fa-solid fa-check"></i></span>Đã có đủ bằng chứng</div><div class="tp-legend-row"><span class="tp-rubric-dot current"><i class="fa-solid fa-play"></i></span>Đang phát triển</div><div class="tp-legend-row"><span class="tp-rubric-dot locked"><i class="fa-solid fa-lock"></i></span>Chưa mở khóa</div></div></article><article class="tp-focus"><span class="tp-status current">Gần nhất</span><h2 style="margin-top:12px">System Thinking</h2><p>Hoàn thành module hiện tại để mở rubric thứ 4 và tiến gần ngưỡng Emerging.</p><button class="btn btn-primary btn-sm" onclick="route('course')">Mở module <i class="fa-solid fa-arrow-right"></i></button></article></aside></section>`;
+      const events=[
+        ["fa-solid fa-puzzle-piece","Hoàn thành rubric “Phân tích vấn đề”","Problem Solving · +5 điểm","2 ngày trước"],
+        ["fa-solid fa-chart-line","Readiness cập nhật 34 → 38","Điểm mới đã được ghi vào Talent Profile","2 ngày trước"],
+        ["fa-solid fa-book-open","Hoàn thành Product Fundamentals","3 rubric · 15/15 điểm","5 ngày trước"],
+        ["fa-regular fa-star","Đạt 4/5★ Logical Thinking","Bài case được AI đánh giá","1 tuần trước"],
+        ["fa-solid fa-bullseye","Xác nhận mục tiêu học tập","Product Management","12/05/2025"],
+        ["fa-regular fa-file-lines","Tải lên CV","CV không bắt buộc · đã phân tích","12/05/2025"]
+      ];
+      const historyTab=`<section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Dòng hoạt động</h2><p>Những thay đổi đã đóng góp vào hồ sơ năng lực.</p></div><span class="tp-status done">6 hoạt động</span></div><div class="tp-timeline">${events.map(([icon,title,meta,time])=>`<div class="tp-event"><span class="tp-event-icon"><i class="${icon}"></i></span><div class="tp-event-copy"><b>${title}</b><span>${meta}</span></div><span class="tp-event-time">${time}</span></div>`).join("")}</div></article></div>
+      <aside class="tp-tab-side"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Lọc hoạt động</h2><p>Xem theo loại bằng chứng.</p></div></div><div class="tp-filter-pills"><button class="active">Tất cả</button><button>Học tập</button><button>Rubric</button><button>Hồ sơ</button></div></article><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Tháng 05/2025</h2><p>Tóm tắt hoạt động của bạn.</p></div></div><div class="tp-month-stat"><span>Điểm tăng</span><b style="color:#078c7f">+27đ</b></div><div class="tp-month-stat"><span>Rubric hoàn thành</span><b>3</b></div><div class="tp-month-stat"><span>Khóa học hoàn thành</span><b>1</b></div><div class="tp-month-stat"><span>Readiness tăng</span><b>+38</b></div></article><article class="tp-focus"><h2>Dữ liệu thuộc về bạn</h2><p>Mọi cập nhật đều có nguồn bằng chứng và chỉ hiển thị với nhà tuyển dụng khi bạn đạt PMT Ready.</p></article></aside></section>`;
+      const assessmentTab=`<section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Bài đánh giá của bạn</h2><p>Kết quả được dùng để xác minh năng lực và cập nhật readiness.</p></div><span class="tp-status current">2 đã làm</span></div>
+        <div class="tp-assessment"><div class="tp-assessment-head"><span class="tp-assessment-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div class="tp-assessment-copy"><h3>Đánh giá đầu vào</h3><p>Xác định điểm khởi đầu và cá nhân hóa lộ trình PMT.</p></div><span class="tp-status done">Hoàn thành</span></div><div class="tp-assessment-result"><div><strong>Baseline</strong>Cấp độ</div><div><strong>6 năng lực</strong>Đã phân tích</div><div><strong>12/05/2025</strong>Ngày làm</div></div></div>
+        <div class="tp-assessment"><div class="tp-assessment-head"><span class="tp-assessment-icon"><i class="fa-regular fa-star"></i></span><div class="tp-assessment-copy"><h3>Case · Logical Thinking</h3><p>Đánh giá lập luận có cấu trúc trong một quyết định Product.</p></div><span class="tp-status done">Đạt 4/5</span></div><div class="tp-assessment-result"><div><strong>+4đ</strong>Rubric</div><div><strong>Problem Solving</strong>Năng lực</div><div><strong>1 tuần trước</strong>Ngày làm</div></div></div>
+        <div class="tp-assessment"><div class="tp-assessment-head"><span class="tp-assessment-icon"><i class="fa-solid fa-clipboard-list"></i></span><div class="tp-assessment-copy"><h3>Execution Assessment</h3><p>Đánh giá khả năng ưu tiên, triển khai và theo sát kết quả.</p></div><span class="tp-status waiting">Đề xuất tiếp theo</span></div><div style="margin:14px 0 0 53px"><button class="btn btn-primary btn-sm" onclick="notify('Bài đánh giá sẽ mở sau khi hoàn thành System Thinking.')">Xem điều kiện mở <i class="fa-solid fa-arrow-right"></i></button></div></div>
+      </article></div><aside class="tp-tab-side"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Tác động đến hồ sơ</h2><p>Kết quả đã được ghi nhận.</p></div></div><div class="tp-score-impact"><i class="fa-solid fa-arrow-trend-up"></i><div><b>Readiness</b><span>Từ các bài đánh giá</span></div><b>+8</b></div><div class="tp-score-impact"><i class="fa-solid fa-check"></i><div><b>Rubric xác minh</b><span>Đủ bằng chứng</span></div><b>1</b></div><div class="tp-score-impact"><i class="fa-solid fa-star"></i><div><b>Điểm rubric</b><span>Đã cộng vào hồ sơ</span></div><b>+4đ</b></div></article><article class="tp-focus"><span class="tp-status current">AI đánh giá</span><h2 style="margin-top:12px">Phản hồi có thể truy vết</h2><p>Mỗi kết quả đều liên kết với câu trả lời, tiêu chí chấm và bằng chứng cụ thể của bạn.</p><button class="btn btn-outline btn-sm" onclick="notify('Mở kết quả gần nhất từ Learning Result.')">Xem kết quả gần nhất</button></article></aside></section>`;
+      const tabContent={overview,competency:competencyTab,rubric:rubricTab,history:historyTab,assessment:assessmentTab};
+      return shell(`${profileHeader}${tabContent[state.profileTab]}`,"profile-portal","AI Talent");
+    }
+
+    function ready(){
+      if(!isReady()){notify("Hoàn thành 4 khóa học và 13 tiêu chí để mở PMT Ready.");return learning();}
+      const submitted=state.applicationStatus==="submitted";
+      const body=`<div class="page-top"><div><p class="eyebrow">PMT Ready</p><h1>${submitted?"Theo dõi hồ sơ ứng tuyển":"Bạn đã sẵn sàng cho bước tiếp theo"}</h1><p>${submitted?"Hồ sơ đang được đội ngũ Talent Acquisition xem xét.":"Hồ sơ năng lực đã hoàn thành và đủ điều kiện ứng tuyển PMT."}</p></div></div>
+      ${submitted?`<section class="card section-card" style="margin-top:0"><div class="section-head"><div><h2>Product Management Trainee 2026</h2><p>Hồ sơ gửi ngày hôm nay</p></div><span class="tag current">Đang xem xét</span></div><div class="section-body"><div class="tracking"><div class="track-step done"><span class="track-dot"><i class="fa-solid fa-check"></i></span><b>Submitted</b><span>Đã gửi</span></div><div class="track-step done"><span class="track-dot"><i class="fa-solid fa-check"></i></span><b>TA reviewed</b><span>Đã tiếp nhận</span></div><div class="track-step"><span class="track-dot">3</span><b>Interview</b><span>Đang chờ</span></div></div></div></section><section class="card section-card"><div class="section-head"><div><h2>Trong khi chờ đợi</h2><p>Tiếp tục duy trì năng lực và chuẩn bị cho vòng phỏng vấn.</p></div></div><div class="section-body"><div class="recommendation"><i class="fa-solid fa-comments"></i><div><b>Luyện phỏng vấn Product Sense</b><span>Bộ 10 câu hỏi được cá nhân hóa theo hồ sơ.</span></div></div><div class="recommendation"><i class="fa-solid fa-people-group"></i><div><b>Tham gia PMT Community</b><span>Kết nối với học viên và mentor.</span></div></div></div></section>`:
+      `<section class="card ready-hero"><span class="ready-mark"><i class="fa-solid fa-check"></i></span><h1>Congratulations, you are PMT Ready!</h1><p>Bạn đã hoàn thành toàn bộ lộ trình và xác minh 13/13 tiêu chí năng lực.</p><button class="btn btn-orange" onclick="applyPmt()">Ứng tuyển chương trình PMT <i class="fa-solid fa-arrow-right"></i></button></section>
+      <section class="card ready-metrics"><div><strong>100/100</strong><span>Readiness</span></div><div><strong>13/13</strong><span>Tiêu chí</span></div><div><strong>65/65</strong><span>Điểm</span></div><div><strong>4/4</strong><span>Khóa học</span></div></section>
+      <section class="profile-grid" style="margin-top:14px"><article class="card"><div class="section-head"><div><h2>Năng lực đã xác minh</h2><p>Từ bài học, case và đánh giá cuối lộ trình.</p></div></div><div class="section-body"><div class="verified-list">${["Product Thinking","Problem Solving","Customer Focus","Data Sense","Communication","Ownership"].map(name=>`<div class="verified"><i class="fa-solid fa-circle-check"></i><b>${name}</b></div>`).join("")}</div></div></article>
+      <article class="card certificate"><p class="eyebrow">Verified certificate</p><h2>PMT Ready Certificate</h2><p>Linh Nguyễn · 13/13 tiêu chí · 65/65 điểm</p><button class="btn btn-outline btn-sm" onclick="createCertificate()">${state.certificate?"Tải PDF":"Tạo chứng chỉ"}</button>${state.certificate?'<button class="btn btn-ghost btn-sm" onclick="shareCertificate()">Sao chép link chia sẻ</button>':""}</article></section>`}
+      `;
+      return shell(body);
+    }
+
+    function createCertificate(){
+      if(!state.certificate){state.certificate=true;render();notify("Chứng chỉ PMT Ready đã được tạo.");}
+      else notify("Bản PDF chứng chỉ đang được chuẩn bị.");
+    }
+
+    function shareCertificate(){
+      if(navigator.clipboard) navigator.clipboard.writeText(location.href+"?certificate=linh-nguyen");
+      notify("Đã sao chép link chứng chỉ.");
+    }
+
+    function applyPmt(){
+      state.applicationStatus="submitted";
+      render();
+      notify("Hồ sơ PMT đã được gửi thành công.");
+    }
+
+    function render(){
+      let html;
+      if(state.view==="login") html=login();
+      else if(state.view==="onboarding") html=onboarding();
+      else if(state.view==="home") html=home();
+      else if(state.view==="learning") html=learning();
+      else if(state.view==="course") html=course();
+      else if(state.view==="result") html=result();
+      else if(state.view==="profile") html=profile();
+      else if(state.view==="ready") html=ready();
+      else if(["assessment","community"].includes(state.view)){state.view="home";html=home();}
+      app.innerHTML=html;
+    }
+
+    render();
+  </script>
+</body>
+</html>

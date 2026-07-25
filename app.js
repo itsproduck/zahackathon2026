@@ -3642,7 +3642,11 @@ function switchView(viewId) {
 }
 
 document.querySelectorAll(".nav-tab").forEach((tab) => {
-  tab.addEventListener("click", () => switchView(tab.dataset.view));
+  tab.addEventListener("click", () => {
+    if (tab.dataset.view) {
+      switchView(tab.dataset.view);
+    }
+  });
 });
 
 document.querySelectorAll("[data-student-tab]").forEach((tab) => {
