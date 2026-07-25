@@ -814,6 +814,9 @@
     .tp-highlight-score strong,.tp-competency-value strong{font-size:var(--type-score-size);line-height:1.2;font-weight:var(--weight-semibold)}
     .toast{position:fixed;right:22px;bottom:22px;z-index:100;background:var(--brand-dark);color:#fff;padding:11px 15px;border-radius:7px;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-regular);box-shadow:0 10px 25px rgba(0,86,84,.25);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}
     .toast.show{opacity:1;transform:none}
+    .portal-role-switch{position:fixed;right:20px;bottom:20px;z-index:40;display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:0 17px;border:1px solid #dce6e7;border-radius:999px;background:#fff;color:var(--brand-dark);box-shadow:0 10px 28px rgba(20,55,58,.12);font-size:12px;font-weight:600;text-decoration:none;transition:transform .18s,border-color .18s,background .18s}
+    .portal-role-switch:hover{transform:translateY(-2px);border-color:var(--brand);background:var(--brand-soft)}
+    .portal-role-switch:focus-visible{outline:3px solid rgba(47,161,179,.28);outline-offset:2px}
 
     @media(max-width:980px){
       :root{--sidebar:210px}.portal-main{padding:24px 22px 45px}.metric-grid{grid-template-columns:repeat(2,1fr)}
@@ -832,12 +835,14 @@
       .auth-card{padding:32px 22px}.page-top{display:block}.page-actions{margin-top:13px}.metric-grid,.summary-strip,.highlight-grid,.answer-hints{grid-template-columns:1fr}
       .summary-strip div{border-right:0;border-bottom:1px solid var(--line)}.summary-strip div:last-child{border:0}.next-course{align-items:flex-start;flex-wrap:wrap}
       .module-track,.competency-grid,.ready-metrics{grid-template-columns:1fr}.course-layout.reference .answer-hints{grid-template-columns:1fr 1fr}.ready-metrics div{border-right:0;border-bottom:1px solid var(--line)}.submit-row{align-items:flex-start;flex-direction:column}.tp-header{padding:22px 18px}.tp-identity{align-items:flex-start}.tp-avatar{width:60px;height:60px}.tp-role,.tp-member{white-space:normal}.tp-stats{gap:20px;flex-wrap:wrap}.tp-readiness-head{align-items:flex-start;flex-direction:column}.tp-agent-head{align-items:flex-start;flex-wrap:wrap}.tp-update-pill{margin-left:52px}.tp-summary-grid{grid-template-columns:1fr}.tp-summary-item{border-right:0;border-bottom:1px solid var(--line)}.tp-competency-value{width:90px}.tp-competency-value .tp-mini-bar{width:90px}.tp-event{grid-template-columns:42px minmax(0,1fr)}.tp-event-time{grid-column:2}.sh-top{align-items:flex-start}.sh-goal-hero{padding:24px 20px;display:block}.sh-goal-visual{display:none}.sh-goal-strip{align-items:flex-start;flex-wrap:wrap}.sh-course-card{display:block}.sh-course-icon{margin-bottom:16px}.sh-progress-head{align-items:flex-start;flex-direction:column}.sh-competency-grid,.sh-guide-steps{grid-template-columns:1fr}.sh-progress-stats{gap:18px;flex-wrap:wrap}.lr-coach-head{align-items:flex-start;flex-wrap:wrap}.lr-coach-status{margin-left:56px}.lr-plan-row{grid-template-columns:28px minmax(0,1fr)}.lr-plan-time{grid-column:2}.lr-structure,.lr-progress-card{padding:22px 18px}.lr-card-head{align-items:flex-start;flex-direction:column}.lr-actions{flex-direction:column}.lr-actions .btn{width:100%}.lr-score-title{font-size:22px}.li-summary{align-items:flex-start;flex-direction:column}.li-summary-count{text-align:left}.li-summary-progress{width:100%}.li-panel{padding:18px}.li-assessment{align-items:flex-start;flex-wrap:wrap}.li-assessment-status{margin-left:48px}.li-course{display:grid;grid-template-columns:52px minmax(0,1fr)}.li-course.current{padding-left:14px}.li-course-side{grid-column:2;min-width:0;text-align:left}.li-lock-note{max-width:none}.li-course-side .btn{margin-top:6px}
+      .portal-role-switch{right:12px;bottom:12px;min-height:38px;padding:0 13px;font-size:11px}
     }
   </style>
 </head>
 <body>
   <div id="app"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <a class="portal-role-switch" href="/ta" aria-label="Switch to TA portal"><i class="fa-solid fa-arrow-right-arrow-left"></i> TA portal</a>
   <script>
     const state={
       view:"login",persona:"student",onboardingIndex:0,cvUploaded:false,analysisProgress:0,

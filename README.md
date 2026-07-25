@@ -247,6 +247,20 @@ For live student-agent mode:
 
 For the older TA-side Workspace Agent trigger, also set `WORKSPACE_AGENT_ACCESS_TOKEN`.
 
+## Single-domain Portal Routing
+
+Student and TA experiences are deployed on one Vercel domain:
+
+| Route | Experience |
+| --- | --- |
+| `/` | Student portal |
+| `/student` | Student portal |
+| `/ta` | TA portal |
+
+Each portal includes a one-click switch to the other route. The routes are rewrites to
+the two standalone HTML bundles, so navigation stays on the same origin and does not
+require a second Vercel project or domain.
+
 ## Required Accounts and API Keys
 
 None for deterministic demo mode.

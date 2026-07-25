@@ -40,10 +40,13 @@ function loadEnvFile() {
 function serveStatic(req, res) {
   const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
   const pathname = decodeURIComponent(url.pathname);
-  const isStudentPortal = ["/", "/index.html", "/student-portal.html"].includes(pathname);
-  const requestedPath = isStudentPortal
+  const studentRoutes = ["/", "/index.html", "/student", "/student/", "/student-portal", "/student-portal.html"];
+  const taRoutes = ["/ta", "/ta/", "/ta-portal", "/ta-portal.html"];
+  const requestedPath = studentRoutes.includes(pathname)
     ? path.join(rootDir, "student-portal.html")
-    : path.normalize(path.join(rootDir, pathname));
+    : taRoutes.includes(pathname)
+      ? path.join(rootDir, "ta-portal.html")
+      : path.normalize(path.join(rootDir, pathname));
 
   if (
     !requestedPath.startsWith(rootDir) ||

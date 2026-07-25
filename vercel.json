@@ -9,5 +9,19 @@
     }
   },
   "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/student-portal.html"
+    },
+    {
+      "source": "/student",
+      "destination": "/student-portal.html"
+    },
+    {
+      "source": "/ta",
+      "destination": "/ta-portal.html"
+    }
+  ],
   "trailingSlash": false
 }
