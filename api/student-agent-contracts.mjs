@@ -4,71 +4,93 @@ Use only evidence present in the request. Never invent education, employment, sk
 course activity, rubric evidence, scores, or hiring outcomes.
 Keep recommendations educational and reversible. Do not make hiring decisions.
 When evidence is missing or conflicting, lower confidence and say what is missing.
+Write every student-facing string in Vietnamese.
 Return only the requested structured output.
 `.trim();
 
 const contracts = {
   "cv-review": {
-    schemaName: "student_cv_review",
+    schemaName: "student_cv_review_v2",
     instructions: `${commonRules}
 
-Role: CV Review Agent.
-Extract a student-controlled profile from the supplied CV metadata and onboarding
-answers. Distinguish verified evidence from inference. The student must be able to
-review and correct every extracted field.`,
+Role: CV Data Extraction Agent.
+Extract the student's full name and neutrally summarize profile data from the attached CV, optional CV text,
+onboarding answers, and explicit student corrections. Do not score, rank, evaluate
+role fit, assess employability, recommend hiring actions, or identify skill gaps.
+The student must be able to review and correct every extracted field. verified=true
+means the value appears directly in a supplied source, not external verification.
+For fullName, copy the name from the CV exactly when present. If the CV does not
+contain a readable name, use the uploaded filename without file extensions or generic
+tokens such as CV and Resume; never invent a person's name.`,
     schema: {
       type: "object",
       additionalProperties: false,
-      required: ["summary", "experiences", "skills", "education", "gaps", "confidence", "needsHumanReview"],
+      required: [
+        "schemaVersion", "fullName", "summary", "experiences", "skills", "education", "gaps",
+        "confidence", "confidenceReason", "needsHumanReview"
+      ],
       properties: {
-        summary: { type: "string" },
+        schemaVersion: { type: "string", enum: ["student.cv_review.v2"] },
+        fullName: { type: "string", minLength: 1, maxLength: 160 },
+        summary: { type: "string", minLength: 1, maxLength: 500 },
         experiences: {
           type: "array",
+          maxItems: 8,
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["title", "organization", "evidence"],
+            required: ["title", "organization", "timeframe", "evidence", "sourceType", "verified"],
             properties: {
-              title: { type: "string" },
-              organization: { type: "string" },
-              evidence: { type: "string" }
+              title: { type: "string", minLength: 1, maxLength: 120 },
+              organization: { type: "string", maxLength: 120 },
+              timeframe: { type: "string", maxLength: 80 },
+              evidence: { type: "string", minLength: 1, maxLength: 400 },
+              sourceType: { type: "string", enum: ["cv", "onboarding", "student_correction", "inference"] },
+              verified: { type: "boolean" }
             }
           }
         },
         skills: {
           type: "array",
+          maxItems: 16,
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["name", "evidence", "verified"],
+            required: ["name", "evidence", "sourceType", "verified"],
             properties: {
-              name: { type: "string" },
-              evidence: { type: "string" },
+              name: { type: "string", minLength: 1, maxLength: 80 },
+              evidence: { type: "string", minLength: 1, maxLength: 300 },
+              sourceType: { type: "string", enum: ["cv", "onboarding", "student_correction", "inference"] },
               verified: { type: "boolean" }
             }
           }
         },
         education: {
           type: "array",
+          maxItems: 6,
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["institution", "field", "evidence"],
+            required: ["institution", "field", "timeframe", "evidence", "sourceType", "verified"],
             properties: {
-              institution: { type: "string" },
-              field: { type: "string" },
-              evidence: { type: "string" }
+              institution: { type: "string", minLength: 1, maxLength: 160 },
+              field: { type: "string", maxLength: 120 },
+              timeframe: { type: "string", maxLength: 80 },
+              evidence: { type: "string", minLength: 1, maxLength: 300 },
+              sourceType: { type: "string", enum: ["cv", "onboarding", "student_correction", "inference"] },
+              verified: { type: "boolean" }
             }
           }
         },
-        gaps: { type: "array", items: { type: "string" } },
+        gaps: { type: "array", maxItems: 10, items: { type: "string", minLength: 1, maxLength: 240 } },
         confidence: { type: "string", enum: ["high", "medium", "low"] },
+        confidenceReason: { type: "string", minLength: 1, maxLength: 300 },
         needsHumanReview: { type: "boolean" }
       }
     }
   },
   "journey-designer": {
-    schemaName: "student_journey",
+    schemaName: "student_journey_v2",
     instructions: `${commonRules}
 
 Role: Journey Designer Agent.
@@ -78,34 +100,48 @@ course is placed in the sequence. Do not promise employment.`,
     schema: {
       type: "object",
       additionalProperties: false,
-      required: ["title", "target", "courses", "criteriaTotal", "pointsTotal", "rationale", "confidence", "needsHumanReview"],
+      required: [
+        "schemaVersion", "title", "target", "courses", "criteriaTotal", "pointsTotal",
+        "rationale", "nextMilestone", "confidence", "confidenceReason", "needsHumanReview"
+      ],
       properties: {
-        title: { type: "string" },
-        target: { type: "string" },
+        schemaVersion: { type: "string", enum: ["student.journey.v2"] },
+        title: { type: "string", minLength: 1, maxLength: 180 },
+        target: { type: "string", minLength: 1, maxLength: 140 },
         courses: {
           type: "array",
+          minItems: 1,
+          maxItems: 12,
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["id", "title", "order", "reason"],
+            required: ["id", "title", "order", "reason", "competencyTargets", "prerequisitesMet"],
             properties: {
-              id: { type: "string" },
-              title: { type: "string" },
-              order: { type: "integer" },
-              reason: { type: "string" }
+              id: { type: "string", minLength: 1, maxLength: 80 },
+              title: { type: "string", minLength: 1, maxLength: 160 },
+              order: { type: "integer", minimum: 1 },
+              reason: { type: "string", minLength: 1, maxLength: 360 },
+              competencyTargets: {
+                type: "array",
+                maxItems: 8,
+                items: { type: "string", minLength: 1, maxLength: 100 }
+              },
+              prerequisitesMet: { type: "boolean" }
             }
           }
         },
-        criteriaTotal: { type: "integer" },
-        pointsTotal: { type: "integer" },
-        rationale: { type: "string" },
+        criteriaTotal: { type: "integer", minimum: 0 },
+        pointsTotal: { type: "integer", minimum: 0 },
+        rationale: { type: "string", minLength: 1, maxLength: 600 },
+        nextMilestone: { type: "string", minLength: 1, maxLength: 240 },
         confidence: { type: "string", enum: ["high", "medium", "low"] },
+        confidenceReason: { type: "string", minLength: 1, maxLength: 300 },
         needsHumanReview: { type: "boolean" }
       }
     }
   },
   "assignment-evaluator": {
-    schemaName: "student_assignment_evaluation",
+    schemaName: "student_assignment_evaluation_v2",
     instructions: `${commonRules}
 
 Role: Assignment Evaluator Agent.
@@ -116,35 +152,58 @@ points automatically.`,
     schema: {
       type: "object",
       additionalProperties: false,
-      required: ["score", "maxScore", "status", "summary", "criterionResults", "strengths", "gaps", "confidence", "needsHumanReview"],
+      required: [
+        "schemaVersion", "score", "maxScore", "passThreshold", "status", "rubricLevel",
+        "summary", "evidenceHighlights", "structureResults", "strengths", "gaps",
+        "confidence", "confidenceReason", "needsHumanReview"
+      ],
       properties: {
-        score: { type: "integer" },
-        maxScore: { type: "integer" },
+        schemaVersion: { type: "string", enum: ["student.assignment_evaluation.v2"] },
+        score: { type: "integer", minimum: 0 },
+        maxScore: { type: "integer", minimum: 1 },
+        passThreshold: { type: "integer", minimum: 1 },
         status: { type: "string", enum: ["pass", "not_pass", "human_review"] },
-        summary: { type: "string" },
-        criterionResults: {
+        rubricLevel: { type: "string", minLength: 1, maxLength: 360 },
+        summary: { type: "string", minLength: 1, maxLength: 600 },
+        evidenceHighlights: {
           type: "array",
+          maxItems: 6,
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["criterion", "met", "evidence", "feedback"],
+            required: ["quote", "whyItMatters"],
             properties: {
-              criterion: { type: "string" },
-              met: { type: "boolean" },
-              evidence: { type: "string" },
-              feedback: { type: "string" }
+              quote: { type: "string", minLength: 1, maxLength: 320 },
+              whyItMatters: { type: "string", minLength: 1, maxLength: 320 }
             }
           }
         },
-        strengths: { type: "array", items: { type: "string" } },
-        gaps: { type: "array", items: { type: "string" } },
+        structureResults: {
+          type: "array",
+          minItems: 1,
+          maxItems: 10,
+          items: {
+            type: "object",
+            additionalProperties: false,
+            required: ["section", "status", "evidence", "feedback"],
+            properties: {
+              section: { type: "string", minLength: 1, maxLength: 100 },
+              status: { type: "string", enum: ["met", "partial", "missing"] },
+              evidence: { type: "string", maxLength: 320 },
+              feedback: { type: "string", minLength: 1, maxLength: 320 }
+            }
+          }
+        },
+        strengths: { type: "array", maxItems: 8, items: { type: "string", minLength: 1, maxLength: 240 } },
+        gaps: { type: "array", maxItems: 8, items: { type: "string", minLength: 1, maxLength: 240 } },
         confidence: { type: "string", enum: ["high", "medium", "low"] },
+        confidenceReason: { type: "string", minLength: 1, maxLength: 300 },
         needsHumanReview: { type: "boolean" }
       }
     }
   },
   "improvement-coach": {
-    schemaName: "student_improvement_plan",
+    schemaName: "student_improvement_plan_v2",
     instructions: `${commonRules}
 
 Role: Improvement Coach.
@@ -154,29 +213,40 @@ the evaluator's score.`,
     schema: {
       type: "object",
       additionalProperties: false,
-      required: ["headline", "actions", "estimatedMinutes", "retryAdvice"],
+      required: [
+        "schemaVersion", "headline", "gapSummary", "actions", "estimatedMinutes",
+        "retryAdvice", "confidence", "confidenceReason", "needsHumanReview"
+      ],
       properties: {
-        headline: { type: "string" },
+        schemaVersion: { type: "string", enum: ["student.improvement_plan.v2"] },
+        headline: { type: "string", minLength: 1, maxLength: 180 },
+        gapSummary: { type: "string", minLength: 1, maxLength: 420 },
         actions: {
           type: "array",
+          maxItems: 4,
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["title", "reason", "minutes"],
+            required: ["actionId", "resourceId", "title", "reason", "minutes"],
             properties: {
-              title: { type: "string" },
-              reason: { type: "string" },
-              minutes: { type: "integer" }
+              actionId: { type: "string", minLength: 1, maxLength: 100 },
+              resourceId: { type: "string", minLength: 1, maxLength: 100 },
+              title: { type: "string", minLength: 1, maxLength: 180 },
+              reason: { type: "string", minLength: 1, maxLength: 320 },
+              minutes: { type: "integer", minimum: 1, maximum: 180 }
             }
           }
         },
-        estimatedMinutes: { type: "integer" },
-        retryAdvice: { type: "string" }
+        estimatedMinutes: { type: "integer", minimum: 0, maximum: 720 },
+        retryAdvice: { type: "string", minLength: 1, maxLength: 420 },
+        confidence: { type: "string", enum: ["high", "medium", "low"] },
+        confidenceReason: { type: "string", minLength: 1, maxLength: 300 },
+        needsHumanReview: { type: "boolean" }
       }
     }
   },
   "next-action": {
-    schemaName: "student_next_action",
+    schemaName: "student_next_action_v2",
     instructions: `${commonRules}
 
 Role: Next Action Recommender.
@@ -186,143 +256,235 @@ gain, and effort. Never recommend a locked action.`,
     schema: {
       type: "object",
       additionalProperties: false,
-      required: ["actionId", "title", "reason", "expectedGain", "estimatedMinutes", "alternatives", "confidence"],
+      required: [
+        "schemaVersion", "actionId", "title", "reason", "expectedGain",
+        "estimatedMinutes", "alternatives", "confidence", "confidenceReason",
+        "needsHumanReview"
+      ],
       properties: {
-        actionId: { type: "string" },
-        title: { type: "string" },
-        reason: { type: "string" },
-        expectedGain: { type: "string" },
-        estimatedMinutes: { type: "integer" },
+        schemaVersion: { type: "string", enum: ["student.next_action.v2"] },
+        actionId: { type: "string", maxLength: 100 },
+        title: { type: "string", minLength: 1, maxLength: 180 },
+        reason: { type: "string", minLength: 1, maxLength: 420 },
+        expectedGain: { type: "string", minLength: 1, maxLength: 240 },
+        estimatedMinutes: { type: "integer", minimum: 0, maximum: 720 },
         alternatives: {
           type: "array",
+          maxItems: 3,
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["actionId", "title", "reason"],
+            required: ["actionId", "title", "reason", "estimatedMinutes"],
             properties: {
-              actionId: { type: "string" },
-              title: { type: "string" },
-              reason: { type: "string" }
+              actionId: { type: "string", minLength: 1, maxLength: 100 },
+              title: { type: "string", minLength: 1, maxLength: 180 },
+              reason: { type: "string", minLength: 1, maxLength: 320 },
+              estimatedMinutes: { type: "integer", minimum: 0, maximum: 720 }
             }
           }
         },
-        confidence: { type: "string", enum: ["high", "medium", "low"] }
+        confidence: { type: "string", enum: ["high", "medium", "low"] },
+        confidenceReason: { type: "string", minLength: 1, maxLength: 300 },
+        needsHumanReview: { type: "boolean" }
       }
     }
   }
 };
 
-const defaultCourses = [
-  { id: "course-1", title: "Product Fundamentals", criteria: 3, points: 15 },
-  { id: "course-2", title: "Structured & Critical Thinking", criteria: 3, points: 15 },
-  { id: "course-3", title: "User & Data Sense", criteria: 3, points: 15 },
-  { id: "course-4", title: "Ownership & Execution", criteria: 4, points: 20 }
-];
+function isObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
 
-function deterministicFallback(agent, payload = {}) {
+function hasText(value, minimum = 1) {
+  return typeof value === "string" && value.trim().length >= minimum;
+}
+
+function validateAgentInput(agent, payload = {}) {
+  if (!isObject(payload)) return "Payload must be an object.";
+
   if (agent === "cv-review") {
-    const isStudent = payload.persona !== "working";
-    return {
-      summary: isStudent
-        ? "Hồ sơ sinh viên có tín hiệu ban đầu về nghiên cứu người dùng, phối hợp nhóm và giải quyết vấn đề."
-        : "Hồ sơ có kinh nghiệm Business Analysis và phối hợp liên chức năng có thể chuyển đổi sang Product.",
-      experiences: [{
-        title: isStudent ? "Product Lead" : "Business Analyst",
-        organization: isStudent ? "CLB Khởi nghiệp" : "ZaloPay",
-        evidence: isStudent
-          ? "Thông tin onboarding: nghiên cứu người dùng và điều phối nhóm 5 thành viên."
-          : "Thông tin onboarding: phân tích yêu cầu và phối hợp Product, Design, Engineering."
-      }],
-      skills: ["Problem Solving", "Communication", "User Research", "Data Analysis"].map((name) => ({
-        name,
-        evidence: "Tín hiệu từ thông tin onboarding; cần sinh viên xác nhận.",
-        verified: false
-      })),
-      education: [{
-        institution: isStudent ? "Đại học Ngoại thương" : "",
-        field: isStudent ? "Kinh doanh quốc tế" : "",
-        evidence: isStudent ? "Thông tin do sinh viên nhập trong onboarding." : "Chưa có đủ dữ liệu học vấn."
-      }],
-      gaps: payload.cvUploaded ? ["Cần xác nhận nội dung trích xuất từ CV."] : ["Chưa có nội dung CV để đối chiếu."],
-      confidence: payload.cvUploaded ? "medium" : "low",
-      needsHumanReview: false
-    };
+    if (!["student", "working"].includes(payload.persona)) return "persona must be student or working.";
+    if (!isObject(payload.onboarding)) return "onboarding context is required.";
+    if (!hasText(payload.onboarding.currentGoal)) return "onboarding.currentGoal is required.";
+    if (payload.cvFile !== undefined) {
+      if (
+        !isObject(payload.cvFile) ||
+        !hasText(payload.cvFile.filename) ||
+        !hasText(payload.cvFile.mimeType) ||
+        !Number.isInteger(payload.cvFile.size) ||
+        payload.cvFile.size < 1 ||
+        payload.cvFile.size > 10 * 1024 * 1024 ||
+        !hasText(payload.cvFile.data, 16)
+      ) {
+        return "cvFile must include filename, mimeType, size, and base64 data up to 10MB.";
+      }
+      if (!/\.(pdf|doc|docx)$/i.test(payload.cvFile.filename)) {
+        return "cvFile must be PDF, DOC, or DOCX.";
+      }
+      if (!/^[A-Za-z0-9+/]+={0,2}$/.test(payload.cvFile.data)) {
+        return "cvFile.data must be base64 encoded.";
+      }
+    }
+    return null;
   }
 
   if (agent === "journey-designer") {
-    const courses = Array.isArray(payload.courseCatalog) && payload.courseCatalog.length
-      ? payload.courseCatalog
-      : defaultCourses;
-    return {
-      title: "Lộ trình 4 khóa học để đạt PMT Ready",
-      target: payload.target || "Product Management Trainee",
-      courses: courses.map((course, index) => ({
-        id: course.id,
-        title: course.title,
-        order: index + 1,
-        reason: index === 0
-          ? "Thiết lập nền tảng chung trước khi làm bài đánh giá."
-          : "Mở rộng năng lực theo thứ tự tiên quyết của chương trình."
-      })),
-      criteriaTotal: 13,
-      pointsTotal: 65,
-      rationale: "Bắt đầu từ nền tảng Product, sau đó phát triển tư duy, dữ liệu và năng lực thực thi.",
-      confidence: "medium",
-      needsHumanReview: false
-    };
+    if (!hasText(payload.target)) return "target is required.";
+    if (!Array.isArray(payload.courseCatalog) || payload.courseCatalog.length === 0) return "courseCatalog is required.";
+    if (payload.courseCatalog.some((course) => !isObject(course) || !hasText(course.id) || !hasText(course.title))) {
+      return "Every course must include id and title.";
+    }
+    if (!isObject(payload.readinessRules)) return "readinessRules are required.";
+    return null;
   }
 
   if (agent === "assignment-evaluator") {
-    const answer = String(payload.answer || "");
-    const lower = answer.toLocaleLowerCase("vi");
-    const criteria = ["vấn đề", "lựa chọn", "đánh đổi", "đề xuất"];
-    const metCount = criteria.filter((term) => lower.includes(term)).length;
-    const score = answer.length >= 180 && metCount >= 3 ? 4 : 3;
-    const status = score >= Number(payload.passThreshold || 4) ? "pass" : "not_pass";
-    return {
-      score,
-      maxScore: 5,
-      status,
-      summary: status === "pass"
-        ? "Bài làm có cấu trúc và cân nhắc đánh đổi đủ để đạt ngưỡng."
-        : "Bài làm có nền tảng nhưng chưa làm rõ đánh đổi và phương án dự phòng.",
-      criterionResults: criteria.map((criterion) => ({
-        criterion,
-        met: lower.includes(criterion),
-        evidence: lower.includes(criterion) ? `Bài làm có đề cập “${criterion}”.` : "",
-        feedback: lower.includes(criterion) ? "Đã thể hiện trong cấu trúc trả lời." : `Bổ sung phần ${criterion}.`
-      })),
-      strengths: ["Có nêu bối cảnh quyết định."],
-      gaps: status === "pass" ? ["Có thể định lượng rủi ro rõ hơn."] : ["Thiếu phương án dự phòng.", "Đánh đổi chưa được định lượng."],
-      confidence: "medium",
-      needsHumanReview: false
-    };
+    if (!hasText(payload.answer, 20)) return "answer must contain at least 20 characters.";
+    if (!hasText(payload.casePrompt)) return "casePrompt is required.";
+    if (!Array.isArray(payload.rubricLevels) || payload.rubricLevels.length === 0) return "rubricLevels are required.";
+    if (!Array.isArray(payload.requiredStructure) || payload.requiredStructure.length === 0) return "requiredStructure is required.";
+    if (!Number.isInteger(payload.passThreshold)) return "passThreshold must be an integer.";
+    return null;
   }
 
   if (agent === "improvement-coach") {
-    return {
-      headline: "Tập trung làm rõ đánh đổi và phương án dự phòng",
-      actions: [
-        { title: "Đọc lại khung phân tích đánh đổi", reason: "Giúp định lượng lợi ích, chi phí và rủi ro.", minutes: 8 },
-        { title: "Luyện một case ngắn", reason: "Thực hành nêu giả định và điều kiện đổi quyết định.", minutes: 10 },
-        { title: "Làm lại case", reason: "Áp dụng cấu trúc bốn phần với phương án dự phòng.", minutes: 7 }
-      ],
-      estimatedMinutes: 25,
-      retryAdvice: "Giữ cấu trúc hiện tại, bổ sung số liệu và nói rõ bạn sẽ làm gì nếu giả định chính không đúng."
-    };
+    if (!isObject(payload.evaluation)) return "evaluation is required.";
+    if (!["not_pass", "human_review"].includes(payload.evaluation.status)) {
+      return "Improvement coaching requires a not_pass or human_review evaluation.";
+    }
+    if (!Array.isArray(payload.evaluation.gaps) || payload.evaluation.gaps.length === 0) return "evaluation gaps are required.";
+    if (!Array.isArray(payload.availableResources) || payload.availableResources.length === 0) return "availableResources are required.";
+    return null;
   }
 
-  return {
-    actionId: payload.result === "not_pass" ? "retry-logical-thinking" : "continue-system-thinking",
-    title: payload.result === "not_pass" ? "Hoàn thành kế hoạch cải thiện và làm lại case" : "Tiếp tục: System Thinking",
-    reason: payload.result === "not_pass"
-      ? "Đây là bước ngắn nhất để đạt ngưỡng rubric hiện tại."
-      : "Module tiếp theo đã mở và tiếp tục tăng năng lực Problem Solving.",
-    expectedGain: payload.result === "not_pass" ? "Đủ điều kiện nhận điểm rubric khi đạt 4/5." : "Mở thêm một tiêu chí Problem Solving.",
-    estimatedMinutes: payload.result === "not_pass" ? 25 : 30,
-    alternatives: [],
-    confidence: "high"
-  };
+  if (agent === "next-action") {
+    if (!hasText(payload.target)) return "target is required.";
+    if (!Array.isArray(payload.availableActions) || payload.availableActions.length === 0) return "availableActions are required.";
+    if (!payload.availableActions.some((action) => isObject(action) && action.locked === false)) {
+      return "At least one unlocked action is required.";
+    }
+    return null;
+  }
+
+  return "Unknown student agent.";
 }
 
-export { contracts, defaultCourses, deterministicFallback };
+function validateAgentOutput(agent, output, payload = {}) {
+  if (!isObject(output)) return "Agent output must be an object.";
+
+  if (agent === "cv-review") {
+    if (!hasText(output.fullName)) return "CV review must include the student's fullName.";
+    const evidenceItems = [...(output.experiences || []), ...(output.skills || []), ...(output.education || [])];
+    const invalidInference = evidenceItems
+      .some((item) => item?.sourceType === "inference" && item?.verified === true);
+    if (invalidInference) return "Inferred profile evidence cannot be verified.";
+    if (
+      !hasText(payload.cvText) &&
+      !hasText(payload.cvFile?.data) &&
+      evidenceItems.some((item) => item?.sourceType === "cv")
+    ) {
+      return "CV evidence requires an attached CV or extracted CV text.";
+    }
+    if (!isObject(payload.corrections) && evidenceItems.some((item) => item?.sourceType === "student_correction")) {
+      return "Student-correction evidence requires supplied corrections.";
+    }
+  }
+
+  if (agent === "journey-designer") {
+    const catalog = new Map((payload.courseCatalog || []).map((course) => [course.id, course.title]));
+    const catalogDetails = new Map((payload.courseCatalog || []).map((course) => [course.id, course]));
+    const ids = (output.courses || []).map((course) => course.id);
+    if (new Set(ids).size !== ids.length) return "Journey contains duplicate course IDs.";
+    if ((output.courses || []).some((course) => !catalog.has(course.id) || catalog.get(course.id) !== course.title)) {
+      return "Journey contains a course outside the supplied catalog.";
+    }
+    const ordered = [...(output.courses || [])].sort((a, b) => a.order - b.order);
+    if (ordered.some((course, index) => course.order !== index + 1)) return "Journey order must be contiguous and start at 1.";
+    const completed = new Set();
+    for (const course of ordered) {
+      const prerequisites = catalogDetails.get(course.id)?.prerequisites || [];
+      const prerequisitesMet = prerequisites.every((id) => completed.has(id));
+      if (course.prerequisitesMet !== prerequisitesMet) return "Journey prerequisite status is inconsistent.";
+      completed.add(course.id);
+    }
+    if (output.criteriaTotal !== payload.readinessRules?.criteriaTotal || output.pointsTotal !== payload.readinessRules?.pointsTotal) {
+      return "Journey changed the supplied readiness totals.";
+    }
+  }
+
+  if (agent === "assignment-evaluator") {
+    const levels = payload.rubricLevels || [];
+    const scores = levels.map((level) => level.score);
+    const maxScore = Math.max(...scores);
+    if (!scores.includes(output.score) || output.maxScore !== maxScore || output.passThreshold !== payload.passThreshold) {
+      return "Assignment score is inconsistent with the supplied rubric.";
+    }
+    if (output.rubricLevel !== levels.find((level) => level.score === output.score)?.description) {
+      return "Assignment rubric level does not match the selected score.";
+    }
+    if (output.status === "pass" && output.score < payload.passThreshold) return "Pass status is below the threshold.";
+    if (output.status === "not_pass" && output.score >= payload.passThreshold) return "Not-pass status meets the threshold.";
+    if (output.status === "human_review" && output.needsHumanReview !== true) return "Human review status must request review.";
+    if ((output.evidenceHighlights || []).some((item) => !payload.answer.includes(item.quote))) {
+      return "Assignment evidence must be quoted verbatim from the answer.";
+    }
+    const requiredLabels = (payload.requiredStructure || []).map((section) => section.label);
+    const returnedLabels = (output.structureResults || []).map((section) => section.section);
+    if (
+      requiredLabels.length !== returnedLabels.length ||
+      new Set(returnedLabels).size !== returnedLabels.length ||
+      requiredLabels.some((label) => !returnedLabels.includes(label))
+    ) {
+      return "Assignment structure results must cover every required section exactly once.";
+    }
+    if ((output.structureResults || []).some((section) => section.evidence && !payload.answer.includes(section.evidence))) {
+      return "Assignment structure evidence must be quoted verbatim from the answer.";
+    }
+  }
+
+  if (agent === "improvement-coach") {
+    const resources = new Map((payload.availableResources || []).map((resource) => [resource.resourceId, resource]));
+    if ((output.actions || []).some((action) => {
+      const resource = resources.get(action.resourceId);
+      return !resource ||
+        action.actionId !== resource.actionId ||
+        action.title !== resource.title ||
+        action.minutes !== resource.minutes;
+    })) {
+      return "Improvement plan referenced an unavailable resource.";
+    }
+    const minutes = (output.actions || []).reduce((total, action) => total + action.minutes, 0);
+    if (minutes !== output.estimatedMinutes) return "Improvement plan time does not match its actions.";
+  }
+
+  if (agent === "next-action") {
+    const actions = new Map((payload.availableActions || []).map((action) => [action.id, action]));
+    const selected = actions.get(output.actionId);
+    if (
+      !selected ||
+      selected.locked !== false ||
+      selected.title !== output.title ||
+      selected.estimatedMinutes !== output.estimatedMinutes ||
+      selected.expectedGain !== output.expectedGain
+    ) {
+      return "Next action is not an unlocked supplied action.";
+    }
+    const alternativeIds = (output.alternatives || []).map((item) => item.actionId);
+    if (new Set(alternativeIds).size !== alternativeIds.length || alternativeIds.includes(output.actionId)) {
+      return "Next-action alternatives contain duplicates.";
+    }
+    if ((output.alternatives || []).some((item) => {
+      const action = actions.get(item.actionId);
+      return !action ||
+        action.locked !== false ||
+        action.title !== item.title ||
+        action.estimatedMinutes !== item.estimatedMinutes;
+    })) {
+      return "Next-action alternatives contain an invalid action.";
+    }
+  }
+
+  return null;
+}
+
+export { contracts, validateAgentInput, validateAgentOutput };

@@ -43,11 +43,10 @@ flowchart TD
     STUDENT_PROFILE["Student details"]
     WORK_PROFILE["Working-professional details"]
     CV["Upload CV or portfolio<br/>optional for students"]
-    CV_AGENT["CV Review Agent<br/><code>agt_6a64f788df788191bf093a8895e517ed</code><br/><i>extracts evidence, skills, experience,<br/>gaps, and confidence</i>"]
+    CV_AGENT["CV Data Extraction Agent<br/><code>agt_6a64f788df788191bf093a8895e517ed</code><br/><i>extracts and summarizes profile fields;<br/>does not evaluate candidate fit</i>"]
     CONFIRM["Student reviews and corrects<br/>the extracted profile"]
     TARGET["Choose career target"]
-    JOURNEY_AGENT["Journey Designer Agent<br/><code>agt_6a64f78cb2388191a6173aa754491851</code><br/><i>maps verified evidence + target<br/>to courses, rubric criteria, and milestones</i>"]
-    JOURNEY_CHECK{"Journey valid<br/>and explainable?"}
+    DEMO_JOURNEY["Fixed four-course demo journey<br/><i>Product Fundamentals → Critical Thinking<br/>→ User & Data Sense → Execution</i>"]
     HUMAN_REVIEW["Human review queue<br/>low confidence or policy exception"]
     STORE_JOURNEY["Save personalized journey"]
     HOME{"Learning status"}
@@ -55,18 +54,22 @@ flowchart TD
     ACTIVE_HOME["Home · learning in progress<br/>next course, readiness, competencies"]
     LEARNING["Learning course list<br/>completed · current · locked"]
     COURSE["Course detail<br/>reading · quiz · case assignment"]
-    ASSIGN_AGENT["Assignment Evaluator Agent<br/><code>agt_6a64f790c85481919b2ce219d5fa205d</code><br/><i>scores against the visible rubric,<br/>cites evidence, and reports confidence</i>"]
-    EVAL_CHECK{"Evaluation confident?"}
+    DEMO_SCORE["Local demo scorer<br/><i>randomly returns 3★ or 4★;<br/>no AI or network call</i>"]
     RESULT{"Meets pass threshold?"}
-    PASS["Pass result<br/>award rubric points + unlock next step"]
+    PASS["4★ pass result<br/>complete course + unlock next course"]
     FAIL["Not-pass result<br/>no points awarded"]
-    IMPROVE_AGENT["Improvement Coach<br/><code>agt_6a64f794847c8191afb0ec83beb8e8bd</code><br/><i>explains gaps and creates a retry plan</i>"]
-    RETRY["Review lesson · practise · retry"]
+    RETRY["3★ result<br/>static improvement plan · retry"]
+    SHARED_STATE["Shared learning state<br/>course · rubric · points · readiness"]
     PROFILE["Talent Profile<br/>overview · competencies · rubric<br/>activity · assessments"]
-    NEXT_AGENT["Next Action Recommender<br/><code>agt_6a64f7982f588191990e773e2e00d2ec</code><br/><i>ranks the smallest useful action<br/>toward the selected target</i>"]
+    INACTIVE_ASSIGN["Assignment Evaluator · inactive<br/><code>agt_6a64f790c85481919b2ce219d5fa205d</code>"]
+    INACTIVE_IMPROVE["Improvement Coach · inactive<br/><code>agt_6a64f794847c8191afb0ec83beb8e8bd</code>"]
+    INACTIVE_NEXT["Next Action Recommender · inactive<br/><code>agt_6a64f7982f588191990e773e2e00d2ec</code>"]
     READY{"PMT Ready?"}
     CONTINUE["Continue personalized learning"]
+    READY_HOME["PMT Ready Home<br/>100/100 summary · verified competencies<br/>certificate · career opportunities"]
+    CERTIFICATE["Create PMT Ready certificate<br/>verification code · PDF · share link"]
     APPLY["Apply to PMT program<br/>CV · profile · verified evidence"]
+    SUBMITTED_HOME["Submitted Home<br/>application timeline · TA reviewed<br/>interview scheduling · waiting suggestions"]
     TA_COPILOT["TA Copilot<br/><code>Planned · Agent ID not created</code><br/><i>summarizes evidence and flags uncertainty;<br/>does not make the hiring decision</i>"]
     TA_PORTAL["TA portal review"]
     TA_DECISION(["Human TA decision"])
@@ -76,20 +79,22 @@ flowchart TD
     PERSONA -->|"Đã đi làm"| WORK_PROFILE
     STUDENT_PROFILE --> CV
     WORK_PROFILE --> CV
-    CV --> CV_AGENT --> CONFIRM --> TARGET --> JOURNEY_AGENT --> JOURNEY_CHECK
-    JOURNEY_CHECK -->|"Yes"| STORE_JOURNEY --> HOME
-    JOURNEY_CHECK -->|"Low confidence"| HUMAN_REVIEW --> STORE_JOURNEY
+    CV --> CV_AGENT --> CONFIRM --> TARGET --> DEMO_JOURNEY --> STORE_JOURNEY --> HOME
     HOME -->|"No course completed"| FRESH_HOME --> LEARNING
     HOME -->|"At least one course completed"| ACTIVE_HOME --> LEARNING
-    LEARNING --> COURSE --> ASSIGN_AGENT --> EVAL_CHECK
-    EVAL_CHECK -->|"High / medium"| RESULT
-    EVAL_CHECK -->|"Low"| HUMAN_REVIEW
-    HUMAN_REVIEW --> RESULT
-    RESULT -->|"Pass"| PASS --> PROFILE
-    RESULT -->|"Not pass"| FAIL --> IMPROVE_AGENT --> RETRY --> COURSE
-    PROFILE --> NEXT_AGENT --> READY
+    LEARNING --> COURSE --> DEMO_SCORE --> RESULT
+    RESULT -->|"4★"| PASS --> SHARED_STATE
+    RESULT -->|"3★"| FAIL --> RETRY --> COURSE
+    SHARED_STATE --> HOME
+    SHARED_STATE --> LEARNING
+    SHARED_STATE --> PROFILE --> READY
     READY -->|"Not yet"| CONTINUE --> HOME
-    READY -->|"Ready"| APPLY --> TA_COPILOT --> TA_PORTAL --> TA_DECISION
+    READY -->|"Ready"| READY_HOME
+    READY_HOME --> CERTIFICATE
+    READY_HOME --> APPLY --> SUBMITTED_HOME --> TA_COPILOT --> TA_PORTAL --> TA_DECISION
+    COURSE -.->|"retained API contract; not called"| INACTIVE_ASSIGN
+    RETRY -.->|"retained API contract; not called"| INACTIVE_IMPROVE
+    PROFILE -.->|"retained API contract; not called"| INACTIVE_NEXT
 ```
 
 ### Diagram 2 — Student-first AI system design
@@ -97,14 +102,14 @@ flowchart TD
 ```mermaid
 flowchart LR
     subgraph EXPERIENCE["Product experience"]
-        STUDENT_UI["Student portal<br/>Login · Onboarding · Home · Learning<br/>Results · Talent Profile · PMT application"]
+        STUDENT_UI["Student portal<br/>Login · Onboarding · Home · Learning · Results<br/>Talent Profile · PMT Ready · Certificate<br/>Application tracking"]
         TA_UI["TA portal<br/>Review queue · Evidence · Human decision"]
     end
 
     subgraph PLATFORM["Platform core"]
         API["Student API / BFF<br/>authentication · validation · rate limits"]
-        ORCH["Student Agent Orchestrator<br/>deterministic routing · retries · timeouts"]
-        EVENTS["Event stream<br/>profile.updated · assignment.submitted<br/>rubric.updated · application.submitted"]
+        ORCH["Student Agent Orchestrator<br/>validated routing · schemas · timeouts"]
+        EVENTS["Event stream<br/>profile.updated · assignment.submitted · rubric.updated<br/>certificate.created · application.submitted · application.status"]
         GUARD["Rules and guardrails<br/>consent · evidence-only scoring<br/>confidence thresholds · audit"]
         REVIEW["Human review queue"]
     end
@@ -113,13 +118,14 @@ flowchart LR
         IDENTITY["Identity & Profile"]
         JOURNEY["Journey & Learning"]
         ASSESS["Assessment & Rubric"]
+        DEMO_SCORER["Local demo scoring<br/>3★ or 4★"]
         TALENT["Talent Profile & Readiness"]
         RECRUIT["Application & Recruiting"]
     end
 
     subgraph AGENTS["Student AI agents"]
-        A1["CV Review Agent<br/><code>agt_6a64f788df788191bf093a8895e517ed</code>"]
-        A2["Journey Designer Agent<br/><code>agt_6a64f78cb2388191a6173aa754491851</code>"]
+        A1["CV Data Extraction Agent<br/><code>agt_6a64f788df788191bf093a8895e517ed</code>"]
+        A2["Journey Designer Agent<br/><code>Legacy draft · not used in onboarding</code>"]
         A3["Assignment Evaluator Agent<br/><code>agt_6a64f790c85481919b2ce219d5fa205d</code>"]
         A4["Next Action Recommender<br/><code>agt_6a64f7982f588191990e773e2e00d2ec</code>"]
         A5["Improvement Coach<br/><code>agt_6a64f794847c8191afb0ec83beb8e8bd</code>"]
@@ -156,17 +162,21 @@ flowchart LR
     TALENT <--> RUBRIC_DB
     RECRUIT <--> APP_DB
     ORCH --> A1
-    ORCH --> A2
-    ORCH --> A3
-    ORCH --> A4
-    ORCH --> A5
+    ORCH -.->|"inactive demo path"| A2
+    ORCH -.->|"inactive demo path"| A3
+    ORCH -.->|"inactive demo path"| A4
+    ORCH -.->|"inactive demo path"| A5
     ORCH --> A6
     A1 --> RESPONSES
-    A2 --> RESPONSES
-    A3 --> RESPONSES
-    A4 --> RESPONSES
-    A5 --> RESPONSES
+    A2 -.->|"retained contract"| RESPONSES
+    A3 -.->|"retained contract"| RESPONSES
+    A4 -.->|"retained contract"| RESPONSES
+    A5 -.->|"retained contract"| RESPONSES
     A6 --> RESPONSES
+    ASSESS --> DEMO_SCORER
+    DEMO_SCORER --> JOURNEY_DB
+    JOURNEY_DB --> JOURNEY
+    JOURNEY_DB --> TALENT
     WORKSPACE -.->|"same role contracts"| AGENTS
     RESPONSES --> MODELS
     ORCH --> GUARD
@@ -176,22 +186,38 @@ flowchart LR
     RESPONSES --> OBSERVE
 ```
 
-The live portal uses the Responses API because student interactions require a structured result in the same request. Workspace Agent triggers are asynchronous, so Workspace Agent versions are used for editable operator testing and future background workflows, not as the synchronous result channel.
+The live portal uses the Responses API only for CV extraction in the current student demo. Course-assignment submissions are scored locally as a random 3★ or 4★ result and never call an AI Agent. Workspace Agent versions remain available for editable operator testing and future workflows, but they are not the assignment result channel.
 
-Agents may extract and summarize evidence, personalize learning, evaluate assignments against a published rubric, and recommend next actions. Low-confidence runs go to human review. TA retains every consequential hiring decision.
+The current onboarding demo does not call Journey Designer. Every user receives
+the same validated four-course Product journey, while their selected career
+target remains visible in the experience.
+
+The active student AI responsibility is CV extraction and neutral summarization. The fixed journey, demo assignment score, retry plan, next-course action, and shared learning progress are local product logic. TA retains every consequential hiring decision.
 
 ### Student agent implementation status
 
 | Student agent | Agent ID | Live product route | Status |
 | --- | --- | --- | --- |
-| CV Review Agent | `agt_6a64f788df788191bf093a8895e517ed` | `POST /api/student-agents/cv-review` | Draft · unpublished |
-| Journey Designer Agent | `agt_6a64f78cb2388191a6173aa754491851` | `POST /api/student-agents/journey-designer` | Draft · unpublished |
-| Assignment Evaluator Agent | `agt_6a64f790c85481919b2ce219d5fa205d` | `POST /api/student-agents/assignment-evaluator` | Draft · unpublished |
-| Improvement Coach | `agt_6a64f794847c8191afb0ec83beb8e8bd` | `POST /api/student-agents/improvement-coach` | Draft · unpublished |
-| Next Action Recommender | `agt_6a64f7982f588191990e773e2e00d2ec` | `POST /api/student-agents/next-action` | Draft · unpublished |
+| CV Data Extraction Agent | `agt_6a64f788df788191bf093a8895e517ed` | `POST /api/student-agents/cv-review` | Extraction-only draft · unpublished |
+| Journey Designer Agent | `agt_6a64f78cb2388191a6173aa754491851` | Route retained; onboarding does not call it | Legacy draft · inactive |
+| Assignment Evaluator Agent | `agt_6a64f790c85481919b2ce219d5fa205d` | Route retained; assignment UI does not call it | Draft · inactive in demo |
+| Improvement Coach | `agt_6a64f794847c8191afb0ec83beb8e8bd` | Route retained; result UI does not call it | Draft · inactive in demo |
+| Next Action Recommender | `agt_6a64f7982f588191990e773e2e00d2ec` | Route retained; result UI does not call it | Published version retained · inactive in demo |
 | TA Copilot | Not created | Not integrated | Planned |
 
-The Workspace Agent versions are unpublished drafts. The portal routes above already work in deterministic demo mode and switch to the OpenAI Responses API when a server-side `OPENAI_API_KEY` is present.
+The updated Workspace Agent configurations remain drafts; the Next Action Recommender also has an older published version. Only CV extraction currently uses the OpenAI Responses API when a server-side `OPENAI_API_KEY` is present. If CV extraction is unavailable or invalid, onboarding stays on the current step and shows `AI Agent is not working. Please try again.` Assignment scoring is deliberately local and does not depend on an API key.
+
+### Student agent v2 input/output map
+
+| Agent | Required input | Validated output | UI destination |
+| --- | --- | --- | --- |
+| CV Data Extraction | Persona, onboarding goal, attached CV, optional extracted text and corrections | Neutral summary plus extracted experience, education and skills | Onboarding profile review |
+| Journey Designer | Not used by the current demo onboarding | Fixed four-course journey generated locally | Final onboarding journey |
+| Assignment Evaluator | Retained contract; not invoked by the demo UI | Future rubric evaluation output | Not active |
+| Improvement Coach | Retained contract; not invoked by the demo UI | Future resource-bound retry plan | Not active |
+| Next Action Recommender | Retained contract; not invoked by the demo UI | Future ranked next action | Not active |
+
+All five retained contracts treat payload values as data rather than instructions, require Vietnamese student-facing copy, reject invented evidence or resources, and expose `needsHumanReview`. These contracts remain available for future reactivation; the current course demo uses local product logic instead.
 
 ## How the System Works
 
@@ -202,13 +228,14 @@ This first prototype is intentionally simple:
 - `course-content.js` contains editable course modules.
 - `competency-rubric.js` contains the editable Product Manager competency rubric.
 - `app.js` contains the sample data, aggregate hiring volumes, course progress, application flow, CV scoring agent, Lead Profile generation, readiness lane logic, and mock AI Agent recommendations.
-- `api/student-agent-contracts.mjs` defines the five student-agent roles, strict output schemas, evidence rules, and deterministic demo fallbacks.
-- `api/student-agents.mjs` is the server-only OpenAI Responses API gateway for CV review, journey design, assignment evaluation, improvement coaching, and next-action recommendation.
+- `api/student-agent-contracts.mjs` defines the five student-agent roles, strict input/output contracts, evidence rules, and cross-field validation.
+- `student-portal.html` owns the shared four-course progress state and local random 3★/4★ demo scorer used by Courses 2–4.
+- `api/student-agents.mjs` is the server-only OpenAI Responses API gateway. CV extraction is active; the other student-agent routes are retained for future use.
 - `api/evaluate-assignment.mjs` contains the private backend endpoint that triggers the PM CV Evaluator in ChatGPT.
 - `server.mjs` serves the local demo and API endpoint together.
 - Browser storage keeps the demo student's progress on the same machine.
 
-There is no real login, database, or email sending yet. Those are intentionally left out to keep the hackathon demo reliable. Student agents return deterministic structured demo results when `OPENAI_API_KEY` is absent and switch to live Responses API results when it is configured. The older TA-side PM CV Evaluator can still be triggered through a published Workspace Agent.
+There is no real login, database, or email sending yet. Those are intentionally left out to keep the hackathon demo reliable. CV extraction requires `OPENAI_API_KEY`; assignment results are explicitly labeled demo-local and randomly return only 3★ or 4★. The older TA-side PM CV Evaluator can still be triggered through a published Workspace Agent.
 
 ## How to Edit Course Content
 
@@ -235,7 +262,7 @@ When you provide your real Product Manager competency framework, place it here s
 
 ## How to Start It
 
-For static demo mode, open `index.html` in a browser.
+For UI-only inspection, open `index.html` in a browser. Agent actions require the local server or Vercel functions plus a configured API key.
 
 For live student-agent mode:
 
@@ -263,9 +290,7 @@ require a second Vercel project or domain.
 
 ## Required Accounts and API Keys
 
-None for deterministic demo mode.
-
-An OpenAI API key is required for live synchronous student-agent results. Store it only in `.env` or deployment secrets; the browser never receives the key.
+An OpenAI API key is required for CV extraction. Store it only in `.env` or deployment secrets; the browser never receives the key. Without it, the UI displays the agent failure toast on the CV step. Learning assignment demo results continue to work without a key.
 
 A Workspace Agent access token is required only when running the asynchronous PM CV Evaluator trigger endpoint. The browser never receives that token either.
 
@@ -302,22 +327,27 @@ Never place a real access token directly in source code.
 
 1. Log in and choose `Sinh viên` or `Đã có kinh nghiệm`.
 2. Complete the seven-step student onboarding flow.
-3. On the analysis step, run the CV Review Agent and verify the extracted profile on the next screen.
-4. Choose the Product Management Trainee target and let the Journey Designer produce the four-course plan.
+3. Upload a CV and continue. The extraction step starts automatically, keeps Continue disabled until the response arrives, then fills the profile review screen.
+4. Choose a career target and continue into the fixed four-course Product journey.
 5. Open Home in the not-learning state, then enter Learning.
 6. Complete Course 1 and continue to the Logical Thinking assignment in Course 2.
-7. Submit a structured answer to see the pass result, awarded points, and Next Action recommendation.
-8. Submit a short answer to see the not-pass result and Improvement Coach retry plan.
-9. Open Talent Profile to inspect readiness, competencies, rubric evidence, activity, and assessments.
-10. Continue until PMT Ready, then enter the PMT application flow.
+7. Submit any non-empty answer. The local demo randomly shows either 3★ (not pass) or 4★ (pass).
+8. On 3★, retry with no progress change. On 4★, Course 3 unlocks and Home, Learning, and Talent Profile show the same totals.
+9. Repeat the same local scoring flow for Courses 3 and 4.
+10. Pass Course 4 to open the PMT Ready Home, inspect verified competencies, and create the shareable certificate.
+11. Click `Ứng tuyển PMT Program` to move to the submitted Home state with the application timeline, TA-review status, interview wait state, and preparation suggestions.
 
 ## Known Limitations
 
-- The five student agents are integrated through the Responses API, but use deterministic fallbacks until `OPENAI_API_KEY` is configured.
+- CV extraction is the only active student-agent call in the portal and requires `OPENAI_API_KEY`.
+- Course assignment scoring is a deliberate local demo: it randomly returns only 3★ or 4★ and is not an actual evaluation of answer quality.
+- Courses 2–4 share the same demo assignment pattern. A 4★ result completes the current course and unlocks the next; 3★ leaves progress unchanged.
+- Certificate generation, PDF download, sharing, and the submitted application timeline are interactive demo states; they do not yet persist to a backend.
+- Journey Designer is retained as a legacy draft/API contract but is intentionally bypassed in onboarding; all demo users receive the same four-course journey.
 - Workspace Agent versions are editable drafts for operator testing and asynchronous workflows. Workspace Agent API triggers return `202 Accepted` without a synchronous result, so they are not the student portal's result channel.
 - No real authentication or user accounts.
 - No real database.
-- PDF selection is real, but the current student prototype sends CV metadata and onboarding answers; server-side PDF text extraction is not implemented yet.
+- Uploaded PDF, DOC, and DOCX content is passed server-side to the Responses API as a file input for structured profile extraction. The browser never receives the OpenAI API key.
 - No email, calendar, or interview scheduling integration.
 - The certificate is a visible state in the app, not a generated PDF.
 

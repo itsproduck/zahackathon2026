@@ -136,6 +136,13 @@
     .review-card{padding:14px;border-radius:7px;background:#f7f9f9}
     .review-card b{display:block;font-size:11px}
     .review-card span{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+    .agent-summary{margin-bottom:14px;padding:15px;border:1px solid #dcebed;border-radius:8px;background:#f4fbfb}
+    .agent-summary p{margin:7px 0 0;color:#516164;font-size:10px;line-height:1.6}
+    .agent-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .agent-pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 9px;background:#fff;color:var(--brand-dark);font-size:9px;font-weight:600}
+    .agent-pill.warn{background:#fff3dd;color:#8d671c}
+    .agent-evidence{margin-top:7px;color:#687376;font-size:9px;line-height:1.5}
+    .agent-empty{padding:13px;border-radius:7px;background:#f7f9f9;color:var(--muted);font-size:10px}
     .skill-pills{display:flex;flex-wrap:wrap;gap:7px}
     .skill-pills span{border:1px solid #d9e2e3;border-radius:999px;padding:6px 10px;font-size:10px;color:#506063;background:#fff}
     .career-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
@@ -147,8 +154,12 @@
     .journey-box h2{margin-bottom:5px}
     .journey-box p{color:var(--muted);font-size:11px}
     .journey-list{display:grid;gap:9px;margin-top:20px}
-    .journey-row{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #e5ebec;border-radius:7px;padding:11px 13px;font-size:11px}
+    .journey-row{display:flex;align-items:flex-start;gap:11px;background:#fff;border:1px solid #e5ebec;border-radius:7px;padding:11px 13px;font-size:11px}
     .journey-row i{color:var(--green)}
+    .journey-row b{display:block}
+    .journey-row small{display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.5}
+    .journey-rationale{margin-top:14px;padding:12px 14px;border-radius:7px;background:#fff;color:#536164;font-size:10px;line-height:1.6}
+    .agent-unavailable{padding:14px 16px;border:1px solid #f0c3bb;border-radius:8px;background:#fff0ec;color:#9b3d2c;font-size:11px;line-height:1.5}
 
     /* Application shell */
     .portal{min-height:100vh}
@@ -430,6 +441,16 @@
     .lr-structure-row.missing>i{color:#ed1c24}
     .lr-structure-copy b{display:block;color:#292f31;font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
     .lr-structure-copy span{display:block;margin-top:3px;color:#777f82;font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .lr-ai-summary{margin-bottom:16px;color:#536164;font-size:var(--type-body-size);line-height:1.6}
+    .lr-confidence{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .lr-evidence-list{display:grid;gap:10px;margin-top:12px}
+    .lr-evidence-item{padding:13px 15px;border-left:3px solid var(--brand);border-radius:0 7px 7px 0;background:#eef8f9}
+    .lr-evidence-item q{display:block;color:#315a60;font-size:var(--type-body-size);font-style:italic;line-height:1.6}
+    .lr-evidence-item span{display:block;margin-top:5px;color:#637174;font-size:var(--type-meta-size);line-height:1.5}
+    .lr-next-action{margin-top:20px;padding:22px 26px;border:1px solid #d8e9eb;border-radius:8px;background:#f4fbfb}
+    .lr-next-action h2{margin:0 0 6px;font-size:var(--type-card-title-size)}
+    .lr-next-action p{margin:0;color:#566568;font-size:var(--type-body-size);line-height:1.6}
+    .lr-next-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px}
     .lr-progress-list{margin-top:20px}
     .lr-progress-row{margin-bottom:18px}
     .lr-progress-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -499,6 +520,109 @@
     .track-step.done .track-dot{background:var(--brand);color:#fff}
     .track-step b{display:block;font-size:9px;margin-top:8px}
     .track-step span{display:block;color:var(--muted);font-size:8px}
+
+    /* PMT Ready + application tracking */
+    .ready-portal .portal-main,.submitted-portal .portal-main{background:#f4f5f6;padding:34px 38px 54px}
+    .ready-top,.submitted-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+    .ready-top h1,.submitted-top h1{margin:0;color:#171b1d}
+    .ready-top p,.submitted-top p{margin:7px 0 0;color:#777f82;font-weight:300}
+    .pmt-hero{display:flex;align-items:center;gap:30px;margin-top:24px;padding:30px 34px;border:1px solid #a9e4d8;border-radius:8px;background:#e9f8f5}
+    .pmt-hero-copy{flex:1;min-width:0}
+    .pmt-kicker{color:#0b9181;font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-label);text-transform:uppercase}
+    .pmt-hero h2{margin:10px 0 0;color:#111416;font-size:var(--type-display-size);line-height:var(--type-display-line);font-weight:var(--weight-medium)}
+    .pmt-hero p{margin:10px 0 0;color:#4f6767;font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .pmt-verified{display:inline-flex;align-items:center;gap:8px;margin-top:18px;height:30px;padding:0 14px;border-radius:999px;background:#fff;color:#078c7f;font-size:var(--type-meta-size);font-weight:var(--weight-medium)}
+    .pmt-hero-actions{display:flex;align-items:center;gap:12px;margin-top:20px}
+    .pmt-hero-actions .btn{min-height:46px;padding:0 24px}
+    .pmt-badge{width:154px;flex:none;text-align:center}
+    .pmt-badge .pmt-badge-icon{width:112px;height:112px;margin:0 auto;border:2px solid #b9e5dc;border-radius:24px;background:#fff;color:#0db198;display:grid;place-items:center;font-size:47px;line-height:1}
+    .pmt-badge-icon i{display:block;line-height:1}
+    .pmt-badge b{display:block;margin-top:13px;font-size:var(--type-card-title-size);font-weight:var(--weight-medium)}
+    .pmt-badge>span:not(.pmt-badge-icon){display:block;margin-top:3px;color:#777f82;font-size:var(--type-meta-size)}
+    .pmt-overview{display:grid;grid-template-columns:320px minmax(0,1fr);gap:20px;margin-top:20px}
+    .pmt-summary,.pmt-competencies,.pmt-certificate,.pmt-opportunities{padding:26px 28px}
+    .pmt-score-ring{width:132px;height:132px;margin:0 auto;border-radius:50%;padding:11px;background:conic-gradient(#0db198 100%,#e9ecec 0)}
+    .pmt-score-inner{width:100%;height:100%;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center;align-content:center}
+    .pmt-score-inner strong{font-size:34px;line-height:1;font-weight:600;color:#171b1d}
+    .pmt-score-inner span{display:block;color:#777f82;font-size:11px}
+    .pmt-score-inner b{display:block;color:#078c7f;font-size:10px;letter-spacing:.04em}
+    .pmt-summary h2{margin:18px 0 12px;text-align:center;font-size:var(--type-section-title-size)}
+    .pmt-check-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #edf0f0;color:#343a3c;font-size:var(--type-body-size)}
+    .pmt-check-row i{color:#0db198}
+    .pmt-complete-pill{display:flex;align-items:center;justify-content:center;gap:8px;width:max-content;max-width:100%;margin:16px auto 0;padding:8px 14px;border-radius:999px;background:#e9f8f5;color:#078c7f;font-size:var(--type-meta-size);font-weight:500}
+    .pmt-card-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}
+    .pmt-card-heading h2{margin:0;font-size:var(--type-section-title-size)}
+    .pmt-link{border:0;background:none;padding:0;color:var(--brand);font-size:var(--type-body-size);font-weight:500}
+    .pmt-competency-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .pmt-competency{display:flex;align-items:center;gap:14px;min-height:90px;padding:17px 18px;border-radius:7px;background:#f5f6f6}
+    .pmt-competency-icon{width:42px;height:42px;border-radius:50%;background:#fff;color:var(--brand);display:grid;place-items:center;flex:none}
+    .pmt-competency b{display:block;font-size:var(--type-row-title-size);font-weight:500}
+    .pmt-stars{display:flex;gap:2px;margin-top:5px;color:#d8a536;font-size:12px}
+    .pmt-competency small{display:block;margin-top:3px;color:#078c7f;font-size:var(--type-meta-size)}
+    .pmt-certificate{margin-top:20px}
+    .pmt-certificate-intro{display:flex;align-items:center;gap:10px}
+    .pmt-certificate-intro>i{color:var(--orange)}
+    .pmt-certificate-intro h2{margin:0;font-size:var(--type-section-title-size)}
+    .pmt-certificate-intro span{padding:4px 10px;border-radius:999px;background:#e9f8f5;color:#078c7f;font-size:var(--type-meta-size)}
+    .pmt-certificate>p{margin:9px 0 20px;color:#777f82}
+    .pmt-certificate-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:24px;align-items:stretch}
+    .certificate-preview{min-height:300px;padding:28px;border:1px solid #dce2e3;border-radius:8px;background:#fff;display:flex;flex-direction:column}
+    .certificate-preview-top{display:flex;justify-content:space-between;align-items:center;color:#777f82;font-size:var(--type-meta-size);font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+    .certificate-seal{width:40px;height:40px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+    .certificate-name{margin-top:34px;font-size:var(--type-page-title-size);font-weight:500}
+    .certificate-role{margin-top:3px;color:#4f5557}
+    .certificate-role b{color:#087f89}
+    .certificate-metrics{display:flex;gap:34px;margin-top:22px;padding:18px 0;border-top:1px solid #edf0f0;border-bottom:1px solid #edf0f0}
+    .certificate-metrics strong{display:block;font-size:var(--type-row-title-size)}
+    .certificate-metrics span{display:block;color:#777f82;font-size:var(--type-meta-size)}
+    .certificate-code{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-top:auto;padding-top:20px}
+    .certificate-code span{display:block;color:#777f82;font-size:10px}
+    .certificate-code b{display:block;font-size:11px}
+    .certificate-powered{text-align:right;color:#777f82;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+    .certificate-powered b{color:#2fa1b3;font-size:18px;text-transform:none;letter-spacing:0}
+    .certificate-benefits{display:flex;flex-direction:column}
+    .certificate-benefits-title{font-size:var(--type-meta-size);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#666e71}
+    .certificate-benefit{display:flex;align-items:flex-start;gap:12px;margin-top:19px;color:#4f5557}
+    .certificate-benefit i{margin-top:4px;color:#0db198}
+    .certificate-actions{margin-top:auto;padding-top:20px}
+    .certificate-actions>.btn{width:100%}
+    .certificate-secondary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    .certificate-secondary .btn{width:100%}
+    .pmt-opportunities{margin-top:20px}
+    .pmt-opportunities h2{margin:0 0 8px;font-size:var(--type-section-title-size)}
+    .opportunity-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:16px;padding:17px 0;border-top:1px solid #edf0f0}
+    .opportunity-icon{width:42px;height:42px;border-radius:8px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+    .opportunity-copy b{display:block;font-size:var(--type-row-title-size);font-weight:500}
+    .opportunity-copy span{display:block;margin-top:3px;color:#777f82;font-size:var(--type-supporting-size);font-weight:300}
+
+    .submitted-ready-strip{display:flex;align-items:center;gap:12px;margin-top:28px;padding:17px 22px;border:1px solid #a9e4d8;border-radius:8px;background:#e9f8f5;color:#078c7f}
+    .submitted-ready-strip b{font-size:var(--type-card-title-size);font-weight:500}
+    .submitted-ready-strip button{margin-left:auto;border:0;background:none;color:var(--brand);font-weight:500}
+    .application-card{margin-top:20px;padding:28px 30px}
+    .application-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+    .application-card-head h2{margin:0;font-size:var(--type-page-title-size)}
+    .application-card-head p{margin:4px 0 0;color:#777f82}
+    .application-card-head button{border:0;background:none;color:var(--brand);font-weight:500}
+    .application-timeline{display:grid;grid-template-columns:repeat(3,1fr);margin:34px 40px 0}
+    .application-step{text-align:center;position:relative}
+    .application-step:not(:last-child):after{content:"";position:absolute;top:26px;left:50%;right:-50%;border-top:2px dashed #dfe4e5}
+    .application-step .application-step-dot{position:relative;z-index:1;width:56px;height:56px;margin:0 auto;border-radius:50%;background:#e9f8f5;color:#0db198;display:grid;place-items:center;font-size:19px;line-height:1}
+    .application-step-dot i{display:block;line-height:1}
+    .application-step.current .application-step-dot{background:var(--brand);color:#fff;box-shadow:0 0 0 5px #ccebef}
+    .application-step b{display:block;margin-top:14px;font-size:var(--type-card-title-size);font-weight:500}
+    .application-step>span:not(.application-step-dot){display:block;margin-top:2px;color:#777f82}
+    .application-notice{display:flex;align-items:center;gap:14px;margin-top:28px;padding:18px 20px;border-radius:7px;background:#f4f5f6;color:#555d60}
+    .application-notice i{color:var(--brand)}
+    .waiting-heading{display:flex;align-items:center;gap:14px;margin-top:40px}
+    .waiting-heading span{width:5px;height:34px;background:var(--orange)}
+    .waiting-heading h2{margin:0;font-size:var(--type-page-title-size)}
+    .waiting-description{margin:10px 0 0;color:#777f82}
+    .waiting-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:24px}
+    .waiting-card{min-height:330px;padding:28px;display:flex;flex-direction:column}
+    .waiting-icon{width:54px;height:54px;border-radius:9px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:20px}
+    .waiting-card h3{margin:22px 0 0;font-size:var(--type-section-title-size)}
+    .waiting-card p{margin:10px 0 24px;color:#777f82;line-height:1.75}
+    .waiting-card .btn{width:100%;margin-top:auto}
     /* Alignment and scale from the uploaded design source */
     .persona-card>.persona-icon{display:grid;place-items:center}
     .track-step>.track-dot{display:grid;place-items:center}
@@ -592,7 +716,7 @@
     .tp-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px}
     .tp-readiness{padding:26px 28px}
     .tp-readiness-head{display:flex;align-items:center;gap:22px}
-    .tp-ring{position:relative;width:104px;height:104px;border-radius:50%;background:conic-gradient(var(--brand) 0 38%,var(--line) 38% 100%);display:grid;place-items:center;flex:none}
+    .tp-ring{position:relative;width:104px;height:104px;border-radius:50%;background:conic-gradient(var(--brand) calc(var(--value)*1%),var(--line) 0);display:grid;place-items:center;flex:none}
     .tp-ring:before{content:"";position:absolute;inset:9px;border-radius:50%;background:#fff}
     .tp-ring-center{position:relative;text-align:center}
     .tp-ring-center strong{display:block;font-size:27px;font-weight:600;color:#292f31;line-height:1}
@@ -812,8 +936,42 @@
     .tp-stats strong,.metric strong{font-size:var(--type-stat-size);line-height:1;font-weight:var(--weight-semibold)}
     .result-number{font-size:var(--type-stat-xl-size);line-height:1;font-weight:var(--weight-semibold)}
     .tp-highlight-score strong,.tp-competency-value strong{font-size:var(--type-score-size);line-height:1.2;font-weight:var(--weight-semibold)}
+
+    /* Onboarding typography role bindings */
+    .mini-brand b{font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .mini-brand small,.step-count{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-regular)}
+    .rail-dot{font-size:var(--type-meta-size);line-height:1;font-weight:var(--weight-semibold)}
+    .onboarding-heading .eyebrow{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-label)}
+    .onboarding-heading h1{font-size:var(--type-page-title-size);line-height:var(--type-page-title-line);font-weight:var(--weight-medium);letter-spacing:var(--tracking-heading)}
+    .onboarding-heading>p:not(.eyebrow){font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .persona-card b{font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium)}
+    .persona-card span:not(.persona-icon){font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .field label{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-medium)}
+    .field input,.field select,.field textarea{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-regular)}
+    .upload b{font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .upload p,.info-note{font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-light)}
+    .upload-state,.analysis-item{font-size:var(--type-body-size);line-height:var(--type-body-line)}
+    .agent-summary>b{font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium)}
+    .agent-summary p{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .agent-pill{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold)}
+    .review-title h3{font-size:var(--type-section-title-size);line-height:var(--type-section-title-line);font-weight:var(--weight-medium)}
+    .review-title button{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-medium)}
+    .review-card b{font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .review-card span,.agent-empty{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .agent-evidence{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-regular)}
+    .skill-pills span{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-regular)}
+    .career-option b{font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .journey-box .eyebrow{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-label)}
+    .journey-box h2{font-size:var(--type-section-title-size);line-height:var(--type-section-title-line);font-weight:var(--weight-medium)}
+    .journey-box p,.journey-rationale{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
+    .journey-row{font-size:var(--type-body-size);line-height:var(--type-body-line)}
+    .journey-row b{font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium)}
+    .journey-row small{font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-light)}
+    .onboarding-actions .btn{font-size:var(--type-body-size);line-height:1;font-weight:var(--weight-medium)}
+
     .toast{position:fixed;right:22px;bottom:22px;z-index:100;background:var(--brand-dark);color:#fff;padding:11px 15px;border-radius:7px;font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-regular);box-shadow:0 10px 25px rgba(0,86,84,.25);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}
     .toast.show{opacity:1;transform:none}
+    .toast.error{background:#a83d32;box-shadow:0 10px 25px rgba(126,39,31,.25)}
     .portal-role-switch{position:fixed;right:20px;bottom:20px;z-index:40;display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:0 17px;border:1px solid #dce6e7;border-radius:999px;background:#fff;color:var(--brand-dark);box-shadow:0 10px 28px rgba(20,55,58,.12);font-size:12px;font-weight:600;text-decoration:none;transition:transform .18s,border-color .18s,background .18s}
     .portal-role-switch:hover{transform:translateY(-2px);border-color:var(--brand);background:var(--brand-soft)}
     .portal-role-switch:focus-visible{outline:3px solid rgba(47,161,179,.28);outline-offset:2px}
@@ -822,6 +980,7 @@
       :root{--sidebar:210px}.portal-main{padding:24px 22px 45px}.metric-grid{grid-template-columns:repeat(2,1fr)}
       .course-row{grid-template-columns:44px minmax(0,1fr) 110px}.course-meta{grid-column:2}.course-action{grid-column:3;grid-row:1/3}.course-points{grid-column:3;grid-row:1;text-align:right}.course-row .course-action{grid-row:2}
       .course-layout{grid-template-columns:1fr}.course-layout.reference{display:grid;grid-template-columns:1fr}.rubric-card{position:static}.home-grid,.profile-grid{grid-template-columns:1fr}.tp-layout,.tp-tab-layout{display:grid;grid-template-columns:1fr}.sh-two-col{flex-direction:column}.learning-result-portal .portal-main{padding:26px 24px 50px}.learning-index-portal .portal-main{padding:28px 24px 48px}
+      .pmt-overview{grid-template-columns:280px minmax(0,1fr)}.pmt-certificate-grid{grid-template-columns:1fr}.certificate-benefits{min-height:280px}.waiting-grid{gap:14px}.waiting-card{padding:22px}
     }
     @media(max-width:720px){
       :root{--sidebar:0px}.sidebar{position:sticky;top:0;width:100%;height:64px;padding:0 14px;display:flex;flex-direction:row;align-items:center;border-right:0;border-bottom:1px solid var(--line)}
@@ -830,12 +989,14 @@
       .step-rail{overflow:hidden}.rail-dot{width:24px;height:24px}.onboarding-body{width:min(100% - 30px,820px)}
       .course-row{grid-template-columns:42px minmax(0,1fr);gap:11px}.course-points,.course-action,.course-meta{grid-column:2;text-align:left;grid-row:auto}.course-action{justify-self:start}
       .module-track,.competency-grid,.ready-metrics{grid-template-columns:1fr 1fr}.course-header.reference .module-track{display:grid;grid-template-columns:1fr}.result-layout,.result-bottom{grid-template-columns:1fr}.profile-card{align-items:flex-start;flex-wrap:wrap}.profile-stats{width:100%}.verified-list{grid-template-columns:1fr}.tp-goal-row{align-items:flex-start;flex-direction:column}.tp-tabs{gap:18px;overflow:auto}.tp-tabs button{white-space:nowrap}.home-portal .portal-main{padding:26px 20px 44px}.sh-goal-hero{align-items:flex-start}.sh-goal-visual{width:96px;height:96px;font-size:40px}.sh-competency-grid{grid-template-columns:1fr 1fr}.sh-guide-steps{display:grid;grid-template-columns:1fr 1fr;gap:20px}.sh-guide-arrow{display:none}.learning-result-portal .portal-main{padding:22px 16px 44px}.lr-score{padding:28px 20px}.lr-coach-head,.lr-coach-body{padding-left:20px;padding-right:20px}.learning-index-portal .portal-main{padding:24px 16px 44px}.li-panel{padding:20px}.li-course-side{min-width:120px}
+      .ready-portal .portal-main,.submitted-portal .portal-main{margin-left:0;padding:24px 18px 44px}.pmt-hero{align-items:flex-start;padding:26px 24px}.pmt-overview{grid-template-columns:1fr}.pmt-summary{order:1}.pmt-competencies{order:2}.waiting-grid{grid-template-columns:1fr}.waiting-card{min-height:260px}.application-timeline{margin-left:0;margin-right:0}
     }
     @media(max-width:480px){
       .auth-card{padding:32px 22px}.page-top{display:block}.page-actions{margin-top:13px}.metric-grid,.summary-strip,.highlight-grid,.answer-hints{grid-template-columns:1fr}
       .summary-strip div{border-right:0;border-bottom:1px solid var(--line)}.summary-strip div:last-child{border:0}.next-course{align-items:flex-start;flex-wrap:wrap}
       .module-track,.competency-grid,.ready-metrics{grid-template-columns:1fr}.course-layout.reference .answer-hints{grid-template-columns:1fr 1fr}.ready-metrics div{border-right:0;border-bottom:1px solid var(--line)}.submit-row{align-items:flex-start;flex-direction:column}.tp-header{padding:22px 18px}.tp-identity{align-items:flex-start}.tp-avatar{width:60px;height:60px}.tp-role,.tp-member{white-space:normal}.tp-stats{gap:20px;flex-wrap:wrap}.tp-readiness-head{align-items:flex-start;flex-direction:column}.tp-agent-head{align-items:flex-start;flex-wrap:wrap}.tp-update-pill{margin-left:52px}.tp-summary-grid{grid-template-columns:1fr}.tp-summary-item{border-right:0;border-bottom:1px solid var(--line)}.tp-competency-value{width:90px}.tp-competency-value .tp-mini-bar{width:90px}.tp-event{grid-template-columns:42px minmax(0,1fr)}.tp-event-time{grid-column:2}.sh-top{align-items:flex-start}.sh-goal-hero{padding:24px 20px;display:block}.sh-goal-visual{display:none}.sh-goal-strip{align-items:flex-start;flex-wrap:wrap}.sh-course-card{display:block}.sh-course-icon{margin-bottom:16px}.sh-progress-head{align-items:flex-start;flex-direction:column}.sh-competency-grid,.sh-guide-steps{grid-template-columns:1fr}.sh-progress-stats{gap:18px;flex-wrap:wrap}.lr-coach-head{align-items:flex-start;flex-wrap:wrap}.lr-coach-status{margin-left:56px}.lr-plan-row{grid-template-columns:28px minmax(0,1fr)}.lr-plan-time{grid-column:2}.lr-structure,.lr-progress-card{padding:22px 18px}.lr-card-head{align-items:flex-start;flex-direction:column}.lr-actions{flex-direction:column}.lr-actions .btn{width:100%}.lr-score-title{font-size:22px}.li-summary{align-items:flex-start;flex-direction:column}.li-summary-count{text-align:left}.li-summary-progress{width:100%}.li-panel{padding:18px}.li-assessment{align-items:flex-start;flex-wrap:wrap}.li-assessment-status{margin-left:48px}.li-course{display:grid;grid-template-columns:52px minmax(0,1fr)}.li-course.current{padding-left:14px}.li-course-side{grid-column:2;min-width:0;text-align:left}.li-lock-note{max-width:none}.li-course-side .btn{margin-top:6px}
       .portal-role-switch{right:12px;bottom:12px;min-height:38px;padding:0 13px;font-size:11px}
+      .pmt-hero{display:block}.pmt-badge{display:none}.pmt-hero-actions{align-items:stretch;flex-direction:column}.pmt-hero-actions .btn{width:100%}.pmt-competency-grid{grid-template-columns:1fr}.pmt-certificate-grid{grid-template-columns:1fr}.certificate-preview{padding:22px;min-height:330px}.certificate-metrics{gap:18px}.certificate-secondary{grid-template-columns:1fr}.opportunity-row{grid-template-columns:42px minmax(0,1fr)}.opportunity-row .btn{grid-column:2;width:100%}.submitted-ready-strip{align-items:flex-start;flex-wrap:wrap}.submitted-ready-strip button{width:100%;margin:6px 0 0;text-align:left}.application-card{padding:22px 18px}.application-card-head{display:block}.application-card-head button{margin-top:12px}.application-timeline{grid-template-columns:1fr;gap:18px}.application-step{display:grid;grid-template-columns:56px 1fr;text-align:left;align-items:center;column-gap:14px}.application-step:not(:last-child):after{display:none}.application-step .application-step-dot{grid-row:1/3;margin:0}.application-step b,.application-step>span:not(.application-step-dot){margin:0}.waiting-heading{align-items:flex-start}.waiting-card{min-height:0}
     }
   </style>
 </head>
@@ -845,11 +1006,13 @@
   <a class="portal-role-switch" href="/ta" aria-label="Switch to TA portal"><i class="fa-solid fa-arrow-right-arrow-left"></i> TA portal</a>
   <script>
     const state={
-      view:"login",persona:"student",onboardingIndex:0,cvUploaded:false,analysisProgress:0,
+      view:"login",persona:"student",onboardingIndex:0,cvUploaded:false,cvFileName:"",
+      cvFileType:"",cvFileSize:0,cvFileData:"",analysisProgress:0,
       career:"Product Management Trainee",homeStage:"fresh",coursesCompleted:0,
-      criteriaCompleted:0,points:0,answer:"",result:null,retries:2,profileTab:"overview",
+      criteriaCompleted:0,points:0,activeCourse:1,answer:"",result:null,retries:2,profileTab:"overview",
       certificate:false,applicationStatus:"not-started",agentBusy:false,cvReview:null,
-      journey:null,assignmentEvaluation:null,improvementPlan:null,nextAction:null
+      journey:null,assignmentEvaluation:null,improvementPlan:null,nextAction:null,
+      courseAttempts:{}
     };
 
     const icons={
@@ -857,16 +1020,100 @@
       profile:"fa-user",community:"fa-users"
     };
 
+    const COURSE_CATALOG=[
+      {
+        number:1,title:"Product Fundamentals",
+        description:"Nền tảng tư duy và kiến thức sản phẩm dành cho mọi PM.",
+        icon:"fa-regular fa-lightbulb",criteria:3,maxPoints:15,time:"~2 giờ"
+      },
+      {
+        number:2,title:"Structured & Critical Thinking",
+        description:"Rèn tư duy logic, phản biện và hệ thống trước khi ra quyết định.",
+        icon:"fa-solid fa-brain",criteria:3,maxPoints:15,time:"~2.5 giờ",
+        competency:"Problem Solving",module:"Logical Thinking",
+        modules:["Critical Thinking","Logical Thinking","System Thinking"],
+        casePrompt:"Zalo đang cân nhắc thêm tính năng “Nhắc lịch tự động” vào Zalo Chat. Dữ liệu: 40% người dùng quên trả lời tin nhắn quan trọng, nhưng đội kỹ thuật chỉ có 2 tuần để làm MVP. Bạn sẽ quyết định nên làm hay không nên làm — và vì sao?"
+      },
+      {
+        number:3,title:"User & Data Sense",
+        description:"Hiểu người dùng và ra quyết định dựa trên dữ liệu.",
+        icon:"fa-solid fa-chart-column",criteria:3,maxPoints:15,time:"~2.5 giờ",
+        competency:"Customer Focus & Data Analytics",module:"Data Interpretation",
+        modules:["User Insight","Metrics Thinking","Data Interpretation"],
+        casePrompt:"Tỷ lệ kích hoạt người dùng mới giảm 12% sau khi onboarding được rút ngắn. Nhóm Growth muốn thêm ưu đãi ngay, trong khi nhóm Product muốn nghiên cứu lại hành vi. Bạn sẽ dùng dữ liệu nào, chọn hướng xử lý nào và đo kết quả ra sao?"
+      },
+      {
+        number:4,title:"Ownership & Execution",
+        description:"Ưu tiên, thực thi và tạo tác động — năng lực quản lý sản phẩm.",
+        icon:"fa-solid fa-rocket",criteria:4,maxPoints:20,time:"~3 giờ",
+        competency:"Execution & Stakeholder Management",module:"Execution Planning",
+        modules:["Prioritization","Execution Planning","Stakeholder Alignment"],
+        casePrompt:"Một tính năng quan trọng có nguy cơ trễ hai tuần vì phụ thuộc kỹ thuật. Sales đã cam kết ngày ra mắt với khách hàng, còn đội phát triển đề nghị giảm phạm vi. Bạn sẽ ưu tiên, phối hợp stakeholder và lập kế hoạch thực thi như thế nào?"
+      }
+    ];
+
+    const COMPETENCY_CATALOG=[
+      {icon:"fa-regular fa-lightbulb",name:"Product Thinking",courseNumber:1,criteria:3,maxPoints:15,color:"#078c7f"},
+      {icon:"fa-solid fa-puzzle-piece",name:"Problem Solving",courseNumber:2,criteria:4,maxPoints:20,color:"#d2a438"},
+      {icon:"fa-regular fa-user",name:"Customer Focus",courseNumber:3,criteria:1,maxPoints:5,color:"#078c7f"},
+      {icon:"fa-solid fa-chart-column",name:"Data Sense",courseNumber:3,criteria:1,maxPoints:5,color:"#2fa1b3"},
+      {icon:"fa-regular fa-comment-dots",name:"Communication",courseNumber:4,criteria:1,maxPoints:5,color:"#078c7f"},
+      {icon:"fa-solid fa-flag-checkered",name:"Ownership",courseNumber:4,criteria:3,maxPoints:15,color:"#2fa1b3"}
+    ];
+
+    function courseData(number=state.activeCourse){
+      return COURSE_CATALOG[number-1]||COURSE_CATALOG[0];
+    }
+
+    function courseStarScore(courseNumber){
+      const recorded=Number(state.courseAttempts[courseNumber]?.evaluation?.score);
+      if(Number.isFinite(recorded)&&recorded>=0) return Math.min(5,recorded);
+      return courseNumber===1&&state.coursesCompleted>=1?4:0;
+    }
+
+    function competencyScores(){
+      return COMPETENCY_CATALOG.map((competency,index)=>{
+        const stars=courseStarScore(competency.courseNumber);
+        const percent=Math.round((stars/5)*100);
+        const courseState=courseStatus(competency.courseNumber);
+        const status=courseState==="done"?"done":stars>0?"developing":courseState==="current"?"learning":"notstarted";
+        return {...competency,index,stars,percent,status};
+      });
+    }
+
+    function topCompetencies(limit=2){
+      return competencyScores()
+        .sort((left,right)=>right.percent-left.percent||left.index-right.index)
+        .slice(0,limit);
+    }
+
+    function syncLearningProgress(){
+      const completed=COURSE_CATALOG.filter(course=>course.number<=state.coursesCompleted);
+      state.criteriaCompleted=completed.reduce((total,course)=>total+course.criteria,0);
+      state.points=completed.reduce((total,course)=>total+course.maxPoints,0);
+      state.homeStage=state.coursesCompleted>0?"progress":state.homeStage;
+    }
+
+    function nextCourseNumber(){
+      return Math.min(state.coursesCompleted+1,COURSE_CATALOG.length);
+    }
+
     const onboardingStudent=["persona","details","cv","analysis","review","career","journey"];
     const onboardingWorking=["persona","details","cv","analysis","review","journey"];
     const app=document.querySelector("#app");
     const toast=document.querySelector("#toast");
 
-    function notify(message){
+    const AGENT_FAILURE_MESSAGE="AI Agent is not working. Please try again.";
+
+    function notify(message,type="info"){
       toast.textContent=message;
-      toast.classList.add("show");
+      toast.className=`toast show${type==="error"?" error":""}`;
       clearTimeout(notify.timer);
-      notify.timer=setTimeout(()=>toast.classList.remove("show"),2200);
+      notify.timer=setTimeout(()=>toast.className="toast",3200);
+    }
+
+    function notifyAgentFailure(){
+      notify(AGENT_FAILURE_MESSAGE,"error");
     }
 
     function escapeHtml(value){
@@ -875,15 +1122,52 @@
       })[character]);
     }
 
+    function nameFromCvFilename(){
+      const base=String(state.cvFileName||"")
+        .replace(/\.(pdf|doc|docx)$/i,"")
+        .replace(/[()[\]{}]/g," ")
+        .replace(/[_–—-]+/g," ");
+      const generic=/^(cv|resume|résumé|curriculum|vitae|profile|portfolio|product|pm|pmc)$/i;
+      const tokens=base.split(/\s+/).filter(token=>token&&!generic.test(token));
+      return tokens.join(" ").trim();
+    }
+
+    function studentFullName(){
+      return String(state.cvReview?.fullName||nameFromCvFilename()||"Student").trim();
+    }
+
+    function studentShortName(){
+      const parts=studentFullName().split(/\s+/).filter(Boolean);
+      return parts.at(-1)||"Student";
+    }
+
+    function studentInitial(){
+      return studentShortName().charAt(0).toLocaleUpperCase("vi")||"S";
+    }
+
+    function studentVerificationCode(){
+      const initials=studentFullName().split(/\s+/).filter(Boolean).map(part=>part.charAt(0))
+        .join("").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/Đ/g,"D").replace(/đ/g,"d")
+        .toUpperCase().slice(0,4)||"STU";
+      return `PMT-2026-0A47-${initials}`;
+    }
+
     async function callStudentAgent(agent,payload){
-      const response=await fetch(`/api/student-agents/${agent}`,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({payload:{studentId:"demo-linh",...payload}})
-      });
-      const body=await response.json().catch(()=>({}));
-      if(!response.ok) throw new Error(body.error||"AI Agent chưa thể hoàn thành yêu cầu.");
-      return body;
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),30000);
+      try{
+        const response=await fetch(`/api/student-agents/${agent}`,{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({payload:{studentId:state.cvFileName||"anonymous-student",...payload}}),
+          signal:controller.signal
+        });
+        const body=await response.json().catch(()=>({}));
+        if(!response.ok) throw new Error(body.code||"AGENT_UNAVAILABLE");
+        return body;
+      }finally{
+        clearTimeout(timeout);
+      }
     }
 
     function route(view){
@@ -915,6 +1199,12 @@
       state.persona="student";
       state.onboardingIndex=0;
       state.cvUploaded=false;
+      state.cvFileName="";
+      state.cvFileType="";
+      state.cvFileSize=0;
+      state.cvFileData="";
+      state.cvReview=null;
+      state.analysisProgress=0;
       route("onboarding");
     }
 
@@ -927,12 +1217,49 @@
         persona:["Bạn đang ở giai đoạn nào?","Chọn mô tả phù hợp nhất để chúng tôi cá nhân hóa lộ trình cho bạn."],
         details:[state.persona==="student"?"Một chút về bạn":"Kinh nghiệm của bạn","Thông tin này giúp AI hiểu bối cảnh học tập và mục tiêu hiện tại."],
         cv:["Tải lên CV của bạn",state.persona==="student"?"Không bắt buộc — bạn có thể bổ sung sau.":"CV là thông tin cần thiết để AI phân tích kinh nghiệm đã có."],
-        analysis:["AI đang phân tích hồ sơ","Chúng tôi đang tổng hợp kinh nghiệm, kỹ năng và nền tảng học tập của bạn."],
-        review:["Kiểm tra thông tin đã trích xuất","Bạn luôn có quyền xem và chỉnh sửa trước khi tiếp tục."],
-        career:["Bạn muốn phát triển theo hướng nào?","Chọn mục tiêu nghề nghiệp để AI thiết kế lộ trình phù hợp."],
-        journey:["Lộ trình của bạn đã sẵn sàng","AI đã tạo hành trình học tập dựa trên hồ sơ và mục tiêu của bạn."]
+        analysis:["AI đang trích xuất dữ liệu","Vui lòng chờ trong khi AI đọc CV và điền thông tin hồ sơ của bạn."],
+        review:["Kiểm tra dữ liệu đã trích xuất","Thông tin do AI trích xuất đã được điền vào hồ sơ để bạn kiểm tra và chỉnh sửa."],
+        career:["Bạn muốn phát triển theo hướng nào?","Chọn mục tiêu nghề nghiệp để xem lộ trình học tập phù hợp."],
+        journey:["Lộ trình của bạn đã sẵn sàng","Hành trình gồm 4 khóa học cốt lõi để xây dựng nền tảng Product."]
       };
       return meta[step];
+    }
+
+    function demoJourney(){
+      return {
+        schemaVersion:"student.journey.v2",
+        title:"Lộ trình 4 khóa học Product",
+        target:state.career,
+        criteriaTotal:13,
+        pointsTotal:65,
+        rationale:`Lộ trình cố định giúp bạn xây nền tảng Product theo thứ tự từ tư duy sản phẩm, giải quyết vấn đề, hiểu người dùng và dữ liệu, đến năng lực thực thi.`,
+        nextMilestone:"Hoàn thành Course 1 · Product Fundamentals",
+        confidence:"high",
+        confidenceReason:"Đây là lộ trình demo chuẩn gồm 4 khóa học.",
+        needsHumanReview:false,
+        courses:[
+          {
+            id:"course-1",title:"Product Fundamentals",order:1,prerequisitesMet:true,
+            reason:"Xây dựng nền tảng tư duy và kiến thức sản phẩm.",
+            competencyTargets:["Product Thinking"]
+          },
+          {
+            id:"course-2",title:"Structured & Critical Thinking",order:2,prerequisitesMet:true,
+            reason:"Rèn tư duy logic, phản biện và giải quyết vấn đề có cấu trúc.",
+            competencyTargets:["Problem Solving"]
+          },
+          {
+            id:"course-3",title:"User & Data Sense",order:3,prerequisitesMet:true,
+            reason:"Hiểu người dùng và sử dụng dữ liệu để hỗ trợ quyết định.",
+            competencyTargets:["Data Analytics","Stakeholder Management"]
+          },
+          {
+            id:"course-4",title:"Ownership & Execution",order:4,prerequisitesMet:true,
+            reason:"Phát triển khả năng ưu tiên, thực thi và tạo tác động.",
+            competencyTargets:["Execution","Communication"]
+          }
+        ]
+      };
     }
 
     function rail(){
@@ -975,58 +1302,50 @@
         <p>Định dạng PDF hoặc DOCX · Tối đa 10MB</p>
         <input id="cvInput" type="file" accept=".pdf,.doc,.docx" class="hidden" onchange="uploadCv(this)">
         <button class="btn btn-outline btn-sm" onclick="document.querySelector('#cvInput').click()"><i class="fa-solid fa-arrow-up-from-bracket"></i>${state.cvUploaded?"Thay tệp":"Chọn tệp"}</button>
-        ${state.cvUploaded?'<div class="upload-state"><i class="fa-solid fa-circle-check"></i> CV_Linh_Nguyen.pdf</div>':""}
+        ${state.cvUploaded?`<div class="upload-state"><i class="fa-solid fa-circle-check"></i> ${escapeHtml(state.cvFileName)}</div>`:""}
       </div>
       <div class="info-note"><i class="fa-solid fa-shield-halved"></i><span>CV chỉ được dùng để cá nhân hóa hồ sơ năng lực. Bạn có thể kiểm tra và chỉnh sửa mọi thông tin AI trích xuất.</span></div>`;
     }
 
     function analysisStep(){
       const progress=state.analysisProgress;
-      const phases=[["Đọc thông tin hồ sơ",20],["Nhận diện kinh nghiệm",45],["Phân tích kỹ năng",70],["Tạo hồ sơ năng lực",100]];
+      const phases=[["Đọc CV và thông tin hồ sơ",20],["Trích xuất kinh nghiệm",45],["Trích xuất kỹ năng và học vấn",70],["Điền dữ liệu vào hồ sơ",100]];
       return `<div class="analysis-wrap">
         <div class="analysis-ring" style="--value:${progress}"><strong>${progress}%</strong></div>
         <div class="analysis-list">${phases.map(([label,threshold])=>`<div class="analysis-item ${progress>=threshold?"done":""}"><i class="fa-solid ${progress>=threshold?"fa-circle-check":"fa-circle"}"></i><span>${label}</span></div>`).join("")}</div>
-        ${progress===0?'<button class="btn btn-primary" style="margin-top:24px" onclick="runAnalysis()">Bắt đầu phân tích</button>':progress<100?'<p class="tiny" style="margin-top:20px">Vui lòng giữ trang này mở trong giây lát…</p>':'<div class="info-note" style="max-width:410px;margin:20px auto 0"><i class="fa-solid fa-sparkles"></i><span>Phân tích hoàn tất. Hồ sơ khởi tạo đã sẵn sàng để bạn kiểm tra.</span></div>'}
+        ${progress===0?'<button class="btn btn-primary" style="margin-top:24px" onclick="runAnalysis()">Thử lại trích xuất</button>':progress<100?'<p class="tiny" style="margin-top:20px">Nút Tiếp tục sẽ mở khi AI hoàn tất trích xuất…</p>':'<div class="info-note" style="max-width:410px;margin:20px auto 0"><i class="fa-solid fa-sparkles"></i><span>Trích xuất hoàn tất. Dữ liệu đã sẵn sàng để bạn kiểm tra.</span></div>'}
       </div>`;
     }
 
     function reviewStep(){
       const review=state.cvReview;
-      const experience=review?.experiences?.[0];
-      const education=review?.education?.[0];
-      const skills=review?.skills?.length?review.skills.map(item=>item.name):["Problem Solving","Communication","User Research","Data Analysis","Teamwork"];
-      const experienceTitle=experience?`${experience.title}${experience.organization?` · ${experience.organization}`:""}`:(state.persona==="student"?"Product Lead · CLB Khởi nghiệp":"Business Analyst · ZaloPay");
-      const experienceEvidence=experience?.evidence||(state.persona==="student"?"08/2025 – nay · Nghiên cứu người dùng, điều phối nhóm 5 thành viên":"2024 – nay · Phân tích yêu cầu và phối hợp Product, Design, Engineering");
+      if(!review) return `<div class="agent-unavailable">${AGENT_FAILURE_MESSAGE}</div>`;
+      const sourceLabel={cv:"CV",onboarding:"Onboarding",student_correction:"Bạn xác nhận",inference:"Suy luận"};
+      const evidenceMeta=item=>`<div class="agent-evidence"><i class="fa-solid fa-file-lines"></i> ${escapeHtml(sourceLabel[item.sourceType]||item.sourceType)}${item.timeframe?` · ${escapeHtml(item.timeframe)}`:""}<br>${escapeHtml(item.evidence)}</div>`;
       return `<div>
-        <section class="review-section"><div class="review-title"><h3>Kinh nghiệm</h3><button>Chỉnh sửa</button></div><div class="review-card"><b>${escapeHtml(experienceTitle)}</b><span>${escapeHtml(experienceEvidence)}</span></div></section>
-        <section class="review-section"><div class="review-title"><h3>Kỹ năng nổi bật</h3><button>Thêm kỹ năng</button></div><div class="skill-pills">${skills.map(skill=>`<span>${escapeHtml(skill)}</span>`).join("")}</div></section>
-        <section class="review-section"><div class="review-title"><h3>Học vấn</h3><button>Chỉnh sửa</button></div><div class="review-card"><b>${escapeHtml(education?.institution||"Đại học Ngoại thương")}</b><span>${escapeHtml(education?.field||"Kinh doanh quốc tế")} · 2023–2027</span></div></section>
+        <div class="agent-summary"><b>Tóm tắt do AI trích xuất</b><p>${escapeHtml(review.summary)}</p></div>
+        <section class="review-section"><div class="review-title"><h3>Họ và tên</h3><button>Chỉnh sửa</button></div><div class="review-card"><b>${escapeHtml(studentFullName())}</b><div class="agent-evidence"><i class="fa-solid fa-file-lines"></i> CV đã tải lên · ${escapeHtml(state.cvFileName)}</div></div></section>
+        <section class="review-section"><div class="review-title"><h3>Kinh nghiệm</h3><button>Chỉnh sửa</button></div>${review.experiences.length?review.experiences.map(item=>`<div class="review-card" style="margin-bottom:8px"><b>${escapeHtml(item.title)}${item.organization?` · ${escapeHtml(item.organization)}`:""}</b>${evidenceMeta(item)}</div>`).join(""):'<div class="agent-empty">Không tìm thấy thông tin kinh nghiệm trong dữ liệu đã cung cấp.</div>'}</section>
+        <section class="review-section"><div class="review-title"><h3>Kỹ năng nổi bật</h3><button>Thêm kỹ năng</button></div>${review.skills.length?`<div class="skill-pills">${review.skills.map(skill=>`<span title="${escapeHtml(skill.evidence)}">${escapeHtml(skill.name)}</span>`).join("")}</div>`:'<div class="agent-empty">Không tìm thấy thông tin kỹ năng trong dữ liệu đã cung cấp.</div>'}</section>
+        <section class="review-section"><div class="review-title"><h3>Học vấn</h3><button>Chỉnh sửa</button></div>${review.education.length?review.education.map(item=>`<div class="review-card" style="margin-bottom:8px"><b>${escapeHtml(item.institution)}</b><span>${escapeHtml(item.field)}</span>${evidenceMeta(item)}</div>`).join(""):'<div class="agent-empty">Không tìm thấy thông tin học vấn trong dữ liệu đã cung cấp.</div>'}</section>
       </div>`;
     }
 
     function careerStep(){
       const careers=[["fa-diagram-project","Product Management Trainee"],["fa-mobile-screen","Product Manager"],["fa-chart-line","Business Analyst"],["fa-pen-ruler","Product Designer"],["fa-database","Data Analyst"],["fa-bullhorn","Product Marketing"]];
-      return `<div class="career-grid">${careers.map(([icon,label])=>`<button class="career-option ${state.career===label?"selected":""}" onclick="state.career='${label}';render()"><i class="fa-solid ${icon}"></i><b>${label}</b></button>`).join("")}</div>`;
+      return `<div class="career-grid">${careers.map(([icon,label])=>`<button class="career-option ${state.career===label?"selected":""}" onclick="state.career='${label}';state.journey=null;render()"><i class="fa-solid ${icon}"></i><b>${label}</b></button>`).join("")}</div>`;
     }
 
     function journeyStep(){
-      const journey=state.journey||{
-        title:"Lộ trình 4 khóa học để đạt PMT Ready",
-        criteriaTotal:13,
-        pointsTotal:65,
-        courses:[
-          {id:"course-1",title:"Product Fundamentals"},
-          {id:"course-2",title:"Structured & Critical Thinking"},
-          {id:"course-3",title:"User & Data Sense"},
-          {id:"course-4",title:"Ownership & Execution"}
-        ]
-      };
+      const journey=state.journey;
+      if(!journey) return `<div class="agent-unavailable">Lộ trình demo chưa được khởi tạo. Vui lòng quay lại và tiếp tục.</div>`;
       return `<div class="journey-box">
-        <p class="eyebrow">AI Journey · ${escapeHtml(state.career)}</p>
+        <p class="eyebrow">Lộ trình học tập · ${escapeHtml(state.career)}</p>
         <h2>${escapeHtml(journey.title)}</h2>
         <p>Hoàn thành ${journey.criteriaTotal} tiêu chí, tối đa ${journey.pointsTotal} điểm và bài đánh giá cuối lộ trình.</p>
+        <div class="journey-rationale"><b>Vì sao lộ trình này phù hợp</b><br>${escapeHtml(journey.rationale)}<br><br><b>Cột mốc tiếp theo:</b> ${escapeHtml(journey.nextMilestone)}</div>
         <div class="journey-list">
-          ${journey.courses.map((course,index)=>`<div class="journey-row"><i class="fa-solid fa-circle-check"></i><span>Course ${index+1} · ${escapeHtml(course.title)}</span></div>`).join("")}
+          ${journey.courses.map(course=>`<div class="journey-row"><i class="fa-solid ${course.prerequisitesMet?"fa-circle-check":"fa-circle-exclamation"}"></i><div><b>Course ${course.order} · ${escapeHtml(course.title)}</b><small>${escapeHtml(course.reason)}</small>${course.competencyTargets.length?`<small>Năng lực: ${escapeHtml(course.competencyTargets.join(" · "))}</small>`:""}</div></div>`).join("")}
         </div>
       </div>`;
     }
@@ -1036,7 +1355,7 @@
       const step=flow[state.onboardingIndex];
       const [title,description]=onboardingMeta(step);
       const bodies={persona:personaStep,details:detailsStep,cv:cvStep,analysis:analysisStep,review:reviewStep,career:careerStep,journey:journeyStep};
-      const canContinue=step!=="analysis"||state.analysisProgress===100;
+      const canContinue=step!=="analysis"||(state.analysisProgress===100&&Boolean(state.cvReview)&&!state.agentBusy);
       const cvRequired=step==="cv"&&state.persona==="working"&&!state.cvUploaded;
       return `<main class="onboarding-page">
         <header class="onboarding-top"><div class="onboarding-top-inner"><div class="mini-brand"><span class="mini-brand-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span><b>AI Talent Platform</b><small>Student onboarding</small></span></div><span class="step-count">Bước ${state.onboardingIndex+1} / ${flow.length}</span></div></header>
@@ -1054,16 +1373,59 @@
     function selectPersona(persona){
       state.persona=persona;
       state.cvUploaded=false;
+      state.cvFileName="";
+      state.cvFileType="";
+      state.cvFileSize=0;
+      state.cvFileData="";
+      state.cvReview=null;
+      state.analysisProgress=0;
       render();
     }
 
-    function uploadCv(input){
-      if(input.files.length){state.cvUploaded=true;render();notify("CV đã được tải lên.");}
+    async function uploadCv(input){
+      const file=input.files?.[0];
+      if(!file) return;
+      if(!/\.(pdf|doc|docx)$/i.test(file.name)){
+        input.value="";
+        notify("Chỉ hỗ trợ tệp PDF, DOC hoặc DOCX.","error");
+        return;
+      }
+      if(file.size>10*1024*1024){
+        input.value="";
+        notify("Tệp vượt quá giới hạn 10MB.","error");
+        return;
+      }
+      try{
+        const bytes=new Uint8Array(await file.arrayBuffer());
+        let binary="";
+        const chunkSize=0x8000;
+        for(let offset=0;offset<bytes.length;offset+=chunkSize){
+          binary+=String.fromCharCode(...bytes.subarray(offset,offset+chunkSize));
+        }
+        state.cvUploaded=true;
+        state.cvFileName=file.name;
+        state.cvFileType=file.type||(/\.pdf$/i.test(file.name)?"application/pdf":"application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        state.cvFileSize=file.size;
+        state.cvFileData=btoa(binary);
+        state.cvReview=null;
+        state.analysisProgress=0;
+        render();
+        notify(`Đã tải lên ${file.name}.`);
+      }catch(error){
+        input.value="";
+        state.cvUploaded=false;
+        state.cvFileName="";
+        state.cvFileType="";
+        state.cvFileSize=0;
+        state.cvFileData="";
+        notify("Không thể đọc tệp CV. Vui lòng thử lại.","error");
+      }
     }
 
     async function runAnalysis(){
       if(state.agentBusy) return;
       state.agentBusy=true;
+      state.cvReview=null;
       state.analysisProgress=8;
       render();
       const timer=setInterval(()=>{
@@ -1074,7 +1436,15 @@
         const response=await callStudentAgent("cv-review",{
           persona:state.persona,
           cvUploaded:state.cvUploaded,
-          cvFileName:state.cvUploaded?"CV_Linh_Nguyen.pdf":"",
+          cvFileName:state.cvFileName,
+          ...(state.cvUploaded&&state.cvFileData?{
+            cvFile:{
+              filename:state.cvFileName,
+              mimeType:state.cvFileType,
+              size:state.cvFileSize,
+              data:state.cvFileData
+            }
+          }:{}),
           onboarding:{
             school:"Đại học Ngoại thương",
             field:"Kinh doanh quốc tế",
@@ -1082,13 +1452,14 @@
           }
         });
         state.cvReview=response.output;
-        notify(response.source==="openai_responses_api"?"AI đã hoàn tất phân tích hồ sơ.":"Đã hoàn tất bằng chế độ demo.");
+        state.analysisProgress=100;
+        notify("AI đã hoàn tất trích xuất dữ liệu.");
       }catch(error){
         state.cvReview=null;
-        notify(error.message);
+        state.analysisProgress=0;
+        notifyAgentFailure();
       }finally{
         clearInterval(timer);
-        state.analysisProgress=100;
         state.agentBusy=false;
         render();
       }
@@ -1102,39 +1473,24 @@
       const flow=onboardingFlow();
       const step=flow[state.onboardingIndex];
       if(step==="cv"&&state.persona==="working"&&!state.cvUploaded){notify("Vui lòng tải CV để tiếp tục.");return;}
-      if(step==="analysis"&&state.analysisProgress<100){return;}
-      if(step==="career"&&!state.journey&&!state.agentBusy){
-        state.agentBusy=true;
-        notify("AI đang thiết kế lộ trình của bạn.");
-        try{
-          const response=await callStudentAgent("journey-designer",{
-            persona:state.persona,
-            target:state.career,
-            verifiedProfile:state.cvReview,
-            readinessRules:{criteriaTotal:13,pointsTotal:65,targetStatus:"PMT Ready"},
-            courseCatalog:[
-              {id:"course-1",title:"Product Fundamentals",criteria:3,points:15},
-              {id:"course-2",title:"Structured & Critical Thinking",criteria:3,points:15},
-              {id:"course-3",title:"User & Data Sense",criteria:3,points:15},
-              {id:"course-4",title:"Ownership & Execution",criteria:4,points:20}
-            ]
-          });
-          state.journey=response.output;
-        }catch(error){
-          notify(error.message);
-        }finally{
-          state.agentBusy=false;
-        }
+      if(step==="analysis"&&(state.analysisProgress<100||!state.cvReview||state.agentBusy)){return;}
+      if(step==="cv"){
+        state.onboardingIndex++;
+        render();
+        window.scrollTo({top:0,behavior:"smooth"});
+        if(!state.cvReview) setTimeout(()=>runAnalysis(),0);
+        return;
       }
+      if(flow[state.onboardingIndex+1]==="journey") state.journey=demoJourney();
       if(state.onboardingIndex<flow.length-1){state.onboardingIndex++;render();window.scrollTo({top:0,behavior:"smooth"});}
-      else{state.homeStage="fresh";route("home");notify("AI Journey của bạn đã sẵn sàng.");}
+      else{state.homeStage="fresh";route("home");notify("Lộ trình 4 khóa học của bạn đã sẵn sàng.");}
     }
 
     function sidebar(brand="ZA AI Talent"){
       const nav=[["home","fa-solid fa-house","Home"],["learning","fa-solid fa-book-open","Learning"],["assessment","fa-solid fa-clipboard-list","Assessments"],["profile","fa-regular fa-id-badge","Talent Profile"],["community","fa-solid fa-globe","Community"]];
       return `<aside class="sidebar">
         <a class="side-brand" href="#" onclick="route('home');return false"><span class="logo">${brand==="Zalo Talent"?"Z":"A"}</span><span><b>${brand}</b></span></a>
-        <nav class="side-nav">${nav.map(([view,icon,label])=>`<button class="${state.view===view||(view==="learning"&&["course","result"].includes(state.view))?"active":""} ${["assessment","community"].includes(view)?"locked":""}" onclick="${["assessment","community"].includes(view)?`notify('Tính năng sẽ mở trong phiên bản tiếp theo.')`:`route('${view}')`}"><i class="${icon}"></i><span>${label}</span></button>`).join("")}</nav>
+        <nav class="side-nav">${nav.map(([view,icon,label])=>`<button class="${state.view===view||(view==="home"&&state.view==="ready")||(view==="learning"&&["course","result"].includes(state.view))?"active":""} ${["assessment","community"].includes(view)?"locked":""}" onclick="${["assessment","community"].includes(view)?`notify('Tính năng sẽ mở trong phiên bản tiếp theo.')`:`route('${view}')`}"><i class="${icon}"></i><span>${label}</span></button>`).join("")}</nav>
       </aside>`;
     }
 
@@ -1143,58 +1499,78 @@
     }
 
     function readinessScore(){
-      if(isReady()) return 100;
-      if(state.result==="pass") return 55;
-      return state.coursesCompleted>=1?38:0;
+      return isReady()?100:Math.round((state.points/65)*100);
     }
 
     function isReady(){return state.coursesCompleted>=4&&state.criteriaCompleted>=13&&state.points>=65}
 
+    function submittedHome(){
+      const shortName=escapeHtml(studentShortName());
+      const initial=escapeHtml(studentInitial());
+      const suggestions=[
+        ["fa-solid fa-microphone","Luyện phỏng vấn cá nhân hoá","AI đã tạo bộ câu hỏi mock interview tập trung vào Data Analytics — năng lực bạn cần củng cố thêm trước khi phỏng vấn thật.","Bắt đầu luyện tập","btn-orange","notify('Bộ câu hỏi mock interview sẽ mở trong phiên bản tiếp theo.')"],
+        ["fa-regular fa-star","Trở thành Mentor","Bạn đã đi trọn hành trình PMT — chia sẻ kinh nghiệm case study, giúp học viên mới tự tin hơn ở Cộng đồng.","Tham gia làm Mentor","btn-outline","notify('Đăng ký Mentor sẽ mở trong phiên bản tiếp theo.')"],
+        ["fa-solid fa-magnifying-glass","Khám phá vị trí khác","Chứng nhận PMT Ready của bạn cũng phù hợp với 3 vị trí khác đang mở tại Zalo.","Xem thêm","btn-outline","notify('Danh sách vị trí phù hợp sẽ mở trong phiên bản tiếp theo.')"]
+      ];
+      const body=`<header class="submitted-top"><div><h1>Chào ${shortName}</h1><p>Đơn ứng tuyển của bạn đang được xử lý.</p></div><div class="sh-top-actions"><button class="sh-round-action" onclick="notify('Bạn có 1 cập nhật hồ sơ.')"><i class="fa-regular fa-bell"></i><span class="sh-notice">1</span></button><span class="sh-user">${initial}</span></div></header>
+      <section class="submitted-ready-strip"><i class="fa-solid fa-award"></i><b>PMT Ready — Verified by Zalo Talent</b><button onclick="route('profile')">Xem Talent Profile <i class="fa-solid fa-arrow-right"></i></button></section>
+      <section class="card application-card">
+        <div class="application-card-head"><div><h2>Product Management Trainee</h2><p>Product Team · Hà Nội · Zalo</p></div><button onclick="notify('Danh sách vị trí khác sẽ mở trong phiên bản tiếp theo.')">Ứng tuyển vị trí khác <i class="fa-solid fa-arrow-right"></i></button></div>
+        <div class="application-timeline">
+          <div class="application-step"><span class="application-step-dot"><i class="fa-solid fa-check"></i></span><b>Đã nộp</b><span>2 ngày trước</span></div>
+          <div class="application-step"><span class="application-step-dot"><i class="fa-solid fa-check"></i></span><b>TA đã xem hồ sơ</b><span>3 giờ trước</span></div>
+          <div class="application-step current"><span class="application-step-dot"><i class="fa-solid fa-hourglass-half"></i></span><b>Phỏng vấn</b><span>Đang chờ lên lịch</span></div>
+        </div>
+        <div class="application-notice"><i class="fa-regular fa-bell"></i><span>Bạn sẽ nhận thông báo qua Zalo ngay khi có cập nhật — không cần tự theo dõi hay nhắn hỏi TA.</span></div>
+      </section>
+      <div class="waiting-heading"><span></span><h2>Trong khi chờ, đây là vài gợi ý cho bạn</h2></div>
+      <p class="waiting-description">Không bắt buộc — nhưng có thể giúp bạn chuẩn bị tốt hơn và tận dụng thời gian chờ.</p>
+      <section class="waiting-grid">${suggestions.map(([icon,title,copy,action,kind,handler])=>`<article class="card waiting-card"><span class="waiting-icon"><i class="${icon}"></i></span><h3>${title}</h3><p>${copy}</p><button class="btn ${kind}" onclick="${handler}">${action} <i class="fa-solid fa-arrow-right"></i></button></article>`).join("")}</section>`;
+      return shell(body,"submitted-portal","AI Talent");
+    }
+
     function home(){
+      if(state.applicationStatus==="submitted") return submittedHome();
+      const shortName=escapeHtml(studentShortName());
+      const initial=escapeHtml(studentInitial());
       const active=state.coursesCompleted>=1;
-      const score=active?(isReady()?100:38):0;
-      const courseNo=active?Math.min(state.coursesCompleted+1,4):1;
-      const courseMap={
-        1:["fa-regular fa-lightbulb","Product Fundamentals","Nền tảng tư duy và kiến thức sản phẩm dành cho mọi PM."],
-        2:["fa-solid fa-brain","Structured & Critical Thinking","Còn 2/3 bài · khoảng 30 phút để hoàn thành."],
-        3:["fa-solid fa-users-viewfinder","User & Data Sense","Tiếp tục xây dựng năng lực Customer Focus và Data Analytics."],
-        4:["fa-solid fa-rocket","Ownership & Execution","Hoàn thành khóa cuối để mở trạng thái PMT Ready."]
-      };
-      const [courseIcon,courseTitle,courseDescription]=courseMap[courseNo];
-      const freshRows=[
-        ["fa-regular fa-lightbulb","Product Thinking","0/3 tiêu chí · 0/15đ",0,"notstarted",""],
-        ["fa-solid fa-puzzle-piece","Problem Solving","0/4 tiêu chí · 0/20đ",0,"notstarted",""],
-        ["fa-solid fa-chart-column","Data Analytics","0/1 tiêu chí · 0/5đ",0,"notstarted",""],
-        ["fa-regular fa-comment-dots","Communication","Đang cập nhật tiêu chí",0,"pending",""],
-        ["fa-solid fa-rocket","Execution","0/3 tiêu chí · 0/15đ",0,"notstarted",""],
-        ["fa-solid fa-users","Stakeholder Management","0/2 tiêu chí · 0/10đ",0,"notstarted",""]
-      ];
-      const activeRows=[
-        ["fa-regular fa-lightbulb","Product Thinking","2/3 tiêu chí · 12/15đ",67,"learning","Còn 1 tiêu chí nữa để hoàn thành"],
-        ["fa-solid fa-puzzle-piece","Problem Solving","1/4 tiêu chí · 5/20đ",25,"learning","Còn 3 tiêu chí nữa để hoàn thành"],
-        ["fa-solid fa-chart-column","Data Analytics","0/1 tiêu chí · 0/5đ",0,"notstarted",""],
-        ["fa-regular fa-comment-dots","Communication","Đang cập nhật tiêu chí",0,"pending",""],
-        ["fa-solid fa-rocket","Execution","0/3 tiêu chí · 0/15đ",0,"notstarted",""],
-        ["fa-solid fa-users","Stakeholder Management","0/2 tiêu chí · 0/10đ",0,"notstarted",""]
-      ];
-      const competencies=active?activeRows:freshRows;
-      const stats=active?[[`${state.coursesCompleted}/4`,"khóa học"],[`${Math.max(state.criteriaCompleted,3)}/13`,"tiêu chí"],[`${Math.max(state.points,27)}/65`,"điểm"]]:[["0/4","khóa học"],["0/13","tiêu chí"],["0/65","điểm"]];
+      const score=readinessScore();
+      const courseNo=active?nextCourseNumber():1;
+      const currentCourse=courseData(courseNo);
+      const courseIcon=currentCourse.icon,courseTitle=currentCourse.title,courseDescription=currentCourse.description;
+      const competencies=competencyScores().map(competency=>{
+        const hasScore=competency.stars>0;
+        const meta=hasScore
+          ?`${competency.stars}/5★ · ${competency.percent}% năng lực`
+          :`0/${competency.criteria} tiêu chí · 0/${competency.maxPoints}đ`;
+        const status=competency.status==="developing"||competency.status==="learning"?"learning":competency.status;
+        const note=competency.status==="done"
+          ?`Điểm Course ${competency.courseNumber}: ${competency.stars}/5★`
+          :hasScore
+            ?`Kết quả gần nhất ở Course ${competency.courseNumber}`
+            :competency.status==="learning"
+              ?`Đang phát triển ở Course ${competency.courseNumber}`
+              :"";
+        return [competency.icon,competency.name,meta,competency.percent,status,note];
+      });
+      const stats=[[`${state.coursesCompleted}/4`,"khóa học"],[`${state.criteriaCompleted}/13`,"tiêu chí"],[`${state.points}/65`,"điểm"]];
       const goal=active?`<section class="sh-goal-strip"><span class="sh-goal-strip-icon"><i class="fa-solid fa-bullseye"></i></span><div class="sh-goal-strip-copy"><b>Mục tiêu: Product Management Trainee (PMT)</b><span>13 tiêu chí · 65 điểm tối đa</span></div><button class="btn btn-outline" style="background:#fff" onclick="route('learning')">Xem lộ trình chi tiết <i class="fa-solid fa-arrow-right"></i></button></section>`:
       `<section class="sh-goal-hero"><div class="sh-goal-copy"><div class="sh-goal-label">Mục tiêu của bạn</div><div class="sh-goal-title">Product Management Trainee (PMT)</div><div class="sh-goal-description">Hoàn thành 4 khóa học và 13 tiêu chí rubric để đạt trạng thái “PMT Ready”.</div><div class="sh-goal-pills"><span class="sh-goal-pill"><i class="fa-solid fa-book-open"></i><b>4</b> khóa học</span><span class="sh-goal-pill"><i class="fa-solid fa-puzzle-piece"></i><b>13</b> tiêu chí rubric</span><span class="sh-goal-pill"><i class="fa-solid fa-flag"></i><b>PMT Ready</b> mục tiêu</span></div><button class="btn btn-orange" style="margin-top:22px" onclick="startLearning()">Bắt đầu Course 1 <i class="fa-solid fa-arrow-right"></i></button></div><span class="sh-goal-visual"><i class="fa-solid fa-bullseye"></i></span></section>`;
       const guide=active?"":`<section class="sh-guide"><div class="sh-guide-title">Cách đạt PMT Ready</div><div class="sh-guide-steps">${[["fa-book-open","Học khóa học","Bài học, quiz, bài tập"],["fa-puzzle-piece","Hoàn thành rubric","Đạt điểm từng tiêu chí"],["fa-regular fa-star","Tích điểm","Tối đa 65đ / 13 rubric"],["fa-flag","PMT Ready","Đủ điều kiện ứng tuyển"]].map(([icon,title,desc],i)=>`<div class="sh-guide-step"><div class="sh-guide-copy"><span class="sh-guide-icon"><i class="${icon.startsWith("fa-regular")?icon:`fa-solid ${icon}`}"></i></span><b>${title}</b><span>${desc}</span></div>${i<3?'<i class="fa-solid fa-arrow-right sh-guide-arrow"></i>':""}</div>`).join("")}</div><button class="sh-guide-link" onclick="route('learning')">Xem lộ trình & rubric chi tiết →</button></section>`;
-      const body=`<header class="sh-top"><div><h1 class="sh-greeting">Chào Linh</h1><p class="sh-intro">${active?"Bạn đang ở mức Baseline của lộ trình Product Management — còn 1 tiêu chí nữa để hoàn thành Product Thinking.":"Chào mừng bạn đến với lộ trình Product Management."}</p></div><div class="sh-top-actions"><button class="sh-round-action" onclick="notify('${active?"Bạn có 2 cập nhật mới.":"Bạn chưa có thông báo mới."}')"><i class="fa-regular fa-bell"></i>${active?'<span class="sh-notice">2</span>':""}</button><span class="sh-user">L</span></div></header>
+      const body=`<header class="sh-top"><div><h1 class="sh-greeting">Chào ${shortName}</h1><p class="sh-intro">${isReady()?"Bạn đã hoàn thành lộ trình Product Management và đạt trạng thái PMT Ready.":active?`Bạn đã hoàn thành ${state.coursesCompleted}/4 khóa học — Course ${courseNo} đang mở để tiếp tục.`:"Chào mừng bạn đến với lộ trình Product Management."}</p></div><div class="sh-top-actions"><button class="sh-round-action" onclick="notify('${active?"Tiến độ học tập của bạn đã được đồng bộ.":"Bạn chưa có thông báo mới."}')"><i class="fa-regular fa-bell"></i>${active?'<span class="sh-notice">1</span>':""}</button><span class="sh-user">${initial}</span></div></header>
       ${goal}
-      <section class="sh-two-col"><article class="sh-course-card"><span class="sh-course-icon"><i class="${courseIcon}"></i></span><div class="sh-course-copy"><span class="sh-course-tag">Course ${courseNo}</span><div class="sh-course-title">${courseTitle}</div><div class="sh-course-description">${courseDescription}</div>${active?'<div class="sh-course-progress"><span style="width:33%"></span></div>':""}<div class="sh-course-meta">${active?'<span><i class="fa-solid fa-puzzle-piece"></i>3 rubrics</span><span><i class="fa-regular fa-star"></i>15 điểm</span>':'<span><i class="fa-regular fa-clock"></i>~2 giờ</span><span><i class="fa-solid fa-puzzle-piece"></i>3 rubrics</span><span><i class="fa-regular fa-star"></i>15 điểm</span>'}</div><button class="btn btn-orange" style="margin-top:20px" onclick="startLearning()">${active?"Tiếp tục":"Bắt đầu học"} <i class="fa-solid fa-arrow-right"></i></button></div></article>
-      <article class="sh-progress-card"><div class="sh-progress-head"><div class="sh-ring" style="--value:${score}"><div class="sh-ring-copy"><strong>${score}</strong><span>/100</span></div></div><div class="sh-progress-copy"><b>Tiến độ hiện tại</b><span>${active?"Baseline — cần thêm điểm ở Mindset & Management.":"Bạn chưa có hoạt động nào."}</span></div></div><div class="sh-progress-divider"></div><div class="sh-progress-stats">${stats.map(([value,label])=>`<div class="sh-progress-stat"><strong>${value}</strong><span>${label}</span></div>`).join("")}</div><button class="sh-score-link" onclick="route('profile')">Hiểu cách chấm điểm →</button></article></section>
+      <section class="sh-two-col"><article class="sh-course-card"><span class="sh-course-icon"><i class="${courseIcon}"></i></span><div class="sh-course-copy"><span class="sh-course-tag">Course ${courseNo}</span><div class="sh-course-title">${courseTitle}</div><div class="sh-course-description">${isReady()?"Toàn bộ lộ trình đã hoàn thành.":courseDescription}</div>${active&&!isReady()?'<div class="sh-course-progress"><span style="width:33%"></span></div>':""}<div class="sh-course-meta"><span><i class="fa-regular fa-clock"></i>${currentCourse.time}</span><span><i class="fa-solid fa-puzzle-piece"></i>${currentCourse.criteria} rubrics</span><span><i class="fa-regular fa-star"></i>${currentCourse.maxPoints} điểm</span></div><button class="btn btn-orange" style="margin-top:20px" onclick="${isReady()?"route('ready')":"startLearning()"}">${isReady()?"Xem PMT Ready":active?"Tiếp tục":"Bắt đầu học"} <i class="fa-solid fa-arrow-right"></i></button></div></article>
+      <article class="sh-progress-card"><div class="sh-progress-head"><div class="sh-ring" style="--value:${score}"><div class="sh-ring-copy"><strong>${score}</strong><span>/100</span></div></div><div class="sh-progress-copy"><b>Tiến độ hiện tại</b><span>${isReady()?"PMT Ready — toàn bộ lộ trình đã hoàn thành.":active?`${score}/100 readiness — tiếp tục Course ${courseNo} để tiến gần mục tiêu.`:"Bạn chưa có hoạt động nào."}</span></div></div><div class="sh-progress-divider"></div><div class="sh-progress-stats">${stats.map(([value,label])=>`<div class="sh-progress-stat"><strong>${value}</strong><span>${label}</span></div>`).join("")}</div><button class="sh-score-link" onclick="route('profile')">Hiểu cách chấm điểm →</button></article></section>
       ${guide}
       <section class="sh-section-head"><span class="sh-section-bar"></span><div class="sh-section-title">6 năng lực cốt lõi của PM</div></section><div class="sh-section-description">Mỗi năng lực gồm 1 hoặc nhiều tiêu chí rubric — hoàn thành hết mới tính là đạt năng lực đó.</div>
-      <section class="sh-competency-grid">${competencies.map(([icon,name,meta,pct,status,note])=>`<article class="sh-competency"><span class="sh-competency-icon"><i class="${icon}"></i></span><div class="sh-competency-name">${name}</div><div class="sh-competency-meta">${meta}</div><div class="sh-competency-progress"><span style="width:${pct}%"></span></div><div class="sh-competency-status ${status}"><span class="sh-status-dot"></span>${status==="learning"?"Đang học":status==="pending"?"Chưa có bài đánh giá":"Chưa bắt đầu"}</div>${note?`<div class="sh-competency-note">${note}</div>`:""}</article>`).join("")}</section>`;
+      <section class="sh-competency-grid">${competencies.map(([icon,name,meta,pct,status,note])=>`<article class="sh-competency"><span class="sh-competency-icon"><i class="${icon}"></i></span><div class="sh-competency-name">${name}</div><div class="sh-competency-meta">${meta}</div><div class="sh-competency-progress"><span style="width:${pct}%"></span></div><div class="sh-competency-status ${status}"><span class="sh-status-dot"></span>${status==="done"?"Đã hoàn thành":status==="learning"?"Đang phát triển":"Chưa bắt đầu"}</div>${note?`<div class="sh-competency-note">${note}</div>`:""}</article>`).join("")}</section>`;
       return shell(body,"home-portal",active?"AI Talent":"ZA AI Talent");
     }
 
     function startLearning(){
       state.homeStage="progress";
-      route(state.coursesCompleted===1?"course":"learning");
+      if(isReady()) return route("ready");
+      openLearningCourse(nextCourseNumber());
     }
 
     function courseStatus(n){
@@ -1204,17 +1580,12 @@
     }
 
     function learning(){
-      const courses=[
-        {title:"Product Fundamentals",description:"Nền tảng tư duy và kiến thức sản phẩm dành cho mọi PM.",icon:"fa-regular fa-lightbulb",criteria:3,max:15,time:"~2 giờ"},
-        {title:"Structured & Critical Thinking",description:"Rèn tư duy logic, phản biện và hệ thống trước khi ra quyết định.",icon:"fa-solid fa-brain",criteria:3,max:15,time:"~2.5 giờ"},
-        {title:"User & Data Sense",description:"Hiểu người dùng và ra quyết định dựa trên dữ liệu.",icon:"fa-solid fa-chart-column",criteria:3,max:15,time:"~2.5 giờ"},
-        {title:"Ownership & Execution",description:"Ưu tiên, thực thi và tạo tác động — năng lực quản lý sản phẩm.",icon:"fa-solid fa-rocket",criteria:4,max:20,time:"~3 giờ"}
-      ];
+      const courses=COURSE_CATALOG;
       const progressPct=Math.min(100,Math.round((state.points/65)*100));
       const rows=courses.map((course,index)=>{
         const n=index+1,status=courseStatus(n);
-        const earned=status==="done"?course.max:(status==="current"&&n===2?(state.result==="pass"?12:8):0);
-        const points=status==="locked"?`–/${course.max}đ`:`${earned}/${course.max}đ`;
+        const earned=status==="done"?course.maxPoints:0;
+        const points=status==="locked"?`–/${course.maxPoints}đ`:`${earned}/${course.maxPoints}đ`;
         const tag=status==="done"?`Course ${n} · Hoàn thành`:status==="current"?`Course ${n} · Đang học`:`Course ${n} · Chưa mở khoá`;
         const action=status==="done"
           ?`<button class="btn btn-outline" onclick="reviewLearningCourse(${n})">Xem lại <i class="fa-solid fa-arrow-right"></i></button>`
@@ -1224,7 +1595,7 @@
         const segments=status==="current"&&n===2?`<div class="li-segments"><span class="done"></span><span class="current"></span><span></span></div>`:"";
         return `<article class="li-course ${status}">
           <span class="li-course-icon"><i class="${course.icon}"></i></span>
-          <div class="li-course-copy"><span class="li-course-tag">${tag}</span><div class="li-course-name">${course.title}</div><div class="li-course-description">${course.description}</div><div class="li-course-meta"><span><i class="fa-solid fa-puzzle-piece"></i>${course.criteria} tiêu chí</span><span><i class="fa-solid fa-star"></i>${course.max} điểm</span><span><i class="fa-regular fa-clock"></i>${course.time}</span></div>${segments}</div>
+          <div class="li-course-copy"><span class="li-course-tag">${tag}</span><div class="li-course-name">${course.title}</div><div class="li-course-description">${course.description}</div><div class="li-course-meta"><span><i class="fa-solid fa-puzzle-piece"></i>${course.criteria} tiêu chí</span><span><i class="fa-solid fa-star"></i>${course.maxPoints} điểm</span><span><i class="fa-regular fa-clock"></i>${course.time}</span></div>${segments}</div>
           <div class="li-course-side"><div class="li-course-points">${points}</div>${action}</div>
         </article>`;
       }).join("");
@@ -1237,26 +1608,35 @@
 
     function openLearningCourse(n){
       if(n!==state.coursesCompleted+1) return;
-      if(n===2) route("course");
-      else completeCourse(n);
+      if(n===1) return completeCourse(1);
+      state.activeCourse=n;
+      state.answer="";
+      state.result=state.courseAttempts[n]?.result||null;
+      state.assignmentEvaluation=state.courseAttempts[n]?.evaluation||null;
+      state.improvementPlan=state.courseAttempts[n]?.improvementPlan||null;
+      state.nextAction=state.courseAttempts[n]?.nextAction||null;
+      route("course");
     }
 
     function reviewLearningCourse(n){
-      if(n===2) route("course");
-      else notify(`Đang mở lại Course ${n}.`);
+      if(n===1) return notify("Course 1 đã hoàn thành.");
+      state.activeCourse=n;
+      state.result=state.courseAttempts[n]?.result||"pass";
+      state.assignmentEvaluation=state.courseAttempts[n]?.evaluation||null;
+      route("course");
     }
 
-    function completeCourse(n){
+    function completeCourse(n,{stayOnResult=false}={}){
       if(n!==state.coursesCompleted+1) return;
       state.coursesCompleted=n;
-      state.criteriaCompleted=({1:3,2:6,3:9,4:13})[n];
-      state.points=({1:27,2:30,3:45,4:65})[n];
-      state.homeStage="progress";
+      syncLearningProgress();
       notify(`Course ${n} đã hoàn thành.`);
-      if(isReady()) route("ready"); else render();
+      if(stayOnResult) return;
+      if(isReady()) route("ready"); else route("learning");
     }
 
     function course(){
+      const current=courseData();
       const rubric=[
         [5,"Lập luận đa tầng, tự phản biện giả định, có phương án dự phòng."],
         [4,"Lập luận chặt chẽ, xét giả định & rủi ro, dẫn chứng cụ thể."],
@@ -1267,183 +1647,160 @@
       const stars=n=>Array.from({length:5},(_,i)=>`<i class="${i<n?"fa-solid":"fa-regular"} fa-star ${i<n?"":"empty"}"></i>`).join("");
       const body=`<nav class="course-breadcrumb" aria-label="Breadcrumb">
         <button onclick="route('home')"><i class="fa-solid fa-house"></i>Home</button><i class="fa-solid fa-chevron-right"></i>
-        <button onclick="route('learning')"><i class="fa-solid fa-book-open"></i>Learning</button><i class="fa-solid fa-chevron-right"></i><span>Course 2</span>
+        <button onclick="route('learning')"><i class="fa-solid fa-book-open"></i>Learning</button><i class="fa-solid fa-chevron-right"></i><span>Course ${current.number}</span>
       </nav>
       <section class="card course-header reference">
-        <span class="tag">Course 2 · Đang học</span>
-        <div class="course-title">Structured & Critical Thinking</div>
-        <p class="course-description">Bạn sẽ phát triển 3 năng lực cốt lõi trong khóa học này — đóng góp vào năng lực Problem Solving.</p>
+        <span class="tag">Course ${current.number} · ${courseStatus(current.number)==="done"?"Hoàn thành":"Đang học"}</span>
+        <div class="course-title">${current.title}</div>
+        <p class="course-description">Bạn sẽ phát triển ${current.criteria} tiêu chí trong khóa học này — đóng góp vào năng lực ${current.competency}.</p>
         <div class="module-track">
-          <div class="module-tile done"><span class="module-state-icon"><i class="fa-solid fa-check"></i></span><div><b>1. Critical Thinking</b><span>Hoàn thành</span></div></div>
-          <div class="module-tile current"><span class="module-state-icon"><i class="fa-solid fa-play"></i></span><div><b>2. Logical Thinking</b><span>Đang học</span></div></div>
-          <div class="module-tile locked"><span class="module-state-icon"><i class="fa-solid fa-lock"></i></span><div><b>3. System Thinking</b><span>Chưa mở khoá</span></div></div>
+          <div class="module-tile done"><span class="module-state-icon"><i class="fa-solid fa-check"></i></span><div><b>1. ${current.modules[0]}</b><span>Hoàn thành</span></div></div>
+          <div class="module-tile current"><span class="module-state-icon"><i class="fa-solid fa-play"></i></span><div><b>2. ${current.module}</b><span>Đang học</span></div></div>
+          <div class="module-tile locked"><span class="module-state-icon"><i class="fa-solid fa-lock"></i></span><div><b>3. ${current.modules[2]}</b><span>Chưa mở khoá</span></div></div>
         </div>
-        <div class="course-summary-line"><span>2/3 module hoàn thành</span><b>8/15đ</b></div>
+        <div class="course-summary-line"><span>2/3 module hoàn thành</span><b>${Math.floor(current.maxPoints*.53)}/${current.maxPoints}đ</b></div>
         <div class="progress" style="margin-top:10px;height:8px"><span style="width:53%"></span></div>
       </section>
       <section class="course-layout reference">
         <article class="card lesson-card">
-          <div class="lesson-module-head"><span class="lesson-module-number">2</span><h2>Logical Thinking</h2><span class="tag">Đang học</span></div>
-          <p class="course-description" style="margin-top:12px">Trình bày lập luận có cấu trúc và đưa ra quyết định dựa trên logic.</p>
+          <div class="lesson-module-head"><span class="lesson-module-number">2</span><h2>${current.module}</h2><span class="tag">Đang học</span></div>
+          <p class="course-description" style="margin-top:12px">${current.description}</p>
           <div class="lesson-target"><i class="fa-solid fa-bullseye target-icon"></i><span>Mục tiêu: đạt tối thiểu</span><span class="target-stars">${stars(4)}</span><span class="muted">(4/5)</span></div>
           <div class="task-list">
             <div class="task done"><i class="fa-solid fa-check task-status"></i><div><b>Bài đọc</b><span>Đã hoàn thành</span></div></div>
             <div class="task done"><i class="fa-solid fa-check task-status"></i><div><b>Quiz củng cố</b><span>5/5 điểm</span></div></div>
             <div class="task current"><i class="fa-solid fa-play task-status"></i><div><b>Case thực hành</b><a href="#caseAnswer">Quyết định điểm rubric của bạn →</a></div></div>
           </div>
-          <div class="case-reference"><div class="case-label">Case study</div><p>Zalo đang cân nhắc thêm tính năng “Nhắc lịch tự động” vào Zalo Chat. Dữ liệu: 40% người dùng quên trả lời tin nhắn quan trọng, nhưng đội kỹ thuật chỉ có 2 tuần để làm MVP. Bạn sẽ quyết định nên làm hay không nên làm — và vì sao?</p></div>
+          <div class="case-reference"><div class="case-label">Case study</div><p>${current.casePrompt}</p></div>
           <div class="hint-label">Gợi ý cấu trúc trả lời</div>
           <div class="answer-hints">${["Vấn đề","Lựa chọn","Đánh đổi","Đề xuất"].map((label,i)=>`<div class="answer-hint"><span>${i+1}</span><b>${label}</b></div>`).join("")}</div>
           <textarea id="caseAnswer" class="answer-box" placeholder="Nhập câu trả lời của bạn...">${state.answer}</textarea>
           <div class="answer-help">Trả lời càng bám theo cấu trúc trên, điểm rubric càng cao.</div>
-          <button class="btn course-submit" onclick="submitCase()" ${state.agentBusy?"disabled":""}>${state.agentBusy?"AI đang chấm bài…":'Nộp bài chấm điểm <i class="fa-solid fa-arrow-right"></i>'}</button>
+          <button class="btn course-submit" onclick="submitCase()">Nộp bài chấm điểm <i class="fa-solid fa-arrow-right"></i></button>
         </article>
         <aside class="course-side">
-          <div class="card rubric-card"><h2>Rubric: Logical Thinking</h2><div class="rubric-stars-list">${rubric.map(([n,desc])=>`<div class="rubric-stars-row"><span class="rubric-stars">${stars(n)}</span><p>${desc}</p></div>`).join("")}</div></div>
-          <div class="rewards-card"><h2>Sau khi hoàn thành</h2><div class="reward-list"><div class="reward-row"><i class="fa-regular fa-star"></i><span>+5 điểm rubric</span></div><div class="reward-row"><i class="fa-solid fa-lock-open"></i><span>Mở khoá: System Thinking</span></div><div class="reward-row"><i class="fa-solid fa-arrow-trend-up"></i><span>Tăng readiness tổng của bạn</span></div></div></div>
+          <div class="card rubric-card"><h2>Rubric: ${current.module}</h2><div class="rubric-stars-list">${rubric.map(([n,desc])=>`<div class="rubric-stars-row"><span class="rubric-stars">${stars(n)}</span><p>${desc}</p></div>`).join("")}</div></div>
+          <div class="rewards-card"><h2>Sau khi hoàn thành</h2><div class="reward-list"><div class="reward-row"><i class="fa-regular fa-star"></i><span>+${current.maxPoints} điểm course</span></div><div class="reward-row"><i class="fa-solid fa-lock-open"></i><span>${current.number<4?`Mở khoá: Course ${current.number+1}`:"Mở trạng thái PMT Ready"}</span></div><div class="reward-row"><i class="fa-solid fa-arrow-trend-up"></i><span>Đồng bộ Home và Talent Profile</span></div></div></div>
         </aside>
       </section>`;
       return shell(body);
     }
 
     async function submitCase(){
-      if(state.agentBusy) return;
       const textarea=document.querySelector("#caseAnswer");
       state.answer=textarea.value.trim();
       if(!state.answer){notify("Vui lòng nhập câu trả lời trước khi nộp.");return;}
-      state.agentBusy=true;
-      render();
-      let evaluation;
-      try{
-        const response=await callStudentAgent("assignment-evaluator",{
-          courseId:"course-2",
-          moduleId:"logical-thinking",
-          answer:state.answer,
-          passThreshold:4,
-          rubric:[
-            {score:5,description:"Lập luận đa tầng, tự phản biện giả định, có phương án dự phòng."},
-            {score:4,description:"Lập luận chặt chẽ, xét giả định & rủi ro, dẫn chứng cụ thể."},
-            {score:3,description:"Có cấu trúc cơ bản, chưa xét trường hợp ngoại lệ."},
-            {score:2,description:"Lập luận rời rạc, thiếu liên kết giữa các bước."},
-            {score:1,description:"Chỉ đưa ra kết luận, không có lập luận rõ ràng."}
-          ]
-        });
-        evaluation=response.output;
-      }catch(error){
-        const hasStructure=["vấn đề","lựa chọn","đánh đổi","đề xuất"].filter(word=>state.answer.toLowerCase().includes(word)).length;
-        evaluation={status:state.answer.length>=180&&hasStructure>=3?"pass":"not_pass",confidence:"low",gaps:[]};
-        notify(`${error.message} Đang dùng chấm điểm demo.`);
-      }
+      const current=courseData();
+      const score=Math.random()<.5?3:4;
+      const passed=score===4;
+      const answerEvidence=state.answer.length>120?`${state.answer.slice(0,117)}…`:state.answer;
+      const evaluation={
+        schemaVersion:"student.demo_assignment_evaluation.v1",
+        score,maxScore:5,passThreshold:4,status:passed?"pass":"fail",
+        rubricLevel:passed
+          ?"Lập luận chặt chẽ, xét giả định & rủi ro, dẫn chứng cụ thể."
+          :"Có cấu trúc cơ bản, chưa xét trường hợp ngoại lệ.",
+        summary:passed
+          ?`Kết quả demo 4/5 cho ${current.module}: bài làm đạt ngưỡng và Course ${current.number} được hoàn thành.`
+          :`Kết quả demo 3/5 cho ${current.module}: bài làm chưa đạt ngưỡng 4/5 và tiến độ chưa thay đổi.`,
+        evidenceHighlights:[{quote:answerEvidence,whyItMatters:"Đây là phần trả lời được dùng để minh họa kết quả demo."}],
+        structureResults:[
+          {section:"Vấn đề",status:"met",evidence:answerEvidence,feedback:"Đã nêu bối cảnh cần quyết định."},
+          {section:"Lựa chọn",status:passed?"met":"partial",evidence:"",feedback:passed?"Có lựa chọn rõ ràng.":"Cần làm rõ các phương án thay thế."},
+          {section:"Đánh đổi",status:passed?"met":"partial",evidence:"",feedback:passed?"Đã cân nhắc rủi ro.":"Cần định lượng thêm đánh đổi và rủi ro."},
+          {section:"Đề xuất",status:passed?"met":"missing",evidence:"",feedback:passed?"Đề xuất có bước tiếp theo.":"Cần kết luận rõ và có tiêu chí đo lường."}
+        ],
+        strengths:passed?["Cấu trúc rõ ràng","Có cân nhắc rủi ro"]:["Đã xác định được vấn đề"],
+        gaps:passed?["Có thể bổ sung thêm chỉ số thành công."]:["Chưa định lượng đánh đổi.","Đề xuất chưa có tiêu chí kiểm chứng."],
+        confidence:"demo",confidenceReason:"Điểm được chọn ngẫu nhiên giữa hai biến thể 3★ và 4★.",needsHumanReview:false
+      };
       state.assignmentEvaluation=evaluation;
-      state.result=evaluation.status==="pass"?"pass":"fail";
-      if(state.result==="pass"){
-        state.points=Math.max(state.points,31);
-        state.criteriaCompleted=Math.max(state.criteriaCompleted,4);
-        state.homeStage="progress";
-      }else{
-        try{
-          const response=await callStudentAgent("improvement-coach",{
-            courseId:"course-2",
-            moduleId:"logical-thinking",
-            evaluation,
-            availableResources:["Bài đọc: Khung phân tích đánh đổi","Case luyện cùng AI Coach","Làm lại case Logical Thinking"],
-            retriesRemaining:state.retries
-          });
-          state.improvementPlan=response.output;
-        }catch(error){
-          state.improvementPlan=null;
-        }
-      }
-      try{
-        const response=await callStudentAgent("next-action",{
-          target:state.career,
-          result:evaluation.status,
-          coursesCompleted:state.coursesCompleted,
-          criteriaCompleted:state.criteriaCompleted,
-          points:state.points,
-          availableActions:[
-            {id:"continue-system-thinking",title:"Tiếp tục: System Thinking",locked:state.result!=="pass",minutes:30},
-            {id:"retry-logical-thinking",title:"Làm lại case Logical Thinking",locked:state.result==="pass",minutes:25},
-            {id:"review-tradeoffs",title:"Xem lại khung phân tích đánh đổi",locked:false,minutes:8}
-          ]
-        });
-        state.nextAction=response.output;
-      }catch(error){
-        state.nextAction=null;
-      }
-      state.agentBusy=false;
+      state.result=passed?"pass":"fail";
+      state.improvementPlan=passed?null:{
+        headline:"Kế hoạch cải thiện cho lần thử tiếp theo",
+        estimatedMinutes:15,
+        gapSummary:"Bổ sung đánh đổi, rủi ro và tiêu chí đo lường trước khi nộp lại.",
+        actions:[
+          {title:"Rà soát các phương án",reason:"Viết ít nhất hai lựa chọn và nêu điều kiện áp dụng.",minutes:5},
+          {title:"Định lượng đánh đổi",reason:"Thêm một chỉ số thành công và một rủi ro chính.",minutes:5},
+          {title:`Làm lại case ${current.module}`,reason:"Giữ cấu trúc 4 phần và đưa ra đề xuất cuối cùng.",minutes:5}
+        ],
+        retryAdvice:"Bạn có thể làm lại ngay; kết quả tiếp theo vẫn được chọn giữa 3★ và 4★."
+      };
+      state.nextAction=passed
+        ?current.number<4
+          ?{actionId:"continue-next-course",title:`Mở Course ${current.number+1}`,reason:`Course ${current.number} đã đạt 4/5 và khóa tiếp theo đã được mở.`,expectedGain:`Hoàn thành thêm ${courseData(current.number+1).criteria} tiêu chí`,estimatedMinutes:150,confidence:"demo"}
+          :{actionId:"view-pmt-ready",title:"Xem trạng thái PMT Ready",reason:"Bạn đã hoàn thành toàn bộ 4 khóa học.",expectedGain:"Mở bước ứng tuyển PMT",estimatedMinutes:5,confidence:"demo"}
+        :{actionId:"retry-current-course",title:`Làm lại case ${current.module}`,reason:"Kết quả 3/5 chưa đạt ngưỡng mở khóa.",expectedGain:"Cơ hội đạt 4/5 và mở khóa course tiếp theo",estimatedMinutes:15,confidence:"demo"};
+      if(passed) completeCourse(current.number,{stayOnResult:true});
+      state.courseAttempts[current.number]={
+        result:state.result,evaluation:state.assignmentEvaluation,
+        improvementPlan:state.improvementPlan,nextAction:state.nextAction
+      };
       route("result");
-      notify("AI đã hoàn tất chấm điểm.");
+      notify(passed?`Kết quả demo: 4/5★ · Course ${current.number+1>4?4:current.number+1} ${current.number<4?"đã mở khóa":"đã hoàn thành"}.`:"Kết quả demo: 3/5★ · bạn có thể thử lại.");
     }
 
     function result(){
       const passed=state.result==="pass";
       const evaluation=state.assignmentEvaluation;
-      const score=Number(evaluation?.score||(passed?4:3));
+      const current=courseData();
+      if(!evaluation) return shell(`<div class="agent-unavailable">Chưa có kết quả demo cho bài làm này.</div>`,"learning-result-portal","AI Talent");
+      const reviewing=false;
+      const score=Number(evaluation.score);
       const stars=Array.from({length:5},(_,i)=>`<i class="${i<score?"fa-solid":"fa-regular"} fa-star ${i<score?"":"empty"}"></i>`).join("");
-      const structure=passed?[
-        ["ok","fa-solid fa-check","Vấn đề","Đã nêu rõ vấn đề cần quyết định"],
-        ["ok","fa-solid fa-check","Lựa chọn","Có đề cập lựa chọn thay thế"],
-        ["ok","fa-solid fa-check","Đánh đổi","Đã cân nhắc tốc độ vs. chất lượng"],
-        ["ok","fa-solid fa-check","Đề xuất","Kết luận rõ ràng, có lý do"]
-      ]:[
-        ["ok","fa-solid fa-check","Vấn đề","Đã nêu rõ vấn đề cần quyết định"],
-        ["ok","fa-solid fa-check","Lựa chọn","Có đề cập lựa chọn thay thế"],
-        ["partial","fa-solid fa-circle-half-stroke","Đánh đổi","Có nhắc nhưng chưa định lượng được"],
-        ["missing","fa-solid fa-xmark","Đề xuất","Thiếu phương án dự phòng cho giả định"]
-      ];
+      const structure=evaluation.structureResults.map(item=>{
+        const presentation={met:["ok","fa-solid fa-check"],partial:["partial","fa-solid fa-circle-half-stroke"],missing:["missing","fa-solid fa-xmark"]}[item.status];
+        return [...presentation,item.section,item.feedback,item.evidence];
+      });
       const progress=passed?[
-        ["Course 2: Structured & Critical Thinking","12/15đ","80%","+4đ từ bài này"],
-        ["Năng lực Problem Solving","17/20đ","85%","+4đ · còn 1 tiêu chí để hoàn thành"]
+        [`Course ${current.number}: ${current.title}`,`${current.maxPoints}/${current.maxPoints}đ`,"100%",`Course ${current.number} đã hoàn thành`],
+        ["Tổng tiến độ lộ trình",`${state.points}/65đ`,`${Math.round((state.points/65)*100)}%`,`${state.criteriaCompleted}/13 tiêu chí · ${state.coursesCompleted}/4 khóa học`]
       ]:[
-        ["Course 2: Structured & Critical Thinking","8/15đ","53%","Chưa cộng điểm — cần tối thiểu 4/5★"],
-        ["Năng lực Problem Solving","13/20đ","65%","Giữ nguyên sau bài này"]
+        [`Course ${current.number}: ${current.title}`,`0/${current.maxPoints}đ`,"0%","Chưa cộng điểm — cần tối thiểu 4/5★"],
+        ["Tổng tiến độ lộ trình",`${state.points}/65đ`,`${Math.round((state.points/65)*100)}%`,"Giữ nguyên sau bài này"]
       ];
       const promptLabels=["Vì sao tôi không được 5/5?","Cho tôi một bài mẫu 5/5","Luyện thêm case tương tự"];
-      const improvementActions=state.improvementPlan?.actions?.length
-        ?state.improvementPlan.actions.map((action,index)=>[
+      const improvementActions=state.improvementPlan?.actions?.map((action,index)=>[
           String(index+1),action.title,action.reason,`~${action.minutes} phút`
-        ])
-        :[
-          ["1","Đọc lại: Khung phân tích đánh đổi","Phần 2 của bài đọc — cách định lượng trade-off","~8 phút"],
-          ["2","Luyện 1 case ngắn cùng agent","Agent sẽ hỏi ngược để bạn tập nêu giả định","~10 phút"],
-          ["3","Làm lại case này",`Còn ${state.retries} lần làm lại · giữ nguyên cấu trúc 4 phần`,"~7 phút"]
-        ];
-      const coachBody=passed?`
-        <div class="lr-rubric-quote"><div class="lr-block-label">Mức 4/5 — theo rubric</div><div class="lr-block-copy">“Lập luận chặt chẽ, xét giả định &amp; rủi ro, dẫn chứng cụ thể.”</div></div>
-        <div class="lr-evidence"><div class="lr-block-label">Dẫn chứng agent trích từ bài của bạn</div><div class="lr-block-copy">“Mặc dù 40% người dùng quên trả lời, việc build trong 2 tuần sẽ đánh đổi chất lượng — vì vậy tôi đề xuất làm bản MVP giới hạn chỉ nhắc 1 lần thay vì nhắc liên tục, giảm rủi ro kỹ thuật.”</div></div>
-        <div class="lr-tip"><i class="fa-regular fa-lightbulb"></i><div>Để đạt <b>5/5</b> lần sau: nêu thêm phương án dự phòng nếu giả định “40% người dùng quên trả lời” không chính xác.</div></div>
-        <div class="lr-coach-ask"><div class="lr-ask-label">Hỏi lại agent</div><div class="lr-ask-row"><input class="lr-coach-input" type="text" placeholder="Hỏi AI Coach về nhận xét này…"><button class="lr-send" aria-label="Gửi câu hỏi" onclick="askCoach()"><i class="fa-solid fa-paper-plane"></i></button></div><div class="lr-prompt-row">${promptLabels.map(label=>`<button class="lr-prompt" onclick='useCoachPrompt(${JSON.stringify(label)})'><i class="fa-solid fa-arrow-right"></i>${label}</button>`).join("")}</div></div>`:
-        `<div class="lr-rubric-quote"><div class="lr-block-label">Mức 3/5 — theo rubric</div><div class="lr-block-copy">“Có cấu trúc cơ bản, chưa xét trường hợp ngoại lệ.”</div></div>
-        <div class="lr-gap-label">Agent chỉ ra khoảng trống</div>
-        <div class="lr-gap-list">
-          <div class="lr-gap"><i class="fa-solid fa-triangle-exclamation"></i><div><b>Thiếu phương án dự phòng</b><span>Bài làm không nêu sẽ làm gì nếu giả định “40% người dùng quên trả lời” không đúng.</span></div></div>
-          <div class="lr-gap"><i class="fa-solid fa-triangle-exclamation"></i><div><b>Đánh đổi chưa định lượng</b><span>Có nhắc tốc độ vs. chất lượng nhưng chưa nói rõ mất gì, được gì trong 2 tuần.</span></div></div>
-        </div>
-        <div class="lr-plan"><div class="lr-plan-head"><b>Kế hoạch cải thiện do agent lập</b><span>tổng ~${state.improvementPlan?.estimatedMinutes||25} phút</span></div>
+        ])||[];
+      const evidenceBlock=evaluation.evidenceHighlights.length?`<div class="lr-evidence-list">${evaluation.evidenceHighlights.map(item=>`<div class="lr-evidence-item"><q>${escapeHtml(item.quote)}</q><span>${escapeHtml(item.whyItMatters)}</span></div>`).join("")}</div>`:'<div class="agent-empty">Không có đoạn trích để hiển thị.</div>';
+      const gapBlock=evaluation.gaps.length?`<div class="lr-gap-label">Khoảng trống cần cải thiện</div><div class="lr-gap-list">${evaluation.gaps.map(gap=>`<div class="lr-gap"><i class="fa-solid fa-triangle-exclamation"></i><div><span>${escapeHtml(gap)}</span></div></div>`).join("")}</div>`:"";
+      const strengthBlock=evaluation.strengths.length?`<div class="lr-tip"><i class="fa-regular fa-lightbulb"></i><div><b>Điểm làm tốt:</b> ${escapeHtml(evaluation.strengths.join(" · "))}</div></div>`:"";
+      const planBlock=passed?"":state.improvementPlan?`
+        <div class="lr-plan"><div class="lr-plan-head"><b>${escapeHtml(state.improvementPlan.headline)}</b><span>tổng ~${state.improvementPlan.estimatedMinutes} phút</span></div>
+          <div class="lr-ai-summary">${escapeHtml(state.improvementPlan.gapSummary)}</div>
           ${improvementActions.map(([n,title,desc,time])=>`<div class="lr-plan-row"><span class="lr-plan-number">${escapeHtml(n)}</span><div class="lr-plan-copy"><b>${escapeHtml(title)}</b><span>${escapeHtml(desc)}</span></div><span class="lr-plan-time">${escapeHtml(time)}</span></div>`).join("")}
-        </div>`;
-      const recommendedAction=escapeHtml(state.nextAction?.title||(passed?"Tiếp tục: System Thinking":"Làm lại case"));
+          <div class="lr-tip"><i class="fa-regular fa-lightbulb"></i><div>${escapeHtml(state.improvementPlan.retryAdvice)}</div></div>
+        </div>`:"";
+      const coachBody=`
+        <div class="lr-ai-summary">${escapeHtml(evaluation.summary)}</div>
+        <div class="lr-rubric-quote"><div class="lr-block-label">Mức ${score}/${evaluation.maxScore} — theo rubric</div><div class="lr-block-copy">“${escapeHtml(evaluation.rubricLevel)}”</div></div>
+        <div class="lr-gap-label">Câu trả lời được dùng cho kết quả demo</div>
+        ${evidenceBlock}${strengthBlock}${gapBlock}${planBlock}
+        <div class="lr-confidence"><span class="agent-pill">Chế độ: Demo local</span><span class="agent-pill">${escapeHtml(evaluation.confidenceReason)}</span></div>`;
+      const nextAction=state.nextAction;
       const body=`<nav class="course-breadcrumb lr-breadcrumb" aria-label="Breadcrumb">
         <button onclick="route('home')">Home</button><i class="fa-solid fa-chevron-right"></i>
         <button onclick="route('learning')">Learning</button><i class="fa-solid fa-chevron-right"></i>
-        <button onclick="route('course')">Course 2</button><i class="fa-solid fa-chevron-right"></i>
-        <span>Logical Thinking · Kết quả</span>
+        <button onclick="route('course')">Course ${current.number}</button><i class="fa-solid fa-chevron-right"></i>
+        <span>${current.module} · Kết quả</span>
       </nav>
       <section class="lr-score ${passed?"pass":"fail"}">
-        <span class="lr-score-icon"><i class="fa-solid ${passed?"fa-circle-check":"fa-circle-exclamation"}"></i></span>
-        <div class="lr-score-title">${passed?"Đã chấm điểm xong!":"Chưa đạt mục tiêu — thử lại nhé"}</div>
+        <span class="lr-score-icon"><i class="fa-solid ${passed?"fa-circle-check":reviewing?"fa-user-clock":"fa-circle-exclamation"}"></i></span>
+        <div class="lr-score-title">${passed?"Đã chấm điểm xong!":reviewing?"Đang chờ kiểm tra thủ công":"Chưa đạt mục tiêu — thử lại nhé"}</div>
         <div class="lr-stars">${stars}</div>
         <div class="lr-score-target">Mục tiêu: tối thiểu <b>4/5★</b> — bạn đạt <strong>${score}/5★</strong></div>
-        <div class="lr-result-pill ${passed?"pass":"fail"}"><i class="${passed?"fa-regular fa-star":"fa-solid fa-lock"}"></i>${passed?`+${score}/5 điểm rubric`:"Chưa cộng điểm rubric"}</div>
-        ${passed?"":`<div class="lr-agent-note"><i class="fa-solid fa-wand-magic-sparkles"></i>AI Agent đã tạo kế hoạch cải thiện riêng cho bạn · còn ${state.retries} lần làm lại</div>`}
+        <div class="lr-result-pill ${passed?"pass":"fail"}"><i class="${passed?"fa-regular fa-star":"fa-solid fa-lock"}"></i>${passed?`+${score}/5 điểm rubric`:reviewing?"Chưa cộng điểm · chờ xác nhận":"Chưa cộng điểm rubric"}</div>
+        ${passed?"":`<div class="lr-agent-note"><i class="fa-solid fa-rotate"></i>Kết quả demo chưa đạt · bạn có thể làm lại</div>`}
       </section>
       <section class="lr-coach">
-        <div class="lr-coach-head"><span class="lr-coach-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div class="lr-coach-title"><b>AI Coach</b><span>${passed?"Talent Agent · đã đọc bài làm 218 từ của bạn":"Đã tìm ra 2 điểm khiến bạn mất điểm"}</span></div><span class="lr-coach-status ${passed?"pass":""}"><span class="lr-coach-status-dot"></span>${passed?"Hoàn tất":"Đã phân tích"}</span></div>
+        <div class="lr-coach-head"><span class="lr-coach-icon"><i class="fa-solid fa-flask"></i></span><div class="lr-coach-title"><b>Demo Review</b><span>Kết quả mô phỏng cục bộ — không gọi AI Agent</span></div><span class="lr-coach-status ${passed?"pass":""}"><span class="lr-coach-status-dot"></span>${passed?"Đạt":"Chưa đạt"}</span></div>
         <div class="lr-coach-body">${coachBody}</div>
       </section>
-      <section class="lr-structure"><div class="lr-card-head"><h2>Cấu trúc bài làm của bạn</h2>${passed?'<span>agent đối chiếu 4/4 phần</span>':""}</div><div class="lr-structure-list">${structure.map(([status,icon,label,note])=>`<div class="lr-structure-row ${status}"><i class="${icon}"></i><div class="lr-structure-copy"><b>${label}</b><span>${note}</span></div></div>`).join("")}</div></section>
-      <section class="lr-progress-card ${passed?"pass":"fail"}"><div class="lr-card-head"><h2>${passed?"Cập nhật tiến độ":"Tiến độ chưa thay đổi"}</h2></div><div class="lr-progress-list">${progress.map(([label,value,width,delta])=>`<div class="lr-progress-row"><div class="lr-progress-top"><span>${label}</span><b>${value}</b></div><div class="lr-progress-track"><span style="width:${width}"></span></div><div class="lr-progress-delta">${delta}</div></div>`).join("")}</div><div class="lr-actions"><button class="btn btn-outline" onclick="route('course')">${passed?"Xem lại bài làm":"Xem lại bài đọc"}</button><button class="btn btn-orange" onclick="${passed?"continueAfterPass()":"retryCase()"}">${recommendedAction} <i class="fa-solid ${passed?"fa-arrow-right":"fa-rotate-right"}"></i></button></div></section>`;
+      <section class="lr-structure"><div class="lr-card-head"><h2>Cấu trúc bài làm của bạn</h2><span>Demo đối chiếu ${structure.length} phần</span></div><div class="lr-structure-list">${structure.map(([status,icon,label,note,evidence])=>`<div class="lr-structure-row ${status}"><i class="${icon}"></i><div class="lr-structure-copy"><b>${escapeHtml(label)}</b><span>${escapeHtml(note)}</span>${evidence?`<span><i class="fa-solid fa-quote-left"></i> ${escapeHtml(evidence)}</span>`:""}</div></div>`).join("")}</div></section>
+      <section class="lr-progress-card ${passed?"pass":"fail"}"><div class="lr-card-head"><h2>${passed?"Cập nhật tiến độ":"Tiến độ chưa thay đổi"}</h2></div><div class="lr-progress-list">${progress.map(([label,value,width,delta])=>`<div class="lr-progress-row"><div class="lr-progress-top"><span>${label}</span><b>${value}</b></div><div class="lr-progress-track"><span style="width:${width}"></span></div><div class="lr-progress-delta">${delta}</div></div>`).join("")}</div><div class="lr-actions"><button class="btn btn-outline" onclick="route('course')">${passed?"Xem lại bài làm":"Xem lại bài đọc"}</button></div></section>
+      <section class="lr-next-action">${nextAction?`<h2>Bước tiếp theo</h2><p><b>${escapeHtml(nextAction.title)}</b> — ${escapeHtml(nextAction.reason)}</p><div class="lr-next-meta"><span class="agent-pill"><i class="fa-regular fa-clock"></i>${nextAction.estimatedMinutes} phút</span><span class="agent-pill"><i class="fa-solid fa-arrow-trend-up"></i>${escapeHtml(nextAction.expectedGain)}</span></div><button class="btn btn-orange" onclick="runRecommendedAction()">${escapeHtml(nextAction.title)} <i class="fa-solid fa-arrow-right"></i></button>`:`<button class="btn btn-outline" onclick="route('learning')">Quay lại Learning</button>`}</section>`;
       return shell(body,"learning-result-portal","AI Talent");
     }
 
@@ -1457,7 +1814,18 @@
     function askCoach(){
       const input=document.querySelector(".lr-coach-input");
       if(!input||!input.value.trim()) return notify("Hãy nhập câu hỏi cho AI Coach.");
-      notify("AI Coach đang chuẩn bị câu trả lời.");
+      notify("Hỏi đáp với AI Coach sẽ được mở trong phiên bản tiếp theo.");
+    }
+
+    function runRecommendedAction(){
+      const actionId=state.nextAction?.actionId;
+      if(actionId==="continue-next-course") return route("learning");
+      if(actionId==="view-pmt-ready") return route("ready");
+      if(actionId==="retry-current-course") return retryCase();
+      if(actionId==="continue-system-thinking") return continueAfterPass();
+      if(actionId==="retry-logical-thinking") return retryCase();
+      if(actionId==="review-tradeoffs") return route("course");
+      route("learning");
     }
 
     function continueAfterPass(){
@@ -1473,120 +1841,168 @@
 
     function profile(){
       const tabs=[["overview","Tổng quan"],["competency","Năng lực"],["rubric","Rubric"],["history","Lịch sử hoạt động"],["assessment","Đánh giá"]];
+      const fullName=escapeHtml(studentFullName());
+      const initial=escapeHtml(studentInitial());
+      const score=readinessScore();
+      const remainingCriteria=Math.max(0,13-state.criteriaCompleted);
+      const nextCourse=courseData(nextCourseNumber());
+      const level=isReady()?"PMT Ready":state.coursesCompleted>=2?"Emerging":"Baseline";
+      const allCompetencies=competencyScores();
+      const highlights=topCompetencies(2);
+      const strongCount=allCompetencies.filter(competency=>competency.percent>=80).length;
+      const developingCount=allCompetencies.filter(competency=>competency.percent>0&&competency.percent<80).length;
+      const startingCount=allCompetencies.length-strongCount-developingCount;
       const profileHeader=`<section class="card tp-header">
-        <div class="tp-identity"><span class="tp-avatar">L</span><div><div class="tp-name">Linh</div><div class="tp-role">Product Management Trainee (PMT)</div><div class="tp-member"><i class="fa-solid fa-graduation-cap"></i>Student · Tham gia từ 12/05/2025</div></div></div>
+        <div class="tp-identity"><span class="tp-avatar">${initial}</span><div><div class="tp-name">${fullName}</div><div class="tp-role">Product Management Trainee (PMT)</div><div class="tp-member"><i class="fa-solid fa-graduation-cap"></i>Student · Tham gia từ 12/05/2025</div></div></div>
         <div class="tp-divider"></div>
-        <div class="tp-stats"><div class="tp-stat"><strong>27</strong><span>điểm rubric</span></div><div class="tp-stat"><strong>3/13</strong><span>rubric xong</span></div><div class="tp-stat"><strong>38/100</strong><span>readiness</span></div></div>
+        <div class="tp-stats"><div class="tp-stat"><strong>${state.points}</strong><span>điểm rubric</span></div><div class="tp-stat"><strong>${state.criteriaCompleted}/13</strong><span>rubric xong</span></div><div class="tp-stat"><strong>${score}/100</strong><span>readiness</span></div></div>
         <div class="tp-divider" style="margin:20px 0 18px"></div>
-        <div class="tp-level"><span class="tp-level-icon"><i class="fa-solid fa-star"></i></span><div><b>Baseline</b><a href="#" onclick="notify('Baseline là cấp độ khởi tạo của hồ sơ.');return false">Tìm hiểu cấp độ →</a></div></div>
+        <div class="tp-level"><span class="tp-level-icon"><i class="fa-solid fa-star"></i></span><div><b>${level}</b><a href="#" onclick="notify('Cấp độ được đồng bộ từ tiến độ 4 khóa học.');return false">Tìm hiểu cấp độ →</a></div></div>
         <div class="tp-goal-row"><div class="tp-goal"><i class="fa-solid fa-bullseye"></i><span>Mục tiêu học tập hiện tại:</span><b>Product Management</b></div><button class="btn btn-outline" style="min-height:44px" onclick="notify('Bạn có thể đổi mục tiêu sau khi hoàn thành khóa hiện tại.')"><i class="fa-solid fa-bullseye" style="color:var(--orange)"></i>Đổi mục tiêu học tập <i class="fa-solid fa-arrow-right"></i></button></div>
       </section>
       <nav class="tp-tabs">${tabs.map(([key,label])=>`<button class="${state.profileTab===key?"active":""}" onclick="state.profileTab='${key}';render()">${label}</button>`).join("")}</nav>`;
       const achievements=[
         ["fa-solid fa-puzzle-piece","Hoàn thành rubric “Phân tích vấn đề”","2 ngày trước","+5đ"],
         ["fa-solid fa-book-open","Hoàn thành khóa học “Product Fundamentals”","5 ngày trước","+10đ"],
-        ["fa-regular fa-star","Đạt 4/5★ rubric “Logical Thinking”","1 tuần trước","+4đ"]
+        ["fa-regular fa-star",state.assignmentEvaluation?`Kết quả ${state.assignmentEvaluation.score}/5★ · ${courseData().module}`:"Chưa có kết quả case","Gần đây",state.result==="pass"?"+4đ":"—"]
       ];
       const history=[
         ["fa-solid fa-bullseye","Xác nhận mục tiêu học tập","Product Management · 12/05/2025"],
-        ["fa-solid fa-chart-line","Readiness cập nhật 34 → 38","2 ngày trước"],
+        ["fa-solid fa-chart-line",`Readiness hiện tại ${score}/100`,"Đồng bộ từ Learning"],
         ["fa-regular fa-file-lines","Tải lên CV (không bắt buộc)","12/05/2025"]
       ];
       const agentActions=[
-        ["fa-solid fa-arrow-right-long","Hoàn thành module System Thinking","Mở khoá 1 tiêu chí của Problem Solving","+5đ"],
+        ["fa-solid fa-arrow-right-long",isReady()?"Ứng tuyển chương trình PMT":`Hoàn thành Course ${nextCourse.number} · ${nextCourse.title}`,isReady()?"Hồ sơ đã đủ điều kiện":`Mở thêm ${nextCourse.criteria} tiêu chí`,`+${nextCourse.maxPoints}đ`],
         ["fa-solid fa-clipboard-list","Làm bài đánh giá Execution","Năng lực chưa có dữ liệu để chấm","+15đ"],
         ["fa-solid fa-comment-dots","Nộp case Communication","Đang chờ hệ thống mở tiêu chí","sắp có"]
       ];
       const overview=`<section class="tp-layout">
         <div class="tp-left">
           <article class="card tp-readiness">
-            <div class="tp-readiness-head"><div class="tp-ring"><div class="tp-ring-center"><strong>38</strong><span>/100</span></div></div><div class="tp-readiness-copy"><h2>Readiness hiện tại</h2><p>Baseline — cần thêm điểm ở Mindset & Management để đạt ngưỡng PMT Ready.</p><a class="tp-link" href="#" onclick="notify('Readiness được tổng hợp từ 13 rubric.');return false">Hiểu cách chấm điểm →</a></div></div>
+            <div class="tp-readiness-head"><div class="tp-ring" style="--value:${score}"><div class="tp-ring-center"><strong>${score}</strong><span>/100</span></div></div><div class="tp-readiness-copy"><h2>Readiness hiện tại</h2><p>${isReady()?"PMT Ready — toàn bộ lộ trình đã hoàn thành.":`${level} — còn ${remainingCriteria} tiêu chí để đạt PMT Ready.`}</p><a class="tp-link" href="#" onclick="notify('Readiness được tổng hợp từ tiến độ 4 khóa học và 13 rubric.');return false">Hiểu cách chấm điểm →</a></div></div>
             <div class="tp-divider" style="margin:22px 0 4px"></div><div class="tp-section-title">Năng lực nổi bật</div>
             <div>
-              <div class="tp-highlight"><span class="tp-highlight-icon"><i class="fa-regular fa-lightbulb"></i></span><div class="tp-highlight-copy"><b>Product Thinking</b><span>Mạnh nhất</span></div><div class="tp-highlight-score"><strong style="color:#078c7f">80%</strong><div class="tp-mini-bar"><span style="width:80%;background:#078c7f"></span></div></div></div>
-              <div class="tp-highlight"><span class="tp-highlight-icon"><i class="fa-solid fa-puzzle-piece"></i></span><div class="tp-highlight-copy"><b>Problem Solving</b><span>Cần cải thiện</span></div><div class="tp-highlight-score"><strong style="color:#d2a438">25%</strong><div class="tp-mini-bar"><span style="width:25%;background:#d2a438"></span></div></div></div>
+              ${highlights.map(competency=>`<div class="tp-highlight"><span class="tp-highlight-icon"><i class="${competency.icon}"></i></span><div class="tp-highlight-copy"><b>${competency.name}</b><span>${competency.status==="done"?"Đã xác minh":competency.percent?"Đang phát triển":"Chưa bắt đầu"} · ${competency.stars}/5★</span></div><div class="tp-highlight-score"><strong style="color:${competency.percent?competency.color:"#a0a6a8"}">${competency.percent}%</strong><div class="tp-mini-bar"><span style="width:${competency.percent}%;background:${competency.percent?competency.color:"#a0a6a8"}"></span></div></div></div>`).join("")}
             </div>
             <a class="tp-link" href="#" onclick="state.profileTab='competency';render();return false" style="margin-top:16px">Xem chi tiết 6 năng lực →</a>
           </article>
-          <article class="card tp-agent"><div class="tp-agent-head"><span class="tp-agent-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div class="tp-agent-title"><b>Agent gợi ý để tăng readiness</b><span>Dựa trên 3 rubric bạn đã hoàn thành</span></div><span class="tp-update-pill">Cập nhật hôm nay</span></div><div class="tp-agent-body">${agentActions.map(([icon,title,why,gain])=>`<div class="tp-list-row"><span class="tp-list-icon"><i class="${icon}"></i></span><div class="tp-list-copy large"><b>${title}</b><span>${why}</span></div><span class="tp-gain">${gain}</span></div>`).join("")}</div></article>
+          <article class="card tp-agent"><div class="tp-agent-head"><span class="tp-agent-icon"><i class="fa-solid fa-route"></i></span><div class="tp-agent-title"><b>Bước tiếp theo trong lộ trình</b><span>Dựa trên ${state.criteriaCompleted} rubric đã hoàn thành</span></div><span class="tp-update-pill">Đã đồng bộ</span></div><div class="tp-agent-body">${agentActions.map(([icon,title,why,gain])=>`<div class="tp-list-row"><span class="tp-list-icon"><i class="${icon}"></i></span><div class="tp-list-copy large"><b>${title}</b><span>${why}</span></div><span class="tp-gain">${gain}</span></div>`).join("")}</div></article>
         </div>
         <div class="tp-right">
           <article class="card tp-side-card"><h2>Thành tích gần đây</h2>${achievements.map(([icon,title,when,pts])=>`<div class="tp-list-row"><span class="tp-list-icon teal"><i class="${icon}"></i></span><div class="tp-list-copy"><b>${title}</b><span>${when}</span></div><span class="tp-gain">${pts}</span></div>`).join("")}<a class="tp-link" href="#" onclick="state.profileTab='history';render();return false" style="margin-top:16px">Xem tất cả →</a></article>
           <article class="card tp-side-card"><h2>Lịch sử cập nhật</h2>${history.map(([icon,title,meta])=>`<div class="tp-list-row"><span class="tp-list-icon"><i class="${icon}"></i></span><div class="tp-list-copy"><b>${title}</b><span>${meta}</span></div></div>`).join("")}</article>
-          <article class="tp-visibility"><h2><i class="fa-regular fa-eye-slash"></i>Chưa hiển thị với nhà tuyển dụng</h2><p>Hồ sơ sẽ được đề xuất cho nhà tuyển dụng khi bạn đạt <b>PMT Ready</b> (còn 10 rubric).</p><button class="btn btn-orange" style="margin-top:16px" onclick="route('learning')">Xem điều kiện PMT Ready <i class="fa-solid fa-arrow-right"></i></button></article>
+          <article class="tp-visibility"><h2><i class="fa-regular ${isReady()?"fa-eye":"fa-eye-slash"}"></i>${isReady()?"Hồ sơ đã đạt PMT Ready":"Chưa hiển thị với nhà tuyển dụng"}</h2><p>${isReady()?"Bạn có thể tiếp tục đến bước ứng tuyển PMT.":`Hồ sơ sẽ được đề xuất khi đạt PMT Ready (còn ${remainingCriteria} rubric).`}</p><button class="btn btn-orange" style="margin-top:16px" onclick="${isReady()?"route('ready')":"route('learning')"}">${isReady()?"Ứng tuyển PMT":"Xem điều kiện PMT Ready"} <i class="fa-solid fa-arrow-right"></i></button></article>
         </div>
       </section>`;
-      const competencies=[
-        ["fa-regular fa-lightbulb","Product Thinking","Mạnh nhất · 2 rubric đã xác minh",80,"#078c7f"],
-        ["fa-solid fa-puzzle-piece","Problem Solving","Đang phát triển · 1/3 rubric",25,"#d2a438"],
-        ["fa-regular fa-user","Customer Focus","Có tín hiệu từ bài đánh giá đầu vào",38,"#2fa1b3"],
-        ["fa-solid fa-chart-column","Data Sense","Cần thêm bằng chứng từ Course 3",32,"#2fa1b3"],
-        ["fa-regular fa-comment-dots","Communication","Có tín hiệu nền tảng",44,"#2fa1b3"],
-        ["fa-solid fa-flag-checkered","Ownership","Chưa có bài đánh giá xác minh",20,"#a0a6a8"]
-      ];
+      const competencies=allCompetencies.map(competency=>{
+        const note=competency.status==="done"
+          ?`${competency.stars}/5★ · Đã xác minh qua Course ${competency.courseNumber}`
+          :competency.percent
+            ?`${competency.stars}/5★ · Đang phát triển trong Course ${competency.courseNumber}`
+            :competency.status==="learning"
+              ?`Chưa có kết quả · Đang phát triển trong Course ${competency.courseNumber}`
+              :`Mở sau khi hoàn thành Course ${competency.courseNumber-1}`;
+        return [competency.icon,competency.name,note,competency.percent,competency.percent?competency.color:"#a0a6a8"];
+      });
       const competencyTab=`<section class="tp-tab-layout"><div class="tp-tab-main">
         <article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>6 năng lực cốt lõi</h2><p>Điểm được tổng hợp từ rubric, khóa học và bài đánh giá.</p></div><span class="tp-status current">Baseline</span></div>
         ${competencies.map(([icon,name,note,value,color])=>`<div class="tp-competency-row"><span class="tp-competency-icon"><i class="${icon}"></i></span><div class="tp-competency-copy"><b>${name}</b><span>${note}</span></div><div class="tp-competency-value"><strong style="color:${color}">${value}%</strong><div class="tp-mini-bar"><span style="width:${value}%;background:${color}"></span></div></div></div>`).join("")}</article>
       </div><aside class="tp-tab-side">
-        <article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Phân bổ cấp độ</h2><p>Tình trạng hiện tại của 6 năng lực.</p></div></div><div class="tp-distribution"><div class="tp-distribution-row"><span>Mạnh</span><div class="progress"><span style="width:17%;background:#078c7f"></span></div><b>1</b></div><div class="tp-distribution-row"><span>Đang phát triển</span><div class="progress"><span style="width:50%"></span></div><b>3</b></div><div class="tp-distribution-row"><span>Khởi tạo</span><div class="progress"><span style="width:33%;background:#a0a6a8"></span></div><b>2</b></div></div></article>
-        <article class="tp-focus"><span class="tp-status current">Ưu tiên tiếp theo</span><h2 style="margin-top:12px">Problem Solving</h2><p>Hoàn thành System Thinking để mở khóa thêm 1 rubric và tăng khoảng 5 điểm readiness.</p><button class="btn btn-primary btn-sm" onclick="route('course')">Tiếp tục học <i class="fa-solid fa-arrow-right"></i></button></article>
-        <article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Nguồn bằng chứng</h2><p>Những hoạt động đang đóng góp vào hồ sơ.</p></div></div><div class="tp-score-impact"><i class="fa-solid fa-book-open"></i><div><b>Khóa học</b><span>1 khóa hoàn thành</span></div><b>+15đ</b></div><div class="tp-score-impact"><i class="fa-solid fa-clipboard-check"></i><div><b>Rubric</b><span>3 tiêu chí đã xác minh</span></div><b>+12đ</b></div><div class="tp-score-impact"><i class="fa-solid fa-list-check"></i><div><b>Đánh giá</b><span>1 bài đầu vào</span></div><b>Baseline</b></div></article>
+        <article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Phân bổ cấp độ</h2><p>Tình trạng hiện tại của 6 năng lực.</p></div></div><div class="tp-distribution"><div class="tp-distribution-row"><span>Mạnh</span><div class="progress"><span style="width:${Math.round((strongCount/6)*100)}%;background:#078c7f"></span></div><b>${strongCount}</b></div><div class="tp-distribution-row"><span>Đang phát triển</span><div class="progress"><span style="width:${Math.round((developingCount/6)*100)}%"></span></div><b>${developingCount}</b></div><div class="tp-distribution-row"><span>Khởi tạo</span><div class="progress"><span style="width:${Math.round((startingCount/6)*100)}%;background:#a0a6a8"></span></div><b>${startingCount}</b></div></div></article>
+        <article class="tp-focus"><span class="tp-status current">Ưu tiên tiếp theo</span><h2 style="margin-top:12px">${isReady()?"Ứng tuyển PMT":nextCourse.title}</h2><p>${isReady()?"Hồ sơ đã hoàn tất toàn bộ tiêu chí.":`Hoàn thành Course ${nextCourse.number} để mở khóa bước tiếp theo.`}</p><button class="btn btn-primary btn-sm" onclick="${isReady()?"route('ready')":"startLearning()"}">${isReady()?"Xem PMT Ready":"Tiếp tục học"} <i class="fa-solid fa-arrow-right"></i></button></article>
+        <article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Nguồn bằng chứng</h2><p>Những hoạt động đang đóng góp vào hồ sơ.</p></div></div><div class="tp-score-impact"><i class="fa-solid fa-book-open"></i><div><b>Khóa học</b><span>${state.coursesCompleted} khóa hoàn thành</span></div><b>+${state.points}đ</b></div><div class="tp-score-impact"><i class="fa-solid fa-clipboard-check"></i><div><b>Rubric</b><span>${state.criteriaCompleted} tiêu chí đã xác minh</span></div><b>${state.criteriaCompleted}/13</b></div><div class="tp-score-impact"><i class="fa-solid fa-list-check"></i><div><b>Đánh giá</b><span>${Object.keys(state.courseAttempts).length} case demo đã nộp</span></div><b>${level}</b></div></article>
       </aside></section>`;
-      const rubricGroups=[
-        ["Product Thinking","2/3 hoàn thành",[["done","fa-check","Problem Framing","Đạt 5/5","+5đ"],["done","fa-check","Value Thinking","Đạt 5/5","+5đ"],["current","fa-play","Solution Evaluation","Đang phát triển","2/5"]]],
-        ["Problem Solving","1/3 hoàn thành",[["done","fa-check","Phân tích vấn đề","Đạt 5/5","+5đ"],["current","fa-play","Logical Thinking","Đạt 4/5","+4đ"],["locked","fa-lock","System Thinking","Chưa mở khóa","—"]]],
-        ["Customer & Data","0/3 hoàn thành",[["current","fa-circle-half-stroke","User Insight","Có tín hiệu ban đầu","2/5"],["locked","fa-lock","Metrics Thinking","Mở ở Course 3","—"],["locked","fa-lock","Data Interpretation","Mở ở Course 3","—"]]],
-        ["Execution & Management","0/4 hoàn thành",[["current","fa-circle-half-stroke","Ownership","Có tín hiệu ban đầu","1/5"],["locked","fa-lock","Prioritization","Mở ở Course 4","—"],["locked","fa-lock","Communication","Chờ case thực hành","—"],["locked","fa-lock","Stakeholder Management","Chưa mở khóa","—"]]]
+      const rubricDefinitions=[
+        ["Product Thinking",1,["Problem Framing","Value Thinking","Solution Evaluation"]],
+        ["Problem Solving",2,["Critical Thinking","Logical Thinking","System Thinking"]],
+        ["Customer & Data",3,["User Insight","Metrics Thinking","Data Interpretation"]],
+        ["Execution & Management",4,["Ownership","Prioritization","Communication","Stakeholder Management"]]
       ];
-      const rubricTab=`<section class="card tp-summary-grid" style="margin-top:24px"><div class="tp-summary-item"><strong>3/13</strong><span>Rubric hoàn thành</span></div><div class="tp-summary-item"><strong>27/65</strong><span>Điểm rubric</span></div><div class="tp-summary-item"><strong>10</strong><span>Rubric còn lại</span></div></section>
-      <section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Bộ rubric PMT Ready</h2><p>13 tiêu chí được xác minh bằng bằng chứng cụ thể.</p></div><span class="tp-status current">3/13 xong</span></div>
+      const rubricGroups=rubricDefinitions.map(([group,courseNumber,names])=>{
+        const courseState=courseStatus(courseNumber);
+        const completed=courseState==="done"?names.length:0;
+        const rows=names.map((name,index)=>{
+          if(courseState==="done") return ["done","fa-check",name,"Đã xác minh","+5đ"];
+          if(courseState==="current"&&index===0) return ["current","fa-play",name,"Đang phát triển","0/5"];
+          return ["locked","fa-lock",name,courseState==="current"?"Chưa hoàn thành":"Chưa mở khóa","—"];
+        });
+        return [group,`${completed}/${names.length} hoàn thành`,rows];
+      });
+      const rubricTab=`<section class="card tp-summary-grid" style="margin-top:24px"><div class="tp-summary-item"><strong>${state.criteriaCompleted}/13</strong><span>Rubric hoàn thành</span></div><div class="tp-summary-item"><strong>${state.points}/65</strong><span>Điểm rubric</span></div><div class="tp-summary-item"><strong>${remainingCriteria}</strong><span>Rubric còn lại</span></div></section>
+      <section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Bộ rubric PMT Ready</h2><p>13 tiêu chí được xác minh bằng bằng chứng cụ thể.</p></div><span class="tp-status current">${state.criteriaCompleted}/13 xong</span></div>
       ${rubricGroups.map(([group,meta,rows])=>`<div class="tp-rubric-group"><div class="tp-rubric-group-head"><h3>${group}</h3><span>${meta}</span></div>${rows.map(([status,icon,name,note,points])=>`<div class="tp-rubric-row"><span class="tp-rubric-dot ${status}"><i class="fa-solid ${icon}"></i></span><div class="tp-rubric-copy"><b>${name}</b><span>${note}</span></div><span class="tp-rubric-points" style="${status==="locked"?"color:#949a9c":""}">${points}</span></div>`).join("")}</div>`).join("")}</article></div>
       <aside class="tp-tab-side"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Trạng thái rubric</h2><p>Cách đọc tiến độ của từng tiêu chí.</p></div></div><div class="tp-legend"><div class="tp-legend-row"><span class="tp-rubric-dot done"><i class="fa-solid fa-check"></i></span>Đã có đủ bằng chứng</div><div class="tp-legend-row"><span class="tp-rubric-dot current"><i class="fa-solid fa-play"></i></span>Đang phát triển</div><div class="tp-legend-row"><span class="tp-rubric-dot locked"><i class="fa-solid fa-lock"></i></span>Chưa mở khóa</div></div></article><article class="tp-focus"><span class="tp-status current">Gần nhất</span><h2 style="margin-top:12px">System Thinking</h2><p>Hoàn thành module hiện tại để mở rubric thứ 4 và tiến gần ngưỡng Emerging.</p><button class="btn btn-primary btn-sm" onclick="route('course')">Mở module <i class="fa-solid fa-arrow-right"></i></button></article></aside></section>`;
       const events=[
         ["fa-solid fa-puzzle-piece","Hoàn thành rubric “Phân tích vấn đề”","Problem Solving · +5 điểm","2 ngày trước"],
-        ["fa-solid fa-chart-line","Readiness cập nhật 34 → 38","Điểm mới đã được ghi vào Talent Profile","2 ngày trước"],
+        ["fa-solid fa-chart-line",`Readiness hiện tại ${score}/100`,"Đồng bộ từ tiến độ Learning","Hiện tại"],
         ["fa-solid fa-book-open","Hoàn thành Product Fundamentals","3 rubric · 15/15 điểm","5 ngày trước"],
-        ["fa-regular fa-star","Đạt 4/5★ Logical Thinking","Bài case được AI đánh giá","1 tuần trước"],
+        ["fa-regular fa-star",state.assignmentEvaluation?`Kết quả ${state.assignmentEvaluation.score}/5★ ${courseData().module}`:"Chưa nộp case","Kết quả demo local","Gần đây"],
         ["fa-solid fa-bullseye","Xác nhận mục tiêu học tập","Product Management","12/05/2025"],
         ["fa-regular fa-file-lines","Tải lên CV","CV không bắt buộc · đã phân tích","12/05/2025"]
       ];
-      const historyTab=`<section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Dòng hoạt động</h2><p>Những thay đổi đã đóng góp vào hồ sơ năng lực.</p></div><span class="tp-status done">6 hoạt động</span></div><div class="tp-timeline">${events.map(([icon,title,meta,time])=>`<div class="tp-event"><span class="tp-event-icon"><i class="${icon}"></i></span><div class="tp-event-copy"><b>${title}</b><span>${meta}</span></div><span class="tp-event-time">${time}</span></div>`).join("")}</div></article></div>
-      <aside class="tp-tab-side"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Lọc hoạt động</h2><p>Xem theo loại bằng chứng.</p></div></div><div class="tp-filter-pills"><button class="active">Tất cả</button><button>Học tập</button><button>Rubric</button><button>Hồ sơ</button></div></article><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Tháng 05/2025</h2><p>Tóm tắt hoạt động của bạn.</p></div></div><div class="tp-month-stat"><span>Điểm tăng</span><b style="color:#078c7f">+27đ</b></div><div class="tp-month-stat"><span>Rubric hoàn thành</span><b>3</b></div><div class="tp-month-stat"><span>Khóa học hoàn thành</span><b>1</b></div><div class="tp-month-stat"><span>Readiness tăng</span><b>+38</b></div></article><article class="tp-focus"><h2>Dữ liệu thuộc về bạn</h2><p>Mọi cập nhật đều có nguồn bằng chứng và chỉ hiển thị với nhà tuyển dụng khi bạn đạt PMT Ready.</p></article></aside></section>`;
-      const assessmentTab=`<section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Bài đánh giá của bạn</h2><p>Kết quả được dùng để xác minh năng lực và cập nhật readiness.</p></div><span class="tp-status current">2 đã làm</span></div>
+      const historyTab=`<section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Dòng hoạt động</h2><p>Những thay đổi đã đóng góp vào hồ sơ năng lực.</p></div><span class="tp-status done">${events.length} hoạt động</span></div><div class="tp-timeline">${events.map(([icon,title,meta,time])=>`<div class="tp-event"><span class="tp-event-icon"><i class="${icon}"></i></span><div class="tp-event-copy"><b>${title}</b><span>${meta}</span></div><span class="tp-event-time">${time}</span></div>`).join("")}</div></article></div>
+      <aside class="tp-tab-side"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Lọc hoạt động</h2><p>Xem theo loại bằng chứng.</p></div></div><div class="tp-filter-pills"><button class="active">Tất cả</button><button>Học tập</button><button>Rubric</button><button>Hồ sơ</button></div></article><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Tiến độ hiện tại</h2><p>Tóm tắt hoạt động của bạn.</p></div></div><div class="tp-month-stat"><span>Điểm tích lũy</span><b style="color:#078c7f">${state.points}đ</b></div><div class="tp-month-stat"><span>Rubric hoàn thành</span><b>${state.criteriaCompleted}</b></div><div class="tp-month-stat"><span>Khóa học hoàn thành</span><b>${state.coursesCompleted}</b></div><div class="tp-month-stat"><span>Readiness</span><b>${score}</b></div></article><article class="tp-focus"><h2>Dữ liệu thuộc về bạn</h2><p>Mọi cập nhật đều có nguồn bằng chứng và chỉ hiển thị với nhà tuyển dụng khi bạn đạt PMT Ready.</p></article></aside></section>`;
+      const lastAttempt=state.courseAttempts[state.activeCourse]||Object.values(state.courseAttempts).at(-1);
+      const assessmentTab=`<section class="tp-tab-layout"><div class="tp-tab-main"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Bài đánh giá của bạn</h2><p>Kết quả demo được dùng để cập nhật tiến độ học tập.</p></div><span class="tp-status current">${Object.keys(state.courseAttempts).length+1} đã làm</span></div>
         <div class="tp-assessment"><div class="tp-assessment-head"><span class="tp-assessment-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div class="tp-assessment-copy"><h3>Đánh giá đầu vào</h3><p>Xác định điểm khởi đầu và cá nhân hóa lộ trình PMT.</p></div><span class="tp-status done">Hoàn thành</span></div><div class="tp-assessment-result"><div><strong>Baseline</strong>Cấp độ</div><div><strong>6 năng lực</strong>Đã phân tích</div><div><strong>12/05/2025</strong>Ngày làm</div></div></div>
-        <div class="tp-assessment"><div class="tp-assessment-head"><span class="tp-assessment-icon"><i class="fa-regular fa-star"></i></span><div class="tp-assessment-copy"><h3>Case · Logical Thinking</h3><p>Đánh giá lập luận có cấu trúc trong một quyết định Product.</p></div><span class="tp-status done">Đạt 4/5</span></div><div class="tp-assessment-result"><div><strong>+4đ</strong>Rubric</div><div><strong>Problem Solving</strong>Năng lực</div><div><strong>1 tuần trước</strong>Ngày làm</div></div></div>
+        ${lastAttempt?`<div class="tp-assessment"><div class="tp-assessment-head"><span class="tp-assessment-icon"><i class="fa-regular fa-star"></i></span><div class="tp-assessment-copy"><h3>Case · ${courseData(state.activeCourse).module}</h3><p>Kết quả mô phỏng cục bộ, không gọi AI Agent.</p></div><span class="tp-status ${lastAttempt.result==="pass"?"done":"waiting"}">${lastAttempt.result==="pass"?"Đạt":"Chưa đạt"} ${lastAttempt.evaluation.score}/5</span></div><div class="tp-assessment-result"><div><strong>${lastAttempt.evaluation.score}/5★</strong>Điểm demo</div><div><strong>${courseData(state.activeCourse).competency}</strong>Năng lực</div><div><strong>Vừa xong</strong>Ngày làm</div></div></div>`:""}
         <div class="tp-assessment"><div class="tp-assessment-head"><span class="tp-assessment-icon"><i class="fa-solid fa-clipboard-list"></i></span><div class="tp-assessment-copy"><h3>Execution Assessment</h3><p>Đánh giá khả năng ưu tiên, triển khai và theo sát kết quả.</p></div><span class="tp-status waiting">Đề xuất tiếp theo</span></div><div style="margin:14px 0 0 53px"><button class="btn btn-primary btn-sm" onclick="notify('Bài đánh giá sẽ mở sau khi hoàn thành System Thinking.')">Xem điều kiện mở <i class="fa-solid fa-arrow-right"></i></button></div></div>
-      </article></div><aside class="tp-tab-side"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Tác động đến hồ sơ</h2><p>Kết quả đã được ghi nhận.</p></div></div><div class="tp-score-impact"><i class="fa-solid fa-arrow-trend-up"></i><div><b>Readiness</b><span>Từ các bài đánh giá</span></div><b>+8</b></div><div class="tp-score-impact"><i class="fa-solid fa-check"></i><div><b>Rubric xác minh</b><span>Đủ bằng chứng</span></div><b>1</b></div><div class="tp-score-impact"><i class="fa-solid fa-star"></i><div><b>Điểm rubric</b><span>Đã cộng vào hồ sơ</span></div><b>+4đ</b></div></article><article class="tp-focus"><span class="tp-status current">AI đánh giá</span><h2 style="margin-top:12px">Phản hồi có thể truy vết</h2><p>Mỗi kết quả đều liên kết với câu trả lời, tiêu chí chấm và bằng chứng cụ thể của bạn.</p><button class="btn btn-outline btn-sm" onclick="notify('Mở kết quả gần nhất từ Learning Result.')">Xem kết quả gần nhất</button></article></aside></section>`;
+      </article></div><aside class="tp-tab-side"><article class="card tp-tab-card"><div class="tp-card-heading"><div><h2>Tác động đến hồ sơ</h2><p>Tiến độ đã được đồng bộ.</p></div></div><div class="tp-score-impact"><i class="fa-solid fa-arrow-trend-up"></i><div><b>Readiness</b><span>Từ các khóa đã hoàn thành</span></div><b>${score}/100</b></div><div class="tp-score-impact"><i class="fa-solid fa-check"></i><div><b>Rubric xác minh</b><span>Đủ bằng chứng</span></div><b>${state.criteriaCompleted}</b></div><div class="tp-score-impact"><i class="fa-solid fa-star"></i><div><b>Điểm rubric</b><span>Đã cộng vào hồ sơ</span></div><b>${state.points}đ</b></div></article><article class="tp-focus"><span class="tp-status current">Demo local</span><h2 style="margin-top:12px">Hai biến thể kết quả</h2><p>Mỗi lần nộp bài tạo ngẫu nhiên kết quả 3★ hoặc 4★. Chỉ 4★ mở course tiếp theo.</p><button class="btn btn-outline btn-sm" onclick="${lastAttempt?"route('result')":"startLearning()"}">${lastAttempt?"Xem kết quả gần nhất":"Bắt đầu học"}</button></article></aside></section>`;
       const tabContent={overview,competency:competencyTab,rubric:rubricTab,history:historyTab,assessment:assessmentTab};
       return shell(`${profileHeader}${tabContent[state.profileTab]}`,"profile-portal","AI Talent");
     }
 
     function ready(){
       if(!isReady()){notify("Hoàn thành 4 khóa học và 13 tiêu chí để mở PMT Ready.");return learning();}
-      const submitted=state.applicationStatus==="submitted";
-      const body=`<div class="page-top"><div><p class="eyebrow">PMT Ready</p><h1>${submitted?"Theo dõi hồ sơ ứng tuyển":"Bạn đã sẵn sàng cho bước tiếp theo"}</h1><p>${submitted?"Hồ sơ đang được đội ngũ Talent Acquisition xem xét.":"Hồ sơ năng lực đã hoàn thành và đủ điều kiện ứng tuyển PMT."}</p></div></div>
-      ${submitted?`<section class="card section-card" style="margin-top:0"><div class="section-head"><div><h2>Product Management Trainee 2026</h2><p>Hồ sơ gửi ngày hôm nay</p></div><span class="tag current">Đang xem xét</span></div><div class="section-body"><div class="tracking"><div class="track-step done"><span class="track-dot"><i class="fa-solid fa-check"></i></span><b>Submitted</b><span>Đã gửi</span></div><div class="track-step done"><span class="track-dot"><i class="fa-solid fa-check"></i></span><b>TA reviewed</b><span>Đã tiếp nhận</span></div><div class="track-step"><span class="track-dot">3</span><b>Interview</b><span>Đang chờ</span></div></div></div></section><section class="card section-card"><div class="section-head"><div><h2>Trong khi chờ đợi</h2><p>Tiếp tục duy trì năng lực và chuẩn bị cho vòng phỏng vấn.</p></div></div><div class="section-body"><div class="recommendation"><i class="fa-solid fa-comments"></i><div><b>Luyện phỏng vấn Product Sense</b><span>Bộ 10 câu hỏi được cá nhân hóa theo hồ sơ.</span></div></div><div class="recommendation"><i class="fa-solid fa-people-group"></i><div><b>Tham gia PMT Community</b><span>Kết nối với học viên và mentor.</span></div></div></div></section>`:
-      `<section class="card ready-hero"><span class="ready-mark"><i class="fa-solid fa-check"></i></span><h1>Congratulations, you are PMT Ready!</h1><p>Bạn đã hoàn thành toàn bộ lộ trình và xác minh 13/13 tiêu chí năng lực.</p><button class="btn btn-orange" onclick="applyPmt()">Ứng tuyển chương trình PMT <i class="fa-solid fa-arrow-right"></i></button></section>
-      <section class="card ready-metrics"><div><strong>100/100</strong><span>Readiness</span></div><div><strong>13/13</strong><span>Tiêu chí</span></div><div><strong>65/65</strong><span>Điểm</span></div><div><strong>4/4</strong><span>Khóa học</span></div></section>
-      <section class="profile-grid" style="margin-top:14px"><article class="card"><div class="section-head"><div><h2>Năng lực đã xác minh</h2><p>Từ bài học, case và đánh giá cuối lộ trình.</p></div></div><div class="section-body"><div class="verified-list">${["Product Thinking","Problem Solving","Customer Focus","Data Sense","Communication","Ownership"].map(name=>`<div class="verified"><i class="fa-solid fa-circle-check"></i><b>${name}</b></div>`).join("")}</div></div></article>
-      <article class="card certificate"><p class="eyebrow">Verified certificate</p><h2>PMT Ready Certificate</h2><p>Linh Nguyễn · 13/13 tiêu chí · 65/65 điểm</p><button class="btn btn-outline btn-sm" onclick="createCertificate()">${state.certificate?"Tải PDF":"Tạo chứng chỉ"}</button>${state.certificate?'<button class="btn btn-ghost btn-sm" onclick="shareCertificate()">Sao chép link chia sẻ</button>':""}</article></section>`}
-      `;
-      return shell(body);
+      if(state.applicationStatus==="submitted") return submittedHome();
+      const fullName=escapeHtml(studentFullName());
+      const shortName=escapeHtml(studentShortName());
+      const initial=escapeHtml(studentInitial());
+      const verificationCode=escapeHtml(studentVerificationCode());
+      const competencies=competencyScores();
+      const opportunities=[
+        ["fa-solid fa-rocket","Product Management Trainee 2027 · Zalo","Hồ sơ của bạn đã đủ điều kiện gửi thẳng cho đội Tuyển dụng","Ứng tuyển ngay","btn-orange","applyPmt()"],
+        ["fa-solid fa-briefcase","Product Internship Program · Zalo","Kỳ thực tập 6 tháng, có mentor 1:1","Xem chi tiết","btn-outline","notify('Chi tiết chương trình Internship sẽ mở trong phiên bản tiếp theo.')"],
+        ["fa-solid fa-globe","Join PM Community","Kết nối với mentor và các bạn cùng lộ trình","Tham gia","btn-outline","notify('PM Community sẽ mở trong phiên bản tiếp theo.')"],
+        ["fa-solid fa-microphone","Book mock interview","Luyện với PM thật (không phải phỏng vấn thật)","Đặt lịch","btn-outline","notify('Lịch mock interview sẽ mở trong phiên bản tiếp theo.')"]
+      ];
+      const body=`<header class="ready-top"><div><h1>Chào ${shortName}</h1><p>Đây là tổng quan học tập và sự nghiệp của bạn.</p></div><div class="sh-top-actions"><button class="sh-round-action" onclick="notify('Bạn có 3 cập nhật mới.')"><i class="fa-regular fa-bell"></i><span class="sh-notice">3</span></button><span class="sh-user">${initial}</span></div></header>
+      <section class="pmt-hero">
+        <div class="pmt-hero-copy"><div class="pmt-kicker">Chúc mừng!</div><h2>Bạn đã đạt PMT Ready</h2><p>Bạn đã hoàn thành tất cả năng lực bắt buộc và đạt tiêu chí sẵn sàng PMT của Zalo.</p><span class="pmt-verified"><i class="fa-solid fa-circle-check"></i>Verified by Zalo Talent Competency Engine</span><div class="pmt-hero-actions"><button class="btn btn-orange" onclick="applyPmt()"><i class="fa-solid fa-rocket"></i>Ứng tuyển PMT Program</button><button class="btn btn-outline" onclick="route('profile')">Xem Talent Profile <i class="fa-solid fa-arrow-right"></i></button></div></div>
+        <div class="pmt-badge"><span class="pmt-badge-icon"><i class="fa-solid fa-award"></i></span><b>PMT Ready</b><span>Verified by Zalo Talent</span></div>
+      </section>
+      <section class="pmt-overview">
+        <article class="card pmt-summary"><div class="pmt-score-ring"><div class="pmt-score-inner"><strong>100</strong><span>/100</span><b>PMT READY</b></div></div><h2>Readiness summary</h2>${[["13/13 năng lực"],["65/65 điểm rubric"],["4/4 khóa học"],["Đã hoàn thành đánh giá cuối"]].map(([label])=>`<div class="pmt-check-row"><i class="fa-solid fa-circle-check"></i><span>${label}</span></div>`).join("")}<div class="pmt-complete-pill"><i class="fa-solid fa-check"></i>Hoàn thành toàn bộ yêu cầu</div></article>
+        <article class="card pmt-competencies"><div class="pmt-card-heading"><h2>Verified competencies</h2><button class="pmt-link" onclick="state.profileTab='competency';route('profile')">Xem tất cả <i class="fa-solid fa-arrow-right"></i></button></div><div class="pmt-competency-grid">${competencies.map(competency=>`<div class="pmt-competency"><span class="pmt-competency-icon"><i class="${competency.icon}"></i></span><div><b>${competency.name}</b><span class="pmt-stars">${Array.from({length:5},(_,index)=>`<i class="${index<competency.stars?"fa-solid":"fa-regular"} fa-star"></i>`).join("")}</span><small>${competency.percent}% · Đã xác minh</small></div></div>`).join("")}</div></article>
+      </section>
+      <section class="card pmt-certificate"><div class="pmt-certificate-intro"><i class="fa-solid fa-certificate"></i><h2>Chứng nhận PMT Ready</h2><span>Đủ điều kiện</span></div><p>Tạo chứng nhận có mã xác thực để chia sẻ với nhà tuyển dụng hoặc đính kèm vào CV.</p><div class="pmt-certificate-grid">
+        <article class="certificate-preview"><div class="certificate-preview-top"><span>Chứng nhận hoàn thành</span><span class="certificate-seal"><i class="fa-solid fa-award"></i></span></div><div class="certificate-name">${fullName}</div><div class="certificate-role">Product Management Trainee — <b>PMT Ready</b></div><div class="certificate-metrics"><div><strong>13/13</strong><span>năng lực</span></div><div><strong>65/65</strong><span>điểm rubric</span></div><div><strong>25/07/2026</strong><span>ngày cấp</span></div></div><div class="certificate-code"><div><span>Mã xác thực</span><b>${verificationCode}</b></div><div class="certificate-powered">Powered by<b>Zalo</b></div></div></article>
+        <div class="certificate-benefits"><div class="certificate-benefits-title">Chứng nhận gồm</div>${["Mã xác thực tra cứu được trên Zalo Talent","13 năng lực kèm mức rubric đã đạt","Bản PDF in được và link chia sẻ công khai"].map(item=>`<div class="certificate-benefit"><i class="fa-solid fa-check"></i><span>${item}</span></div>`).join("")}<div class="certificate-actions"><button class="btn btn-orange" onclick="createCertificate()"><i class="fa-solid ${state.certificate?"fa-check":"fa-certificate"}"></i>${state.certificate?"Đã tạo chứng nhận":"Tạo chứng nhận"}</button><div class="certificate-secondary"><button class="btn btn-outline" onclick="downloadCertificate()"><i class="fa-solid fa-download"></i>Tải PDF</button><button class="btn btn-outline" onclick="shareCertificate()"><i class="fa-solid fa-link"></i>Chia sẻ link</button></div></div></div>
+      </div></section>
+      <section class="card pmt-opportunities"><h2>Cơ hội dành cho bạn</h2>${opportunities.map(([icon,title,copy,action,kind,handler])=>`<div class="opportunity-row"><span class="opportunity-icon"><i class="${icon}"></i></span><div class="opportunity-copy"><b>${title}</b><span>${copy}</span></div><button class="btn ${kind}" onclick="${handler}">${action} <i class="fa-solid fa-arrow-right"></i></button></div>`).join("")}</section>`;
+      return shell(body,"ready-portal","AI Talent");
     }
 
     function createCertificate(){
       if(!state.certificate){state.certificate=true;render();notify("Chứng chỉ PMT Ready đã được tạo.");}
-      else notify("Bản PDF chứng chỉ đang được chuẩn bị.");
+      else notify("Chứng chỉ PMT Ready đã sẵn sàng.");
+    }
+
+    function downloadCertificate(){
+      if(!state.certificate){state.certificate=true;render();}
+      notify("Bản PDF chứng nhận đang được chuẩn bị.");
     }
 
     function shareCertificate(){
-      if(navigator.clipboard) navigator.clipboard.writeText(location.href+"?certificate=linh-nguyen");
+      const slug=studentFullName().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        .replace(/Đ/g,"D").replace(/đ/g,"d").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+      if(navigator.clipboard) navigator.clipboard.writeText(`${location.origin||""}${location.pathname||""}?certificate=${encodeURIComponent(slug)}`);
       notify("Đã sao chép link chứng chỉ.");
     }
 
     function applyPmt(){
       state.applicationStatus="submitted";
-      render();
+      route("home");
       notify("Hồ sơ PMT đã được gửi thành công.");
     }
 
