@@ -169,7 +169,12 @@ async function runOpenAIStudentAgent(agent, payload) {
 }
 
 function agentFromUrl(url = "") {
-  const pathname = new URL(url, "http://localhost").pathname;
+  const requestUrl = new URL(url, "http://localhost");
+  const rewrittenAgent = requestUrl.searchParams.get("agent");
+  if (rewrittenAgent) {
+    return rewrittenAgent;
+  }
+  const pathname = requestUrl.pathname;
   return pathname.split("/").filter(Boolean).at(-1);
 }
 
@@ -213,4 +218,10 @@ export default async function handler(req, res) {
   }
 }
 
-export { buildAgentInput, extractOutputText, runOpenAIStudentAgent, safeStudentIdentifier };
+export {
+  agentFromUrl,
+  buildAgentInput,
+  extractOutputText,
+  runOpenAIStudentAgent,
+  safeStudentIdentifier
+};

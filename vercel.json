@@ -11,6 +11,10 @@
   "outputDirectory": ".",
   "rewrites": [
     {
+      "source": "/api/student-agents/:agent",
+      "destination": "/api/student-agents?agent=:agent"
+    },
+    {
       "source": "/",
       "destination": "/student-portal.html"
     },

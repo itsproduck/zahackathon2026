@@ -4,7 +4,14 @@ import {
   validateAgentInput,
   validateAgentOutput
 } from "./student-agent-contracts.mjs";
-import { buildAgentInput } from "./student-agents.mjs";
+import { agentFromUrl, buildAgentInput } from "./student-agents.mjs";
+
+assert.equal(agentFromUrl("/api/student-agents/cv-review"), "cv-review");
+assert.equal(
+  agentFromUrl("/api/student-agents?agent=cv-review"),
+  "cv-review",
+  "Vercel rewrite query must resolve the requested student agent"
+);
 
 const cvInput = {
   persona: "student",
