@@ -1,0 +1,193 @@
+:root {
+  /* Icon glyph scale */
+  --icon-glyph-xs: 10px;
+  --icon-glyph-sm: 12px;
+  --icon-glyph-md: 14px;
+  --icon-glyph-lg: 18px;
+  --icon-glyph-xl: 22px;
+  --icon-glyph-2xl: 32px;
+
+  /* Icon container scale */
+  --icon-box-xs: 24px;
+  --icon-box-sm: 28px;
+  --icon-box-md: 36px;
+  --icon-box-lg: 44px;
+  --icon-box-xl: 48px;
+  --icon-box-2xl: 56px;
+
+  --icon-radius-sm: 8px;
+  --icon-radius-md: 11px;
+  --icon-radius-round: 999px;
+}
+
+/*
+ * Shared icon primitive.
+ * Components may keep their own dimensions, colors and backgrounds; this
+ * primitive owns centering, line box normalization and flex behavior.
+ */
+.ui-icon,
+:is(
+  .auth-logo,
+  .provider-letter,
+  .mini-brand-icon,
+  .rail-dot,
+  .persona-icon,
+  .side-brand .logo,
+  .avatar,
+  .course-number,
+  .assessment-row > i,
+  .course-index,
+  .li-assessment-icon,
+  .li-course-icon,
+  .task-icon,
+  .lr-score-icon,
+  .lr-coach-icon,
+  .lr-plan-number,
+  .lr-send,
+  .profile-avatar,
+  .recommendation > i,
+  .ready-mark,
+  .track-dot,
+  .pmt-badge-icon,
+  .pmt-competency-icon,
+  .certificate-seal,
+  .opportunity-icon,
+  .application-step-dot,
+  .waiting-icon,
+  .module-state-icon,
+  .lesson-module-number,
+  .task-status,
+  .answer-hint > span,
+  .reward-row > i,
+  .tp-avatar,
+  .tp-level-icon,
+  .tp-highlight-icon,
+  .tp-agent-icon,
+  .tp-list-icon,
+  .tp-competency-icon,
+  .tp-rubric-dot,
+  .tp-event-icon,
+  .tp-assessment-icon,
+  .tp-score-impact > i,
+  .sh-round-action,
+  .sh-notice,
+  .sh-user,
+  .sh-goal-visual,
+  .sh-goal-strip-icon,
+  .sh-course-icon,
+  .sh-guide-icon,
+  .sh-competency-icon,
+  .brand-mark,
+  .nav-icon,
+  .notify,
+  .metric-mark
+) {
+  display: inline-grid;
+  place-items: center;
+  align-content: center;
+  justify-content: center;
+  flex: none;
+  line-height: 1;
+  text-align: center;
+}
+
+/* Normalize Font Awesome's inline line box inside every icon container. */
+.ui-icon > i,
+:is(
+  .auth-logo,
+  .mini-brand-icon,
+  .persona-icon,
+  .side-brand .logo,
+  .li-assessment-icon,
+  .li-course-icon,
+  .task-icon,
+  .lr-score-icon,
+  .lr-coach-icon,
+  .lr-send,
+  .ready-mark,
+  .pmt-badge-icon,
+  .pmt-competency-icon,
+  .certificate-seal,
+  .opportunity-icon,
+  .application-step-dot,
+  .waiting-icon,
+  .module-state-icon,
+  .tp-level-icon,
+  .tp-highlight-icon,
+  .tp-agent-icon,
+  .tp-list-icon,
+  .tp-competency-icon,
+  .tp-rubric-dot,
+  .tp-event-icon,
+  .tp-assessment-icon,
+  .sh-round-action,
+  .sh-goal-visual,
+  .sh-goal-strip-icon,
+  .sh-course-icon,
+  .sh-guide-icon,
+  .sh-competency-icon
+) > i {
+  display: block;
+  inline-size: 1em;
+  margin: 0;
+  line-height: 1;
+  text-align: center;
+}
+
+.ui-icon > i::before,
+:is(
+  .auth-logo,
+  .mini-brand-icon,
+  .persona-icon,
+  .side-brand .logo,
+  .li-assessment-icon,
+  .li-course-icon,
+  .task-icon,
+  .lr-score-icon,
+  .lr-coach-icon,
+  .lr-send,
+  .ready-mark,
+  .pmt-badge-icon,
+  .pmt-competency-icon,
+  .certificate-seal,
+  .opportunity-icon,
+  .application-step-dot,
+  .waiting-icon,
+  .module-state-icon,
+  .tp-level-icon,
+  .tp-highlight-icon,
+  .tp-agent-icon,
+  .tp-list-icon,
+  .tp-competency-icon,
+  .tp-rubric-dot,
+  .tp-event-icon,
+  .tp-assessment-icon,
+  .sh-round-action,
+  .sh-goal-visual,
+  .sh-goal-strip-icon,
+  .sh-course-icon,
+  .sh-guide-icon,
+  .sh-competency-icon
+) > i::before,
+:is(
+  .assessment-row > i,
+  .recommendation > i,
+  .reward-row > i,
+  .tp-score-impact > i
+)::before {
+  display: block;
+  line-height: 1;
+}
+
+/* Reusable size utilities for new components. */
+.ui-icon--xs { inline-size: var(--icon-box-xs); block-size: var(--icon-box-xs); font-size: var(--icon-glyph-xs); }
+.ui-icon--sm { inline-size: var(--icon-box-sm); block-size: var(--icon-box-sm); font-size: var(--icon-glyph-sm); }
+.ui-icon--md { inline-size: var(--icon-box-md); block-size: var(--icon-box-md); font-size: var(--icon-glyph-md); }
+.ui-icon--lg { inline-size: var(--icon-box-lg); block-size: var(--icon-box-lg); font-size: var(--icon-glyph-lg); }
+.ui-icon--xl { inline-size: var(--icon-box-xl); block-size: var(--icon-box-xl); font-size: var(--icon-glyph-xl); }
+.ui-icon--2xl { inline-size: var(--icon-box-2xl); block-size: var(--icon-box-2xl); font-size: var(--icon-glyph-2xl); }
+
+.ui-icon--square { border-radius: var(--icon-radius-sm); }
+.ui-icon--rounded { border-radius: var(--icon-radius-md); }
+.ui-icon--round { border-radius: var(--icon-radius-round); }
+

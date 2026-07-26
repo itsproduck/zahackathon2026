@@ -105,7 +105,7 @@
     .persona-icon{width:42px;height:42px;border-radius:11px;background:var(--brand-soft);color:var(--brand-dark);display:grid;place-items:center;margin-bottom:17px;font-size:17px}
     .persona-card:nth-child(2) .persona-icon{background:var(--orange-soft);color:var(--orange)}
     .persona-card b{display:block;font-size:15px;margin-bottom:6px}
-    .persona-card span{display:block;color:var(--muted);font-size:11px;line-height:1.65}
+    .persona-card span:not(.persona-icon){display:block;color:var(--muted);font-size:11px;line-height:1.65}
     .fields{display:grid;grid-template-columns:1fr 1fr;gap:15px}
     .field{display:grid;gap:7px}
     .field.full{grid-column:1/-1}
@@ -311,7 +311,7 @@
     .module-tile.current{background:var(--brand-soft);border-color:transparent}
     .module-tile.locked{background:#f5f6f6;color:#9da2a4}
     .module-tile b{display:block;font-size:10px}
-    .module-tile span{display:block;font-size:8px;margin-top:3px;color:var(--muted)}
+    .module-tile>div>span{display:block;font-size:8px;margin-top:3px;color:var(--muted)}
     .course-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:14px;margin-top:14px}
     .lesson-card{padding:23px}
     .lesson-card h2{font-size:19px;margin-bottom:7px}
@@ -519,7 +519,7 @@
     .track-dot{position:relative;z-index:1;width:29px;height:29px;border-radius:50%;margin:auto;display:grid;place-items:center;background:#eef1f2;color:#8f9698;font-size:9px}
     .track-step.done .track-dot{background:var(--brand);color:#fff}
     .track-step b{display:block;font-size:9px;margin-top:8px}
-    .track-step span{display:block;color:var(--muted);font-size:8px}
+    .track-step>span:not(.track-dot){display:block;color:var(--muted);font-size:8px}
 
     /* PMT Ready + application tracking */
     .ready-portal .portal-main,.submitted-portal .portal-main{background:#f4f5f6;padding:34px 38px 54px}
@@ -640,7 +640,7 @@
     .module-tile.current .module-state-icon{background:var(--brand);color:#fff}
     .module-tile.locked .module-state-icon{background:var(--subtle);color:#abb1b3}
     .course-header.reference .module-tile b{font-size:15px;font-weight:500}
-    .course-header.reference .module-tile span{font-size:12px;margin-top:4px}
+    .course-header.reference .module-tile>div>span{font-size:12px;margin-top:4px}
     .course-summary-line{display:flex;justify-content:space-between;align-items:center;margin-top:24px;color:#747b7e;font-size:13px}
     .course-summary-line b{color:#343a3c}
     .course-layout.reference{display:flex;gap:20px;margin-top:20px;align-items:flex-start}
@@ -660,7 +660,7 @@
     .course-layout.reference .task.current>.task-status{color:var(--orange);font-size:12px}
     .course-layout.reference .task>div{display:flex;align-items:center;flex:1;gap:12px;min-width:0}
     .course-layout.reference .task b{font-size:15px;font-weight:400;flex:1}
-    .course-layout.reference .task span{display:block;color:#747b7e;font-size:13px;flex:none}
+    .course-layout.reference .task>div span{display:block;color:#747b7e;font-size:13px;flex:none}
     .course-layout.reference .task a{font-size:13px;font-weight:500;color:var(--brand)}
     .case-reference{margin-top:22px;padding-top:22px;border-top:1px solid var(--line)}
     .case-reference .case-label,.hint-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
@@ -892,7 +892,7 @@
     .sh-guide-copy{flex:1;text-align:center;padding:0 6px}
     .sh-guide-icon{width:48px;height:48px;margin:auto;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:18px}
     .sh-guide-copy b{display:block;font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-medium);margin-top:12px}
-    .sh-guide-copy span{display:block;font-size:var(--type-meta-size);line-height:var(--type-supporting-line);font-weight:var(--weight-light);color:#777f82;margin-top:5px}
+    .sh-guide-copy>span:not(.sh-guide-icon){display:block;font-size:var(--type-meta-size);line-height:var(--type-supporting-line);font-weight:var(--weight-light);color:#777f82;margin-top:5px}
     .sh-guide-arrow{color:#c8cdce;font-size:13px;margin-top:18px;flex:none}
     .sh-guide-link{display:inline-block;margin-top:20px;border:0;background:none;color:var(--brand);font-size:var(--type-body-size);font-weight:var(--weight-medium)}
     .sh-section-head{display:flex;align-items:center;gap:14px;margin-top:40px}
@@ -923,8 +923,8 @@
     .section-head h2,.rubric-card h2,.rewards-card h2,.tp-side-card h2,.tp-card-heading h2,.tp-focus h2,.tp-visibility h2,.tp-assessment-copy h3{font-size:var(--type-card-title-size);line-height:var(--type-card-title-line);font-weight:var(--weight-medium);letter-spacing:0}
     h3,.next-course h3,.course-row h3,.tp-highlight-copy b,.tp-list-copy.large b,.tp-competency-copy b,.tp-rubric-group-head h3,.tp-assessment-copy h3{font-size:var(--type-row-title-size);line-height:var(--type-row-title-line);font-weight:var(--weight-medium);letter-spacing:0}
     p,.subtitle,.course-description,.case-reference p,.tp-readiness-copy p,.tp-visibility p,.tp-focus p{font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--weight-light)}
-    .auth-copy,.onboarding-heading p,.persona-card span,.info-note,.review-card span,.lesson-intro,.answer-help,.tp-highlight-copy span,.tp-list-copy.large span,.tp-card-heading p,.tp-competency-copy span,.tp-assessment-copy p{font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-light)}
-    .tiny,.field label,.upload p,.review-title button,.skill-pills span,.course-meta,.course-points span,.module-tile span,.task span,.tp-member,.tp-stat span,.tp-list-copy span,.tp-rubric-group-head span,.tp-rubric-copy span,.tp-event-copy span,.tp-event-time,.tp-assessment-result div,.tp-score-impact span{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-regular)}
+    .auth-copy,.onboarding-heading p,.persona-card span:not(.persona-icon),.info-note,.review-card span,.lesson-intro,.answer-help,.tp-highlight-copy span,.tp-list-copy.large span,.tp-card-heading p,.tp-competency-copy span,.tp-assessment-copy p{font-size:var(--type-supporting-size);line-height:var(--type-supporting-line);font-weight:var(--weight-light)}
+    .tiny,.field label,.upload p,.review-title button,.skill-pills span,.course-meta,.course-points span,.module-tile>div>span,.task>div span,.tp-member,.tp-stat span,.tp-list-copy span,.tp-rubric-group-head span,.tp-rubric-copy span,.tp-event-copy span,.tp-event-time,.tp-assessment-result div,.tp-score-impact span{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-regular)}
     .tag,.tp-status,.tp-update-pill{font-size:var(--type-meta-size);line-height:var(--type-meta-line);font-weight:var(--weight-regular)}
     .unlock-note{font-size:var(--type-caption-size);line-height:var(--type-caption-line);font-weight:var(--weight-regular)}
     .powered{font-size:var(--type-micro-size);line-height:var(--type-micro-line);font-weight:var(--weight-regular)}
@@ -999,13 +999,16 @@
       .pmt-hero{display:block}.pmt-badge{display:none}.pmt-hero-actions{align-items:stretch;flex-direction:column}.pmt-hero-actions .btn{width:100%}.pmt-competency-grid{grid-template-columns:1fr}.pmt-certificate-grid{grid-template-columns:1fr}.certificate-preview{padding:22px;min-height:330px}.certificate-metrics{gap:18px}.certificate-secondary{grid-template-columns:1fr}.opportunity-row{grid-template-columns:42px minmax(0,1fr)}.opportunity-row .btn{grid-column:2;width:100%}.submitted-ready-strip{align-items:flex-start;flex-wrap:wrap}.submitted-ready-strip button{width:100%;margin:6px 0 0;text-align:left}.application-card{padding:22px 18px}.application-card-head{display:block}.application-card-head button{margin-top:12px}.application-timeline{grid-template-columns:1fr;gap:18px}.application-step{display:grid;grid-template-columns:56px 1fr;text-align:left;align-items:center;column-gap:14px}.application-step:not(:last-child):after{display:none}.application-step .application-step-dot{grid-row:1/3;margin:0}.application-step b,.application-step>span:not(.application-step-dot){margin:0}.waiting-heading{align-items:flex-start}.waiting-card{min-height:0}
     }
   </style>
+  <link rel="stylesheet" href="./iconography.css">
 </head>
 <body>
   <div id="app"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <a class="portal-role-switch" href="/ta" aria-label="Switch to TA portal"><i class="fa-solid fa-arrow-right-arrow-left"></i> TA portal</a>
+  <a class="portal-role-switch" href="/ta-portal" aria-label="Switch to TA portal"><i class="fa-solid fa-arrow-right-arrow-left"></i> TA portal</a>
   <script>
-    const state={
+    const STUDENT_DEMO_CACHE_KEY="ai-talent-student-demo-v1";
+    const STUDENT_DEMO_CACHE_VERSION=1;
+    const DEFAULT_STUDENT_STATE={
       view:"login",persona:"student",onboardingIndex:0,cvUploaded:false,cvFileName:"",
       cvFileType:"",cvFileSize:0,cvFileData:"",analysisProgress:0,
       career:"Product Management Trainee",homeStage:"fresh",coursesCompleted:0,
@@ -1014,6 +1017,44 @@
       journey:null,assignmentEvaluation:null,improvementPlan:null,nextAction:null,
       courseAttempts:{}
     };
+
+    function restoreStudentState(){
+      const fresh={...DEFAULT_STUDENT_STATE,courseAttempts:{}};
+      if(typeof localStorage==="undefined") return fresh;
+      try{
+        const cached=JSON.parse(localStorage.getItem(STUDENT_DEMO_CACHE_KEY)||"null");
+        if(cached?.version!==STUDENT_DEMO_CACHE_VERSION||!cached.state) return fresh;
+        const restored={
+          ...fresh,
+          ...cached.state,
+          courseAttempts:cached.state.courseAttempts&&typeof cached.state.courseAttempts==="object"
+            ?cached.state.courseAttempts:{},
+          cvFileData:"",
+          agentBusy:false
+        };
+        const allowedViews=new Set(["login","onboarding","home","learning","course","result","profile","ready"]);
+        if(!allowedViews.has(restored.view)) restored.view="home";
+        return restored;
+      }catch(error){
+        return fresh;
+      }
+    }
+
+    function persistStudentState(){
+      if(typeof localStorage==="undefined") return;
+      try{
+        const {cvFileData,agentBusy,...cachedState}=state;
+        localStorage.setItem(STUDENT_DEMO_CACHE_KEY,JSON.stringify({
+          version:STUDENT_DEMO_CACHE_VERSION,
+          savedAt:new Date().toISOString(),
+          state:{...cachedState,cvFileData:"",agentBusy:false}
+        }));
+      }catch(error){
+        // Demo persistence must never interrupt the product flow.
+      }
+    }
+
+    const state=restoreStudentState();
 
     const icons={
       home:"fa-house",learning:"fa-book-open",assessment:"fa-list-check",
@@ -2018,8 +2059,10 @@
       else if(state.view==="ready") html=ready();
       else if(["assessment","community"].includes(state.view)){state.view="home";html=home();}
       app.innerHTML=html;
+      persistStudentState();
     }
 
+    if(typeof window.addEventListener==="function") window.addEventListener("pagehide",persistStudentState);
     render();
   </script>
 </body>

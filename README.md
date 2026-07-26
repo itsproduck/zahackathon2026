@@ -233,7 +233,7 @@ This first prototype is intentionally simple:
 - `api/student-agents.mjs` is the server-only OpenAI Responses API gateway. CV extraction is active; the other student-agent routes are retained for future use.
 - `api/evaluate-assignment.mjs` contains the private backend endpoint that triggers the PM CV Evaluator in ChatGPT.
 - `server.mjs` serves the local demo and API endpoint together.
-- Browser storage keeps the demo student's progress on the same machine.
+- Browser storage keeps the demo student's onboarding, extracted profile, learning progress, and application status on the same domain. Raw CV file bytes are not cached.
 
 There is no real login, database, or email sending yet. Those are intentionally left out to keep the hackathon demo reliable. CV extraction requires `OPENAI_API_KEY`; assignment results are explicitly labeled demo-local and randomly return only 3★ or 4★. The older TA-side PM CV Evaluator can still be triggered through a published Workspace Agent.
 
@@ -270,7 +270,7 @@ For live student-agent mode:
 2. Add a server-side OpenAI API key as `OPENAI_API_KEY`.
 3. Keep `OPENAI_STUDENT_AGENT_MODEL=gpt-5.6-terra`, or change it after evaluating quality, latency, and cost on representative student cases.
 4. Run `npm start`.
-5. Open `http://localhost:3000/student-portal.html`.
+5. Open `http://localhost:3000/student-portal`.
 
 For the older TA-side Workspace Agent trigger, also set `WORKSPACE_AGENT_ACCESS_TOKEN`.
 
@@ -281,12 +281,15 @@ Student and TA experiences are deployed on one Vercel domain:
 | Route | Experience |
 | --- | --- |
 | `/` | Student portal |
-| `/student` | Student portal |
-| `/ta` | TA portal |
+| `/student-portal` | Student portal and the TA → Student switch target |
+| `/ta-portal` | TA portal and the Student → TA switch target |
+| `/student` | Legacy Student alias |
+| `/ta` | Legacy TA alias |
 
 Each portal includes a one-click switch to the other route. The routes are rewrites to
 the two standalone HTML bundles, so navigation stays on the same origin and does not
-require a second Vercel project or domain.
+require a second Vercel project or domain. Returning to `/student-portal` restores the
+cached demo Student session instead of showing Login and Onboarding again.
 
 ## Required Accounts and API Keys
 

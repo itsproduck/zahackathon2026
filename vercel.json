@@ -23,7 +23,15 @@
       "destination": "/student-portal.html"
     },
     {
+      "source": "/student-portal",
+      "destination": "/student-portal.html"
+    },
+    {
       "source": "/ta",
+      "destination": "/ta-portal.html"
+    },
+    {
+      "source": "/ta-portal",
       "destination": "/ta-portal.html"
     }
   ],

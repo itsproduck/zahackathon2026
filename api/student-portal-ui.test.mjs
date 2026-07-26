@@ -2,16 +2,37 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 
 const html = fs.readFileSync(new URL("../student-portal.html", import.meta.url), "utf8");
+const taHtml = fs.readFileSync(new URL("../ta-portal.html", import.meta.url), "utf8");
+const iconography = fs.readFileSync(new URL("../iconography.css", import.meta.url), "utf8");
+const vercelConfig = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
 const script = html.match(/<script>([\s\S]*)<\/script>/)?.[1];
 assert.ok(script, "student portal script should exist");
+assert.match(html, /href="\.\/iconography\.css"/, "student portal must load the shared icon system");
+assert.match(taHtml, /href="\.\/iconography\.css"/, "TA portal must load the shared icon system");
+assert.match(html, /class="portal-role-switch" href="\/ta-portal"/, "student portal switch must use the deployed TA route");
+assert.match(taHtml, /class="student-link" href="\/student-portal"/, "TA portal switch must use the deployed student route");
+assert.ok(vercelConfig.rewrites.some(({source,destination})=>source==="/student-portal"&&destination==="/student-portal.html"), "Vercel must serve the student portal route");
+assert.ok(vercelConfig.rewrites.some(({source,destination})=>source==="/ta-portal"&&destination==="/ta-portal.html"), "Vercel must serve the TA portal route");
+assert.match(iconography, /--icon-glyph-md:/, "icon system must expose a glyph scale");
+assert.match(iconography, /--icon-box-md:/, "icon system must expose a container scale");
+assert.match(iconography, /\.ui-icon,[\s\S]*display: inline-grid;[\s\S]*place-items: center;/, "shared icon primitive must center every mapped icon");
+assert.match(iconography, /\.sh-guide-icon/, "home journey icons must use the shared icon primitive");
+assert.match(iconography, /\.nav-icon/, "TA navigation icons must use the shared icon primitive");
 assert.match(html, /\.pmt-badge \.pmt-badge-icon\{[^}]*display:grid;place-items:center/, "verified badge icon must stay centered");
 assert.match(html, /\.application-step \.application-step-dot\{[^}]*display:grid;place-items:center/, "interview status icon must stay centered");
 assert.doesNotMatch(html, /\.pmt-badge span\{/, "broad badge span rules must not override the icon container");
 assert.doesNotMatch(html, /\.application-step span\{/, "broad timeline span rules must not override the icon container");
+assert.doesNotMatch(html, /\.sh-guide-copy span\{/, "guide copy must not broadly override its icon wrapper");
+assert.match(html, /\.sh-guide-copy>span:not\(\.sh-guide-icon\)\{/, "guide typography must target descriptions only");
+assert.doesNotMatch(html, /\.persona-card span\{/, "persona copy must not override persona icons");
+assert.doesNotMatch(html, /\.persona-card span(?!:not\(\.persona-icon\))/, "all persona typography bindings must exclude icons");
+assert.doesNotMatch(html, /\.module-tile span\{/, "module copy must not override module state icons");
+assert.doesNotMatch(html, /\.track-step span\{/, "tracking copy must not override tracking icons");
 
 const app = { innerHTML: "" };
 const toast = { textContent: "", className: "toast" };
 const caseAnswer = { value: "" };
+const demoStorage = new Map();
 
 globalThis.document = {
   querySelector(selector) {
@@ -21,9 +42,20 @@ globalThis.document = {
     return null;
   }
 };
-globalThis.window = { scrollTo() {} };
+globalThis.window = { scrollTo() {}, addEventListener() {} };
 Object.defineProperty(globalThis, "navigator", { value: {}, configurable: true });
 globalThis.location = { href: "http://localhost/student-portal.html" };
+globalThis.localStorage = {
+  getItem(key) {
+    return demoStorage.has(key) ? demoStorage.get(key) : null;
+  },
+  setItem(key, value) {
+    demoStorage.set(key, String(value));
+  },
+  removeItem(key) {
+    demoStorage.delete(key);
+  }
+};
 
 new Function(`${script}
 globalThis.__studentPortalTest = {
@@ -40,6 +72,7 @@ globalThis.__studentPortalTest = {
   topCompetencies,
   applyPmt,
   createCertificate,
+  persistStudentState,
   stopToast: () => clearTimeout(notify.timer)
 };`)();
 
@@ -273,8 +306,30 @@ assert.match(app.innerHTML, /Đang chờ lên lịch/);
 assert.match(app.innerHTML, /Trong khi chờ, đây là vài gợi ý cho bạn/);
 assert.match(app.innerHTML, /Luyện phỏng vấn cá nhân hoá/);
 
+const persistedDemo = JSON.parse(demoStorage.get("ai-talent-student-demo-v1"));
+assert.equal(persistedDemo.version, 1);
+assert.equal(persistedDemo.state.view, "home");
+assert.equal(persistedDemo.state.applicationStatus, "submitted");
+assert.equal(persistedDemo.state.coursesCompleted, 4);
+assert.equal(persistedDemo.state.cvReview.fullName, "Trần Minh Anh");
+assert.equal(persistedDemo.state.cvFileData, "", "raw uploaded file bytes must not be written to localStorage");
+
+new Function(`${script}
+globalThis.__restoredStudentPortalTest = {
+  state,
+  stopToast: () => clearTimeout(notify.timer)
+};`)();
+const restoredPortal = globalThis.__restoredStudentPortalTest;
+assert.equal(restoredPortal.state.view, "home", "returning from TA must restore the last student view");
+assert.equal(restoredPortal.state.applicationStatus, "submitted");
+assert.equal(restoredPortal.state.coursesCompleted, 4);
+assert.equal(restoredPortal.state.cvReview.fullName, "Trần Minh Anh");
+assert.match(app.innerHTML, /Đơn ứng tuyển của bạn đang được xử lý/, "restored session must skip login and onboarding");
+
 Math.random = originalRandom;
 
 portal.stopToast();
+restoredPortal.stopToast();
 delete globalThis.__studentPortalTest;
+delete globalThis.__restoredStudentPortalTest;
 console.log("Student portal demo learning-flow tests passed.");
