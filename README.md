@@ -394,6 +394,10 @@ interviewer note area and current follow-up questions remain pinned above the
 analysis while the transcript sits below as supporting evidence. AI-estimated and
 final interview scores also appear in the talent pipeline, with the next action changing
 from interview advancement to the new `Interviewed` / `Waiting for ranking` stage.
+The interviewer may end after any completed transcript checkpoint or extend the
+conversation in 15-minute blocks up to 90 minutes. Follow-up questions remain visible
+through final review, while timestamped interviewer observations are preserved as a
+separate human evidence source beside candidate transcript citations.
 
 The published TA-side PM CV Evaluator endpoint is also included:
 

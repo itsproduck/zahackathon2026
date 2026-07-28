@@ -286,7 +286,7 @@ function validateInterviewerNotes(notes) {
       return "Each interviewer note requires a unique noteId.";
     }
     noteIds.add(note.noteId);
-    if (!Number.isInteger(note.minute) || note.minute < 0 || note.minute > 60) {
+    if (!Number.isInteger(note.minute) || note.minute < 0 || note.minute > 90) {
       return `Interviewer note ${note.noteId} has an invalid minute.`;
     }
     if (typeof note.text !== "string" || !note.text.trim() || note.text.length > 3000) {

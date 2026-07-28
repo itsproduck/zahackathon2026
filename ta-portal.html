@@ -1089,7 +1089,8 @@
       }
       .modal-backdrop.copilot-pip .copilot-clock-face { width: 34px; height: 34px; }
       .modal-backdrop.copilot-pip .copilot-demo-clock > span > b { font-size: var(--type-meta-size); }
-      .modal-backdrop.copilot-pip .copilot-demo-controls .btn:not(#copilotStartPause) { display: none; }
+      .modal-backdrop.copilot-pip .copilot-demo-controls #copilotNext,
+      .modal-backdrop.copilot-pip .copilot-demo-controls #copilotReset { display: none; }
       .modal-backdrop.copilot-pip .copilot-demo-controls .btn {
         min-height: 32px;
         padding: 6px 10px;
@@ -1180,7 +1181,7 @@
       .copilot-demo-clock > span > b { display: block; color: var(--teal-deep); font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); }
       .copilot-demo-clock > span > span { display: block; margin-top: 2px; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
       .copilot-demo-controls { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
-      .copilot-timeline { margin-bottom: 14px; display: grid; grid-template-columns: repeat(5, 1fr); }
+      .copilot-timeline { margin-bottom: 14px; display: grid; grid-template-columns: repeat(var(--copilot-stage-count, 5), 1fr); }
       .copilot-stage { min-width: 0; display: grid; grid-template-columns: 24px 1fr; gap: 7px; align-items: center; position: relative; }
       .copilot-stage:not(:last-child)::after { content: ""; height: 2px; position: absolute; left: 24px; right: 0; top: 11px; background: var(--line-strong); z-index: 0; }
       .copilot-stage-dot { width: 24px; height: 24px; display: grid; place-items: center; border: 2px solid var(--line-strong); border-radius: 50%; color: var(--muted); background: var(--white); font-size: var(--type-micro-size); line-height: 1; font-weight: var(--weight-semibold); position: relative; z-index: 1; }
@@ -1262,6 +1263,7 @@
       .note-history { max-height: 68px; margin-top: 8px; display: grid; gap: 5px; overflow: auto; }
       .note-snapshot { padding: 7px 8px; border-radius: 7px; color: var(--body); background: var(--gold-wash); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
       .note-snapshot b { color: #79510e; }
+      .note-snapshot.is-highlighted { outline: 2px solid var(--gold); background: #fff1cb; }
       .copilot-input-note { margin: 8px 0 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
       .copilot-input-actions { margin-top: 11px; display: grid; grid-template-columns: 1fr; gap: 8px; }
       .copilot-batch-status { margin-top: 9px; padding: 8px 9px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-radius: 7px; color: var(--muted); background: #f3f7f7; font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
@@ -1317,6 +1319,14 @@
       .copilot-review-note { padding: 10px 11px; display: flex; gap: 8px; border: 1px solid #f0d7b1; border-radius: 8px; color: #79510e; background: var(--gold-wash); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
       .copilot-review-note > span:first-child { flex: none; }
       .copilot-review-note > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+      .interviewer-evidence-panel { padding: 11px 12px; border: 1px solid #ecd7ad; border-radius: 9px; background: #fffaf0; }
+      .interviewer-evidence-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+      .interviewer-evidence-head h4 { margin: 0; color: var(--body); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .interviewer-evidence-head p { margin: 3px 0 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .interviewer-evidence-list { margin-top: 8px; display: grid; gap: 6px; }
+      .interviewer-evidence-item { padding: 8px 9px; display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; border: 1px solid #f0dfbd; border-radius: 7px; color: var(--body); background: var(--white); text-align: left; font: inherit; cursor: pointer; }
+      .interviewer-evidence-item span { padding: 3px 6px; border-radius: 99px; color: #79510e; background: var(--gold-wash); font-size: var(--type-micro-size); line-height: var(--type-micro-line); font-weight: var(--weight-semibold); white-space: nowrap; }
+      .interviewer-evidence-item p { margin: 0; color: var(--body); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
       .copilot-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
       .copilot-list-card { padding: 10px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); }
       .copilot-list-card h4 { margin: 0; color: var(--body); font-size: var(--type-meta-size); }
@@ -2433,6 +2443,26 @@
               `Interviewer: How would you apply this learning in your first month as a Product Management Trainee?`,
               `Candidate: I would make assumptions visible, pair every delivery metric with a customer outcome, and ask stakeholders to agree on the decision rule before work begins. I would also share uncertain results early rather than wait for a perfect story.`
             ]
+          },
+          {
+            minute: 75,
+            focus: "Extended evidence",
+            lines: [
+              `Interviewer: We have extended the interview. What is the hardest stakeholder concern you would expect in this plan?`,
+              `Candidate: The hardest concern would be that the extra discovery delays delivery. I would show which uncertainty could invalidate the build, time-box discovery to three days, and agree on a decision date with engineering and design.`,
+              `Interviewer: What would make you stop the experiment early?`,
+              `Candidate: I would stop if setup completion improved but support contacts or failure rates rose beyond the guardrail. That would mean the guided flow created hidden complexity instead of sustainable value.`
+            ]
+          },
+          {
+            minute: 90,
+            focus: "Second extension",
+            lines: [
+              `Interviewer: Give one final example of influencing without authority.`,
+              `Candidate: In the same project I could not assign work to engineering, so I used customer clips, a small prototype and a reversible test plan. That made the risk concrete and helped the team agree without escalation.`,
+              `Interviewer: What commitment would you make for your first trainee month?`,
+              `Candidate: I would publish assumptions, decision rules and learning notes every week so the team can challenge my reasoning and see whether I follow through.`
+            ]
           }
         ];
       }
@@ -2477,6 +2507,16 @@
       function evidenceRefs(ids) {
         if (!ids?.length) return `<span class="evidence-ref">No transcript evidence yet</span>`;
         return ids.map(id => `<button type="button" class="evidence-ref" data-evidence-turn="${esc(id)}">${esc(id)} ↗</button>`).join("");
+      }
+
+      function interviewerNoteEvidence(session) {
+        if (!session.notes?.length) return `<section class="interviewer-evidence-panel">
+          <div class="interviewer-evidence-head"><div><h4>Interviewer observation source</h4><p>No interviewer note was captured. Transcript citations remain the only evidence source.</p></div><span class="pill gold">Human context</span></div>
+        </section>`;
+        return `<section class="interviewer-evidence-panel">
+          <div class="interviewer-evidence-head"><div><h4>Interviewer observation source</h4><p>Timestamped human observations supplied to the analysis. These support review but are kept separate from candidate transcript proof.</p></div><span class="pill gold">${session.notes.length} ${session.notes.length === 1 ? "note" : "notes"}</span></div>
+          <div class="interviewer-evidence-list">${session.notes.map(note => `<button class="interviewer-evidence-item" type="button" data-note-evidence="${esc(note.noteId)}"><span>${esc(note.minute)} min · ${esc(note.noteId)}</span><p>${esc(note.text)}</p></button>`).join("")}</div>
+        </section>`;
       }
 
       function calculateInterviewCategoryScores(criteria) {
@@ -2618,6 +2658,7 @@
           <div class="scorecard-completion ${unscoredCount ? "" : "hidden"}" id="finalScoreCompletion">${unscoredCount ? `<b>${unscoredCount} criteria need interviewer scores.</b> AI left them blank because the transcript did not contain enough evidence.` : ""}</div>
           <div class="category-score-strip">${output.categoryScores.map(category => `<span class="category-score-chip"><b data-final-category="${esc(category.categoryId)}">${esc(category.points)}/${esc(category.maxPoints)}</b><span>${esc(category.name)}</span></span>`).join("")}</div>
           <div class="scorecard-list">${groups}</div>
+          ${interviewerNoteEvidence(session)}
           <div class="copilot-columns">
             <article class="copilot-list-card"><h4>Strengths</h4><ul>${output.strengths.map(item => `<li>${esc(item)}</li>`).join("") || "<li>No confirmed strength yet.</li>"}</ul></article>
             <article class="copilot-list-card"><h4>Concerns & unanswered gaps</h4><ul>${[...output.concerns, ...output.unansweredGaps].map(item => `<li>${esc(item)}</li>`).join("") || "<li>No material gap recorded.</li>"}</ul></article>
@@ -2643,14 +2684,14 @@
         if (!dock) return;
         const currentCheckpoint = session.checkpoint || session.checkpoints?.[session.currentMinute];
         const checkpoint = currentCheckpoint || session.checkpoints?.[45];
-        const followUps = checkpoint?.followUps?.length
-          ? checkpoint.followUps
-          : candidate.questions.slice(0, 3).map((question, index) => ({
+        const preparedFollowUps = candidate.questions.slice(0, 3).map((question, index) => ({
               question,
               reason: index === 0 ? candidate.gapDetail : "Prepared from the candidate evidence record.",
               criterionId: index === 0 ? "data_driven" : index === 1 ? "self_learning" : "delivery"
             }));
-        if (badge) badge.textContent = checkpoint ? `${currentCheckpoint ? session.currentMinute : 45} min` : "Before";
+        if (checkpoint?.followUps?.length) session.lastFollowUps = structuredClone(checkpoint.followUps.slice(0, 5));
+        const followUps = session.lastFollowUps?.length ? session.lastFollowUps : preparedFollowUps;
+        if (badge) badge.textContent = session.final ? "Final review" : checkpoint ? `${currentCheckpoint ? session.currentMinute : 45} min` : "Before";
         dock.innerHTML = followUps.slice(0, 5).map((item, index) => `<article class="follow-up">
           <span>${index + 1}</span><div><b>${esc(item.question)}</b><p>${esc(item.reason)}${item.criterionId ? ` · ${esc(criterionLabel(item.criterionId))}` : ""}</p></div>
         </article>`).join("") || `<p class="copilot-input-note">No additional follow-up is required.</p>`;
@@ -2775,7 +2816,7 @@
         const history = document.querySelector("#copilotNoteHistory");
         if (!history) return;
         history.innerHTML = session.notes.length
-          ? session.notes.map(note => `<div class="note-snapshot"><b>${esc(note.minute)} min</b> · ${esc(note.text)}</div>`).join("")
+          ? session.notes.map(note => `<div class="note-snapshot" data-note-id="${esc(note.noteId)}"><b>${esc(note.minute)} min · ${esc(note.noteId)}</b> · ${esc(note.text)}</div>`).join("")
           : `<p class="copilot-input-note" style="margin:0">Notes are captured with the next checkpoint and supplied as interviewer context.</p>`;
       }
 
@@ -2797,6 +2838,15 @@
         turn.scrollIntoView({ behavior: "smooth", block: "center" });
       }
 
+      function highlightInterviewerNote(noteId) {
+        const notes = Array.from(document.querySelectorAll("[data-note-id]"));
+        const note = notes.find(item => item.dataset.noteId === noteId);
+        if (!note) return;
+        notes.forEach(item => item.classList.remove("is-highlighted"));
+        note.classList.add("is-highlighted");
+        note.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
       function saveFinalInterviewResult(candidate, session) {
         session.finalComment = document.querySelector("#finalInterviewNote")?.value.trim() || session.finalComment || "";
         document.querySelectorAll("#copilotResult [data-score-input][data-score-scope='final']").forEach(input => {
@@ -2812,7 +2862,10 @@
           ...structuredClone(session.final),
           finalComment: session.finalComment,
           interviewerNotes: structuredClone(session.notes),
+          latestFollowUps: structuredClone(session.lastFollowUps || []),
           transcriptText: session.transcriptText,
+          durationMinutes: session.currentMinute,
+          endReason: session.endReason || `Completed at ${session.currentMinute} minutes`,
           savedAt: new Date().toISOString(),
           savedBy: "Minh Nguyen",
           status: "saved"
@@ -2835,22 +2888,27 @@
         const startPause = document.querySelector("#copilotStartPause");
         const next = document.querySelector("#copilotNext");
         const reset = document.querySelector("#copilotReset");
+        const endEarly = document.querySelector("#copilotEndEarly");
+        const extend = document.querySelector("#copilotExtend");
         const generateCheckpoint = document.querySelector("#copilotGenerateCheckpoint");
         const refreshQuestions = document.querySelector("#copilotRefreshQuestions");
         if (!timeline) return;
+        const plannedEndMinute = session.plannedEndMinute || 60;
+        const checkpointStages = [15, 30, 45, 60, 75]
+          .filter(minute => minute < plannedEndMinute)
+          .map(minute => ({ minute, label: `${minute} min`, detail: minute >= 60 ? "Extended" : "Checkpoint" }));
         const stages = [
           { minute: 0, label: "Before", detail: "Briefing" },
-          { minute: 15, label: "15 min", detail: "Checkpoint" },
-          { minute: 30, label: "30 min", detail: "Checkpoint" },
-          { minute: 45, label: "45 min", detail: "Checkpoint" },
-          { minute: 60, label: "End", detail: "Scorecard" }
+          ...checkpointStages,
+          { minute: plannedEndMinute, label: "End", detail: "Scorecard", final: true }
         ];
+        timeline.style.setProperty("--copilot-stage-count", stages.length);
         timeline.innerHTML = stages.map((stage, index) => {
           const complete = stage.minute === 0
             ? session.currentMinute > 0
-            : stage.minute === 60
+            : stage.final
               ? Boolean(session.final)
-              : Boolean(session.checkpoints[stage.minute]);
+              : session.currentMinute > stage.minute || Boolean(session.checkpoints[stage.minute]);
           const current = session.phase !== "complete" && session.currentMinute === stage.minute;
           return `<div class="copilot-stage ${complete ? "complete" : ""} ${current ? "current" : ""}">
             <span class="copilot-stage-dot ui-icon ui-icon--xs ui-icon--round">${complete ? "✓" : index + 1}</span>
@@ -2873,9 +2931,9 @@
         const lastChunk = session.chunks.find(chunk => chunk.minute === session.currentMinute);
         batchStatus.innerHTML = session.currentMinute === 0
           ? `<span>No transcript received yet</span><b>Next: 15 min</b>`
-          : session.currentMinute === 60
-            ? `<span>Full one-hour transcript received</span><b>16 finalized turns</b>`
-            : `<span>Latest batch: ${esc(lastChunk?.focus || "Interview evidence")}</span><b>Next: ${session.currentMinute + 15} min</b>`;
+          : session.final
+            ? `<span>${esc(session.endReason || `Interview completed at ${session.currentMinute} minutes`)}</span><b>Scorecard ready</b>`
+            : `<span>Latest batch: ${esc(lastChunk?.focus || "Interview evidence")}</span><b>Next: ${Math.min(session.currentMinute + 15, plannedEndMinute)} min</b>`;
         startPause.textContent = session.phase === "running" || session.phase === "analysing"
           ? "Ⅱ Pause demo"
           : session.phase === "complete"
@@ -2886,6 +2944,16 @@
         startPause.disabled = session.loading;
         next.disabled = session.loading || session.phase === "complete";
         reset.disabled = session.loading || session.currentMinute === 0;
+        if (endEarly) {
+          endEarly.classList.toggle("hidden", session.phase === "complete");
+          endEarly.disabled = session.loading || session.currentMinute === 0;
+        }
+        if (extend) {
+          const canExtend = session.phase === "complete" && !session.saved && plannedEndMinute < 90;
+          extend.classList.toggle("hidden", !canExtend);
+          extend.disabled = session.loading || !canExtend;
+          extend.textContent = `+ Extend to ${plannedEndMinute + 15} min`;
+        }
         if (generateCheckpoint) {
           generateCheckpoint.disabled = session.loading || session.currentMinute === 0 || session.phase === "complete";
           generateCheckpoint.textContent = session.loading ? "Analysing…" : "Generate checkpoint";
@@ -2984,13 +3052,64 @@
       function scheduleNextCopilotBatch(candidate) {
         clearTimeout(copilotDemoTimer);
         const session = copilotSessions.get(candidate.id);
-        if (!session || session.phase !== "running" || session.currentMinute >= 60) return;
+        if (!session || session.phase !== "running" || session.currentMinute >= (session.plannedEndMinute || 60)) return;
         copilotDemoTimer = setTimeout(() => advanceCopilotDemo(candidate, false), COPILOT_DEMO_STEP_MS);
+      }
+
+      function completeCopilotInterview(candidate, session, reason) {
+        session.phase = "complete";
+        session.endReason = reason;
+        candidate.stage = "interview";
+        candidate.next = "Review & save interview scorecard";
+        candidate.timeline.unshift(["AI scorecard generated", `Just now · ${reason.toLowerCase()} · human review required`]);
+        refreshProgramCounts();
+        renderCopilotResult(session, candidate);
+        renderCopilotTimeline(session);
+      }
+
+      async function endCopilotEarly(candidate) {
+        const session = copilotSessions.get(candidate.id);
+        if (!session || session.loading || !session.currentMinute || !session.transcriptText.trim()) return;
+        clearTimeout(copilotDemoTimer);
+        captureCopilotNote(session, session.currentMinute);
+        session.plannedEndMinute = session.currentMinute;
+        session.final = null;
+        session.finalSource = null;
+        session.saved = false;
+        session.phase = "analysing";
+        renderCopilotTimeline(session);
+        await runCopilotAnalysis(candidate, "finalize", session);
+        completeCopilotInterview(candidate, session, `Ended early at ${session.currentMinute} minutes`);
+        showToast(`Interview ended at ${session.currentMinute} minutes. Final scorecard is ready for review.`);
+      }
+
+      function extendCopilotInterview(candidate) {
+        const session = copilotSessions.get(candidate.id);
+        if (!session || session.loading || session.saved || session.phase !== "complete") return;
+        const nextEnd = Math.min(90, (session.plannedEndMinute || session.currentMinute || 60) + 15);
+        if (nextEnd <= session.currentMinute) return;
+        session.plannedEndMinute = nextEnd;
+        session.extensionCount = (session.extensionCount || 0) + 1;
+        session.final = null;
+        session.finalSource = null;
+        session.saved = false;
+        session.endReason = "";
+        session.phase = "running";
+        session.pauseRequested = false;
+        candidate.stage = "interview";
+        candidate.next = `Interview extended to ${nextEnd} min`;
+        candidate.timeline.unshift(["Interview extended", `Just now · new end time ${nextEnd} min`]);
+        refreshProgramCounts();
+        renderCopilotResult(session, candidate);
+        renderCopilotTimeline(session);
+        scheduleNextCopilotBatch(candidate);
+        showToast(`Interview extended to ${nextEnd} minutes.`);
       }
 
       async function advanceCopilotDemo(candidate, manualAdvance) {
         const session = copilotSessions.get(candidate.id);
-        if (!session || session.loading || session.currentMinute >= 60) return;
+        const plannedEndMinute = session?.plannedEndMinute || 60;
+        if (!session || session.loading || session.currentMinute >= plannedEndMinute) return;
         clearTimeout(copilotDemoTimer);
         const wasPaused = session.phase === "paused";
         const nextChunk = session.chunks.find(chunk => chunk.minute > session.currentMinute);
@@ -3002,14 +3121,10 @@
         session.checkpoint = null;
         session.pauseRequested = manualAdvance || wasPaused;
         renderCopilotTimeline(session);
-        const action = session.currentMinute === 60 ? "finalize" : "checkpoint";
+        const action = session.currentMinute === plannedEndMinute ? "finalize" : "checkpoint";
         await runCopilotAnalysis(candidate, action, session);
-        if (session.currentMinute === 60) {
-          session.phase = "complete";
-          candidate.stage = "interview";
-          candidate.next = "Review & save interview scorecard";
-          candidate.timeline.unshift(["AI scorecard generated", "Just now · human review required"]);
-          refreshProgramCounts();
+        if (session.currentMinute === plannedEndMinute) {
+          completeCopilotInterview(candidate, session, `Completed at ${session.currentMinute} minutes`);
         } else if (session.pauseRequested) {
           session.phase = "paused";
         } else {
@@ -3029,6 +3144,7 @@
           checkpoint: null,
           checkpointSource: null,
           checkpoints: {},
+          lastFollowUps: [],
           final: null,
           finalSource: null,
           loading: false,
@@ -3036,6 +3152,9 @@
           notes: [],
           noteDraft: "",
           finalComment: "",
+          plannedEndMinute: 60,
+          extensionCount: 0,
+          endReason: "",
           saved: false
         });
         renderCopilotTimeline(session);
@@ -3067,6 +3186,7 @@
           checkpoint: null,
           checkpointSource: null,
           checkpoints: {},
+          lastFollowUps: [],
           final: null,
           finalSource: null,
           loading: false,
@@ -3074,6 +3194,9 @@
           notes: [],
           noteDraft: "",
           finalComment: "",
+          plannedEndMinute: 60,
+          extensionCount: 0,
+          endReason: "",
           saved: false
         };
         if (candidate.interviewResult && !session.final) {
@@ -3082,13 +3205,20 @@
           session.final = structuredClone(candidate.interviewResult);
           session.finalSource = "saved_result";
           session.finalComment = candidate.interviewResult.finalComment || "";
+          session.lastFollowUps = structuredClone(candidate.interviewResult.latestFollowUps || []);
           session.saved = true;
-          session.currentMinute = 60;
+          session.currentMinute = candidate.interviewResult.durationMinutes || 60;
+          session.plannedEndMinute = session.currentMinute;
+          session.endReason = candidate.interviewResult.endReason || `Completed at ${session.currentMinute} minutes`;
           session.phase = "complete";
         }
         session.notes ||= [];
         session.noteDraft ||= "";
         session.finalComment ||= "";
+        session.lastFollowUps ||= [];
+        session.plannedEndMinute ||= 60;
+        session.extensionCount ||= 0;
+        session.endReason ||= "";
         copilotSessions.set(candidate.id, session);
         openCopilotLayer(`<section class="modal copilot-modal" role="dialog" aria-modal="true" aria-labelledby="copilotTitle">
           <div class="modal-head">
@@ -3103,7 +3233,7 @@
             <div class="copilot-pip-hint"><span>Picture-in-picture · browse candidate evidence freely</span><button id="viewCopilotCandidate" type="button">View ${esc(candidate.name)} →</button></div>
             <div class="copilot-demo-bar">
               <div class="copilot-demo-clock"><span class="copilot-clock-face ui-icon ui-icon--lg ui-icon--round" id="copilotClock">0m</span><span><b>Demo interview clock</b><span id="copilotPhase">Ready to start</span></span></div>
-              <div class="copilot-demo-controls"><button class="btn btn-primary" id="copilotStartPause">▶ Start 1-hour demo</button><button class="btn btn-secondary" id="copilotNext">↦ Next 15 min now</button><button class="btn btn-quiet" id="copilotReset">↻ Reset</button></div>
+              <div class="copilot-demo-controls"><button class="btn btn-primary" id="copilotStartPause">▶ Start 1-hour demo</button><button class="btn btn-secondary" id="copilotNext">↦ Next 15 min now</button><button class="btn btn-danger hidden" id="copilotEndEarly">End interview now</button><button class="btn btn-secondary hidden" id="copilotExtend">+ Extend to 75 min</button><button class="btn btn-quiet" id="copilotReset">↻ Reset</button></div>
             </div>
             <div class="copilot-timeline" id="copilotTimeline" aria-label="Interview checkpoint timeline"></div>
             <div class="copilot-interviewer-desk">
@@ -3144,6 +3274,8 @@
         renderCopilotResult(session, candidate);
         document.querySelector("#copilotStartPause").addEventListener("click", () => toggleCopilotDemo(candidate));
         document.querySelector("#copilotNext").addEventListener("click", () => advanceCopilotDemo(candidate, true));
+        document.querySelector("#copilotEndEarly").addEventListener("click", () => endCopilotEarly(candidate));
+        document.querySelector("#copilotExtend").addEventListener("click", () => extendCopilotInterview(candidate));
         document.querySelector("#copilotReset").addEventListener("click", () => resetCopilotDemo(candidate));
         document.querySelector("#copilotGenerateCheckpoint").addEventListener("click", () => regenerateCopilotCheckpoint(candidate, session, false));
         document.querySelector("#copilotRefreshQuestions").addEventListener("click", () => regenerateCopilotCheckpoint(candidate, session, true));
@@ -3155,6 +3287,8 @@
         document.querySelector("#copilotResult").addEventListener("click", event => {
           const evidence = event.target.closest("[data-evidence-turn]");
           if (evidence) highlightTranscriptTurn(evidence.dataset.evidenceTurn);
+          const noteEvidence = event.target.closest("[data-note-evidence]");
+          if (noteEvidence) highlightInterviewerNote(noteEvidence.dataset.noteEvidence);
           if (event.target.closest("#saveInterviewResult")) saveFinalInterviewResult(candidate, session);
         });
         document.querySelector("#copilotResult").addEventListener("input", event => {
