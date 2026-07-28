@@ -339,7 +339,7 @@
       .metric small { display: block; margin-top: 6px; color: var(--muted); font-size: 9px; line-height: 1.45; }
       .overview-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, .82fr); gap: 17px; }
       .overview-stack { display: grid; gap: 17px; align-content: start; }
-      .program-list { padding: 4px 17px 13px; }
+      .program-list { padding: 4px 17px 13px; container-type: inline-size; }
       .program-row {
         width: 100%;
         padding: 14px 2px;
@@ -386,6 +386,22 @@
       .health.watch strong, .health.watch span { color: var(--gold); }
       .health.risk strong, .health.risk span { color: var(--orange-dark); }
       .health.completed strong, .health.completed span { color: #607d86; }
+      @container (max-width: 699px) {
+        .program-row {
+          grid-template-columns: minmax(0, 1fr) auto 18px;
+          grid-template-areas:
+            "program health arrow"
+            "funnel funnel funnel";
+          gap: 13px 14px;
+          padding: 16px 2px;
+          align-items: start;
+        }
+        .program-name { grid-area: program; }
+        .mini-funnel { grid-area: funnel; }
+        .health { grid-area: health; min-width: 76px; }
+        .program-row > span:last-child { grid-area: arrow; align-self: center; }
+        .funnel-step i { height: 6px; }
+      }
       .action-list { padding: 5px 18px 12px; }
       .action-item { padding: 13px 0; display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: start; border-bottom: 1px solid var(--line); }
       .action-item:last-child { border: 0; }
@@ -524,9 +540,23 @@
       .ownership-badge.ownership-approve { color: #b94625; }
       .ai-summary { display: grid; grid-template-columns: 1fr 135px; gap: 14px; align-items: center; }
       .ai-summary p { margin: 0; color: var(--body); font-size: 10px; line-height: 1.6; }
-      .next-step { padding: 9px 10px; border-left: 2px solid var(--orange); border-radius: 0 7px 7px 0; background: #fff8f5; }
-      .next-step span { display: block; color: #a83f20; font-size: 8px; font-weight: var(--weight-semibold); letter-spacing: .06em; text-transform: uppercase; }
-      .next-step b { display: block; margin-top: 3px; color: #673326; font-size: 9px; line-height: 1.4; font-weight: var(--weight-medium); }
+      .next-step {
+        --next-color: var(--orange);
+        --next-label: #a83f20;
+        --next-ink: #673326;
+        --next-bg: #fff8f5;
+        padding: 9px 10px;
+        border-left: 2px solid var(--next-color);
+        border-radius: 0 7px 7px 0;
+        background: var(--next-bg);
+      }
+      .next-step span { display: block; color: var(--next-label); font-size: 8px; font-weight: var(--weight-semibold); letter-spacing: .06em; text-transform: uppercase; }
+      .next-step b { display: block; margin-top: 3px; color: var(--next-ink); font-size: 9px; line-height: 1.4; font-weight: var(--weight-medium); }
+      .next-step.automated { --next-color: var(--teal); --next-label: var(--teal-deep); --next-ink: #244f52; --next-bg: var(--teal-soft); }
+      .next-step.advance { --next-color: var(--green); --next-label: var(--green); --next-ink: #195f50; --next-bg: var(--green-wash); }
+      .next-step.supported { --next-color: var(--violet); --next-label: var(--violet); --next-ink: #554073; --next-bg: var(--violet-wash); }
+      .next-step.evidence { --next-color: var(--gold); --next-label: #946010; --next-ink: #6e501f; --next-bg: var(--gold-wash); }
+      .next-step.decision { --next-color: var(--orange); --next-label: #a83f20; --next-ink: #673326; --next-bg: var(--orange-wash); }
 
       @container (max-width: 859px) {
         .pipeline-table { min-width: 0; }
@@ -1099,8 +1129,6 @@
         .candidate-title-row .page-actions .btn { flex: 1; }
         .date-chip { display: none; }
         h1 { font-size: 24px; }
-        .program-row { grid-template-columns: 1fr auto; }
-        .mini-funnel, .health { display: none; }
         .source-row { grid-template-columns: 1fr; }
         .score-layout { grid-template-columns: 1fr; }
         .large-score { margin: auto; }
@@ -1385,6 +1413,14 @@
         const ownership = ownershipForStage(stage);
         return `<span class="ownership-badge ${ownership.className}"><i></i>${ownership.short}</span>`;
       }
+      function nextStepTone(candidate) {
+        const step = candidate.next.toLowerCase();
+        if (step.includes("request") || step.includes("evidence gap") || step.includes("walkthrough")) return "evidence";
+        if (candidate.stage === "offer" || step.includes("offer")) return "decision";
+        if (candidate.stage === "new" || step.includes("qualification in progress")) return "automated";
+        if (step.includes("advance")) return "advance";
+        return "supported";
+      }
       function ownershipGuide(headingLevel = 2) {
         return `<div class="ownership-guide" aria-label="AI and human workflow ownership">
           <h${headingLevel}>Workflow ownership</h${headingLevel}>
@@ -1620,7 +1656,7 @@
             <span><strong>${candidate.name}</strong><small>${candidate.school}<br>${program.name} · Applied ${candidate.applied}</small><span class="candidate-tags">${candidate.tags.map(tag => `<span>${tag}</span>`).join("")}</span></span>
           </div>
           <div class="ai-score"><span class="mobile-field-label">AI readiness</span><span class="score-ring" style="--score:${candidate.score};--score-color:${scoreColor}"><b>${candidate.score}</b></span><span class="score-copy"><strong>${candidate.confidence}</strong><small>Evidence coverage 92%</small>${statusPill(candidate.stage)}</span></div>
-          <div class="ai-summary"><span class="mobile-field-label">Summary & suggested next step</span><p>${candidate.summary}</p><span class="next-step"><span>Next suggested</span><b>${candidate.next} →</b></span></div>
+          <div class="ai-summary"><span class="mobile-field-label">Summary & suggested next step</span><p>${candidate.summary}</p><span class="next-step ${nextStepTone(candidate)}"><span>Next suggested</span><b>${candidate.next} →</b></span></div>
         </button>`;
       }
 
