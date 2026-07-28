@@ -508,6 +508,7 @@
       .back-button { margin-bottom: 14px; padding: 4px 0; border: 0; color: var(--muted); background: transparent; font-size: 10px; }
       .back-button:hover { color: var(--teal-deep); }
       .candidate-title-row { align-items: center; }
+      .candidate-title-row .page-actions { display: none; }
       .detail-identity { display: flex; align-items: center; gap: 13px; }
       .detail-avatar { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; color: var(--avatar-ink, var(--green)); background: var(--avatar-bg, #dff0e9); font-size: 14px; font-weight: var(--weight-semibold); }
       .detail-title h1 { font-size: 24px; }
@@ -890,6 +891,87 @@
       .range-row input { flex: 1; accent-color: var(--teal); }
       .range-row output { width: 34px; color: var(--teal-deep); font-size: 10px; font-weight: var(--weight-semibold); }
 
+      /* TA Portal typography system */
+      h1 { font-size: var(--type-page-title-size); line-height: var(--type-page-title-line); }
+      .card-head h2, .modal-head h2 { font-size: var(--type-card-title-size); line-height: var(--type-card-title-line); }
+      .eyebrow, .nav-label, .pipeline-head, .label { font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .crumb, .student-link, .date-chip, .sidebar-note p, .profile small,
+      .card-head p, .metric-top, .metric small, .program-name span, .health span,
+      .action-copy span, .chart-summary span, .chart-labels-row, .result-count,
+      .pagination, .candidate-info small, .score-copy small, .verified,
+      .source-card p, .large-score span, .evidence-gap p, .decision-score span,
+      .decision-block p, .agent-line > span:not(.agent-mark) > span, .activity span,
+      .agent-card-head p, .agent-stat span, .version, .program-card-top p,
+      .program-meta span, .program-progress-head, .program-card-foot span,
+      .modal-head p, .calendar-scan-state p, .slot-time small, .slot-person span,
+      .slot-reasons li, .confirmation-copy > span > span, .auto-send-note {
+        font-size: var(--type-caption-size);
+        line-height: var(--type-caption-line);
+      }
+      .btn, .btn-link, .input, .select, .field label, .back-button, .ownership-guide,
+      .page-button, .candidate-tags span, .next-step b, .source-card b,
+      .competency, .competency b, .question-list li, .agent-capabilities li,
+      .activity b, .summary-chip span, .agent-description, .agent-stat b,
+      .program-meta b, .calendar-scan-state strong, .scan-window, .slot-time span,
+      .slot-person b, .slot-reasons h4, .confirmation-copy b, .range-row output,
+      .toast {
+        font-size: var(--type-meta-size);
+        line-height: var(--type-meta-line);
+      }
+      .pill, .funnel-step span, .next-step span { font-size: var(--type-micro-size); line-height: var(--type-micro-line); }
+      .program-name strong, .action-copy b, .candidate-info strong, .score-copy strong,
+      .evidence-gap strong, .agent-card h2, .program-card h2,
+      .slot-found-head h3 {
+        font-size: var(--type-supporting-size);
+        line-height: var(--type-supporting-line);
+      }
+      .ai-summary p, .summary-lead { font-size: var(--type-body-size); line-height: var(--type-body-line); }
+      .funnel-step b, .health strong { font-size: var(--type-row-title-size); line-height: var(--type-row-title-line); }
+      .detail-title h1 { font-size: var(--type-page-title-size); }
+      .detail-title-meta { font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); }
+      .score-ring b { font-size: var(--type-score-size); }
+      .large-score strong { font-size: var(--type-stat-xl-size); }
+      .ownership-badge { font-size: var(--type-caption-size); }
+      .decision-card .card-head h2, .decision-score strong {
+        font-size: var(--type-card-title-size);
+        line-height: var(--type-card-title-line);
+        font-weight: var(--weight-medium);
+        letter-spacing: var(--tracking-heading);
+      }
+      .decision-block h3 {
+        font-size: var(--type-row-title-size);
+        line-height: var(--type-row-title-line);
+        font-weight: var(--weight-semibold);
+        letter-spacing: var(--tracking-heading);
+      }
+      .screening-head p, .screen-file-copy span, .screen-or, .screen-agent-progress span,
+      .screen-score-ring small, .screen-result-copy p {
+        font-size: var(--type-caption-size);
+        line-height: var(--type-caption-line);
+      }
+      .screen-step-head h3, .screen-file-copy strong, .screen-source,
+      .screen-agent-progress strong, .screen-detail-link, .screen-evidence h4,
+      .screen-evidence li, .screen-match-title, .screen-match, .screen-match b {
+        font-size: var(--type-meta-size);
+        line-height: var(--type-meta-line);
+      }
+      .screen-match-label { font-size: var(--type-caption-size); }
+
+      /* Student Portal-aligned detailed scoring */
+      .detailed-score-intro { margin: 0; color: var(--body); font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); }
+      .detailed-score-summary { margin: 15px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .detailed-score-summary div { padding: 11px; border: 1px solid var(--line); border-radius: 9px; background: #f8fbfb; }
+      .detailed-score-summary span { display: block; color: var(--muted); font-size: var(--type-caption-size); }
+      .detailed-score-summary b { display: block; margin-top: 3px; color: var(--teal-deep); font-size: var(--type-row-title-size); }
+      .detailed-score-list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+      .detailed-score-row { padding: 12px; display: grid; grid-template-columns: minmax(145px, .8fr) minmax(180px, 1.2fr) 95px; gap: 12px; align-items: center; background: var(--white); }
+      .detailed-score-row + .detailed-score-row { border-top: 1px solid var(--line); }
+      .detailed-score-row b { display: block; color: var(--body); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .detailed-score-row span { display: block; margin-top: 2px; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .detailed-score-value { display: grid; grid-template-columns: 1fr 26px; gap: 7px; align-items: center; }
+      .detailed-score-value b { color: var(--teal-deep); text-align: right; }
+      .score-governance-note { margin: 15px 0 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+
       /* Toast */
       .toast {
         position: fixed;
@@ -934,6 +1016,8 @@
         .student-link { display: none; }
         .view { padding-top: 23px; }
         .page-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
+        .candidate-title-row .page-actions { width: 100%; display: flex; }
+        .candidate-title-row .page-actions .btn { flex: 1; }
         .date-chip { display: none; }
         h1 { font-size: 24px; }
         .program-row { grid-template-columns: 1fr auto; }
@@ -946,6 +1030,8 @@
         .search-wrap { flex-basis: 100%; }
         .result-count { width: 100%; margin: 0; }
         .pagination { align-items: flex-start; flex-direction: column; }
+        .detailed-score-row { grid-template-columns: 1fr; gap: 7px; }
+        .detailed-score-value { grid-template-columns: 1fr 32px; }
         .modal-backdrop { padding: 10px; }
         .screening-drawer { width: 100%; }
       }
@@ -957,8 +1043,8 @@
         .page-actions .btn { flex: 1; }
         .detail-identity { align-items: flex-start; }
         .detail-avatar { width: 44px; height: 44px; }
-        .candidate-title-row .page-actions { width: auto; }
-        .candidate-title-row .btn-quiet { display: none; }
+        .candidate-title-row .page-actions { width: 100%; display: grid; grid-template-columns: 1fr; }
+        .detailed-score-summary { grid-template-columns: 1fr; }
         .competency { grid-template-columns: 92px 1fr 23px; }
         .slot-main { grid-template-columns: 48px 1fr; }
         .slot-fit { grid-column: 1 / -1; }
@@ -1190,6 +1276,14 @@
         interview: { className: "ownership-support", short: "AI supporting", detail: "Review & Interview" },
         offer: { className: "ownership-approve", short: "Human approval", detail: "Important decisions" }
       };
+      const studentCompetencyCatalog = [
+        { name: "Product Thinking", course: 1, criteria: 3, maxPoints: 15, aliases: ["product thinking", "growth thinking"], source: "Learning + assignment" },
+        { name: "Problem Solving", course: 2, criteria: 4, maxPoints: 20, aliases: ["problem solving"], source: "Structured case" },
+        { name: "Customer Focus", course: 3, criteria: 1, maxPoints: 5, aliases: ["customer focus", "customer insight"], source: "Discovery evidence" },
+        { name: "Data Sense", course: 3, criteria: 1, maxPoints: 5, aliases: ["data sense", "data reasoning"], source: "Metrics evidence" },
+        { name: "Communication", course: 4, criteria: 1, maxPoints: 5, aliases: ["communication"], source: "CV + assessment" },
+        { name: "Ownership", course: 4, criteria: 3, maxPoints: 15, aliases: ["ownership", "execution"], source: "Delivery evidence" }
+      ];
       const PAGE_SIZE = 20;
       const state = { view: "overview", lastView: "pipeline", selectedCandidate: null, search: "", program: "all", stage: "all", score: "all", trend: "applications", page: 1 };
       const root = document.querySelector("#viewRoot");
@@ -1211,6 +1305,23 @@
           <span class="ownership-support"><i></i>AI supporting <small>Review + Interview</small></span>
           <span class="ownership-approve"><i></i>Human approval <small>Moves + offers</small></span>
         </div>`;
+      }
+      function detailedCandidateScores(candidate) {
+        const normalizedSkills = candidate.skills.map(([name, score]) => ({ name: name.toLowerCase(), score }));
+        const directScore = aliases => normalizedSkills.find(skill => aliases.some(alias => skill.name.includes(alias)))?.score;
+        const productScore = directScore(["product thinking", "growth thinking"]) ?? candidate.score;
+        const dataScore = directScore(["data sense", "data reasoning"]) ?? Math.max(60, candidate.score - 5);
+        const communicationScore = directScore(["communication"]) ?? Math.max(60, candidate.score - 4);
+        return studentCompetencyCatalog.map((competency, index) => {
+          const matched = directScore(competency.aliases);
+          let score = matched;
+          if (score == null && competency.name === "Problem Solving") score = Math.round((productScore + dataScore) / 2);
+          if (score == null && competency.name === "Customer Focus") score = Math.max(60, candidate.score - 4);
+          if (score == null && competency.name === "Ownership") score = Math.round((candidate.score + communicationScore) / 2);
+          if (score == null) score = Math.max(60, candidate.score - index);
+          const points = Math.round(score / 100 * competency.maxPoints);
+          return { ...competency, score, points, stars: (score / 20).toFixed(1) };
+        });
       }
       function esc(value) {
         return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
@@ -1423,7 +1534,7 @@
         return `<section class="view">
           <button class="back-button" id="backToPipeline">← Back to ${state.lastView === "overview" ? "overview" : "talent pipeline"}</button>
           <div class="page-heading candidate-title-row">
-            <div class="detail-identity"><span class="detail-avatar" style="--avatar-bg:${candidate.color[0]};--avatar-ink:${candidate.color[1]}">${candidate.initials}</span><span class="detail-title"><h1>${candidate.name}</h1><span class="detail-title-meta">${candidate.email}<span>·</span>${candidate.location}<span>·</span>${statusPill(candidate.stage)}${ownershipBadge(candidate.stage)}</span></span></div>
+            <div class="detail-identity"><span class="detail-avatar" style="--avatar-bg:${candidate.color[0]};--avatar-ink:${candidate.color[1]}">${candidate.initials}</span><span class="detail-title"><h1>${candidate.name}</h1><span class="detail-title-meta">${candidate.email}<span>·</span>${candidate.location}<span>·</span>${statusPill(candidate.stage)}</span></span></div>
             <div class="page-actions"><button class="btn btn-quiet" data-action="request-evidence">Request evidence</button>${candidate.next.startsWith("Interview scheduled") ? '<button class="btn btn-secondary" disabled>✓ Interview scheduled</button>' : candidate.stage === "new" ? '<button class="btn btn-secondary" disabled>AI qualification running</button>' : candidate.stage === "offer" ? '<button class="btn btn-primary" data-action="approve-offer">Approve offer</button>' : `<button class="btn btn-primary" data-action="${candidate.stage === "interview" ? "schedule" : "advance"}">${candidate.stage === "interview" ? "✦ Find best slot" : candidate.stage === "review" ? "Approve interview" : "Start TA review"}</button>`}</div>
           </div>
 
@@ -1440,10 +1551,10 @@
               </article>
 
               <article class="card">
-                <div class="card-head"><div><h2>Readiness score & evidence</h2><p>Explainable score across the competencies required by ${program.name}.</p></div><button class="btn-link" data-action="score-details">View scoring rubric</button></div>
+                <div class="card-head"><div><h2>Readiness score & evidence</h2><p>Six competencies synchronized with the Student Portal evidence model.</p></div><button class="btn-link" data-action="score-details">Detailed score →</button></div>
                 <div class="score-layout">
                   <div class="large-score" style="--score:${candidate.score}"><div><strong>${candidate.score}</strong><span>out of 100</span></div></div>
-                  <div class="competencies">${candidate.skills.map(skill => `<div class="competency"><span>${skill[0]}</span><div class="track"><i style="width:${skill[1]}%"></i></div><b>${skill[1]}</b></div>`).join("")}</div>
+                  <div class="competencies">${detailedCandidateScores(candidate).map(skill => `<div class="competency"><span>${skill.name}</span><div class="track"><i style="width:${skill.score}%"></i></div><b>${skill.score}</b></div>`).join("")}</div>
                 </div>
               </article>
 
@@ -1706,7 +1817,28 @@
       }
 
       function openScoreModal(candidate) {
-        openModal(`<section class="modal small" role="dialog" aria-modal="true" aria-labelledby="rubricTitle"><div class="modal-head"><div><p class="eyebrow">Scoring rubric</p><h2 id="rubricTitle">${candidate.name} · ${candidate.score}/100</h2><p>Weighted evidence from three verified sources.</p></div><button class="icon-button" data-close-modal aria-label="Close">×</button></div><div class="modal-body"><div class="competencies">${candidate.skills.map(skill => `<div class="competency"><span>${skill[0]}</span><div class="track"><i style="width:${skill[1]}%"></i></div><b>${skill[1]}</b></div>`).join("")}</div><p style="margin:17px 0 0;color:var(--muted);font-size:9px;line-height:1.6">Scores support prioritization and interview preparation. They do not determine employment outcomes; TA and the interview panel remain responsible for every decision.</p></div><div class="modal-foot"><button class="btn btn-primary" data-close-modal>Done</button></div></section>`);
+        const detailedScores = detailedCandidateScores(candidate);
+        const rubricPoints = detailedScores.reduce((total, competency) => total + competency.points, 0);
+        openModal(`<section class="modal" role="dialog" aria-modal="true" aria-labelledby="rubricTitle">
+          <div class="modal-head"><div><p class="eyebrow">Detailed score</p><h2 id="rubricTitle">${candidate.name} · ${candidate.score}/100 readiness</h2><p>Aligned to the six competencies and 65-point rubric used in the Student Portal.</p></div><button class="icon-button" data-close-modal aria-label="Close">×</button></div>
+          <div class="modal-body">
+            <p class="detailed-score-intro">The TA view combines verified learning history, assignments and CV evidence into the same competency structure candidates see in their Student Portal.</p>
+            <div class="detailed-score-summary">
+              <div><span>Overall readiness</span><b>${candidate.score}/100</b></div>
+              <div><span>Rubric evidence</span><b>${rubricPoints}/65</b></div>
+              <div><span>Verified sources</span><b>${candidate.sources.length}</b></div>
+            </div>
+            <div class="detailed-score-list">
+              ${detailedScores.map(competency => `<div class="detailed-score-row">
+                <div><b>${competency.name}</b><span>Course ${competency.course} · ${competency.criteria} rubric ${competency.criteria === 1 ? "criterion" : "criteria"}</span></div>
+                <div><b>${competency.source}</b><span>${competency.stars}/5★ · ${competency.points}/${competency.maxPoints} rubric points</span></div>
+                <div class="detailed-score-value"><div class="track"><i style="width:${competency.score}%"></i></div><b>${competency.score}</b></div>
+              </div>`).join("")}
+            </div>
+            <p class="score-governance-note">Scores support prioritization and interview preparation. They do not determine employment outcomes; TA and the interview panel remain responsible for every decision.</p>
+          </div>
+          <div class="modal-foot"><button class="btn btn-primary" data-close-modal>Done</button></div>
+        </section>`);
       }
 
       function openAgentModal(id) {
