@@ -371,7 +371,7 @@
         white-space: nowrap;
       }
       .deadline-chip i { color: #91a0a3; font-style: normal; font-size: 11px; }
-      .mini-funnel { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+      .mini-funnel { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; }
       .funnel-step { min-width: 0; }
       .funnel-step i { display: block; height: 5px; margin-bottom: 6px; border-radius: 99px; background: var(--teal); opacity: var(--step-opacity, 1); }
       .funnel-step.ownership-support i { background: var(--violet); }
@@ -494,7 +494,7 @@
       .page-button:disabled { cursor: not-allowed; opacity: .45; }
       .pipeline-head, .candidate-row {
         display: grid;
-        grid-template-columns: minmax(265px, 1.08fr) minmax(185px, .72fr) minmax(360px, 1.45fr);
+        grid-template-columns: minmax(255px, 1fr) minmax(255px, .95fr) minmax(340px, 1.35fr);
         column-gap: 0;
       }
       .pipeline-head { color: var(--muted); background: #fafcfc; border-bottom: 1px solid var(--line); font-size: 9px; font-weight: var(--weight-semibold); letter-spacing: .085em; text-transform: uppercase; }
@@ -519,7 +519,8 @@
       .candidate-info small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; line-height: 1.5; }
       .candidate-tags { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; }
       .candidate-tags span { padding: 2px 6px; border-radius: 4px; color: #66767a; background: #f0f4f4; font-size: 8px; }
-      .ai-score { display: flex; align-items: center; gap: 11px; }
+      .ai-score { display: flex; align-items: center; gap: 12px; }
+      .readiness-score-group { display: flex; align-items: center; gap: 10px; min-width: 0; }
       .score-ring {
         --score: 86;
         width: 47px;
@@ -535,6 +536,24 @@
       .score-ring b { position: relative; color: var(--teal-deep); font-size: 11px; line-height: 1; }
       .score-copy strong { display: block; font-size: 10px; line-height: 1.4; }
       .score-copy small { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; }
+      .interview-score-chip {
+        min-width: 90px;
+        padding: 8px 9px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--muted);
+        background: #f7fafa;
+      }
+      .interview-score-chip.complete { color: var(--teal-deep); border-color: #bee0dd; background: var(--green-wash); }
+      .interview-score-chip.draft { color: #79510e; border-color: #ecdab7; background: var(--gold-wash); }
+      .interview-score-icon { width: 24px; height: 24px; color: var(--muted); background: var(--white); font-size: 10px; font-weight: var(--weight-semibold); }
+      .interview-score-chip.complete .interview-score-icon { color: var(--white); background: var(--green); }
+      .interview-score-chip.draft .interview-score-icon { color: var(--white); background: var(--gold); }
+      .interview-score-chip small { display: block; font-size: var(--type-micro-size); line-height: var(--type-micro-line); }
+      .interview-score-chip strong { display: block; margin-top: 1px; color: var(--body); font-size: var(--type-meta-size); line-height: var(--type-meta-line); white-space: nowrap; }
       .ownership-badge { margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; color: var(--teal-deep); font-size: 8px; font-weight: var(--weight-semibold); }
       .ownership-badge.ownership-support { color: var(--violet); }
       .ownership-badge.ownership-approve { color: #b94625; }
@@ -940,9 +959,12 @@
         box-shadow: var(--shadow-lg);
       }
       .modal.small { width: min(480px, 100%); }
+      .modal.copilot-modal { width: min(1040px, 100%); }
       .modal-head { padding: 18px 20px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 1px solid var(--line); }
       .modal-head h2 { margin: 0; color: var(--teal-deep); font-size: 17px; line-height: 1.4; font-weight: var(--weight-medium); }
       .modal-head p { margin: 3px 0 0; color: var(--muted); font-size: 10px; }
+      .copilot-head-actions { display: flex; align-items: center; gap: 7px; flex: none; }
+      .copilot-restore-action { display: none; }
       .modal-body { padding: 20px; }
       .modal-foot { padding: 14px 20px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--line); background: #fafcfc; }
       .field { display: grid; gap: 6px; margin-bottom: 14px; }
@@ -999,6 +1021,324 @@
       .range-row { display: flex; align-items: center; gap: 10px; }
       .range-row input { flex: 1; accent-color: var(--teal); }
       .range-row output { width: 34px; color: var(--teal-deep); font-size: 10px; font-weight: var(--weight-semibold); }
+
+      /* Interview Copilot */
+      .modal-backdrop.copilot-pip {
+        padding: 0;
+        display: block;
+        background: transparent;
+        backdrop-filter: none;
+        pointer-events: none;
+        z-index: 80;
+      }
+      .modal-backdrop.copilot-pip .copilot-modal {
+        width: min(430px, calc(100vw - 28px));
+        max-height: min(690px, calc(100vh - 28px));
+        position: fixed;
+        right: 14px;
+        bottom: 14px;
+        overflow: hidden;
+        border: 1px solid #acd8db;
+        border-radius: 14px;
+        box-shadow: 0 20px 56px rgba(0, 56, 60, .28);
+        pointer-events: auto;
+      }
+      .modal-backdrop.copilot-pip .modal-head {
+        padding: 12px 13px;
+        align-items: center;
+        color: var(--white);
+        border-bottom-color: rgba(255, 255, 255, .14);
+        background: var(--teal-deep);
+      }
+      .modal-backdrop.copilot-pip .modal-head > div:first-child { min-width: 0; }
+      .modal-backdrop.copilot-pip .modal-head .eyebrow,
+      .modal-backdrop.copilot-pip .modal-head p { display: none; }
+      .modal-backdrop.copilot-pip .modal-head h2 {
+        color: var(--white);
+        font-size: var(--type-supporting-size);
+        line-height: var(--type-supporting-line);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .modal-backdrop.copilot-pip .copilot-minimize-action { display: none; }
+      .modal-backdrop.copilot-pip .copilot-restore-action { display: inline-flex; }
+      .modal-backdrop.copilot-pip .copilot-head-actions .btn {
+        min-height: 30px;
+        padding: 5px 9px;
+        color: var(--white);
+        border-color: rgba(255, 255, 255, .3);
+        background: rgba(255, 255, 255, .09);
+      }
+      .modal-backdrop.copilot-pip .icon-button {
+        color: var(--white);
+        border-color: rgba(255, 255, 255, .3);
+        background: rgba(255, 255, 255, .09);
+      }
+      .modal-backdrop.copilot-pip .modal-body {
+        max-height: calc(min(690px, 100vh - 28px) - 57px);
+        padding: 10px;
+        overflow: hidden;
+        background: #f5f9f9;
+      }
+      .modal-backdrop.copilot-pip .copilot-demo-bar {
+        margin-bottom: 9px;
+        padding: 8px 9px;
+        border-radius: 9px;
+        background: var(--white);
+      }
+      .modal-backdrop.copilot-pip .copilot-clock-face { width: 34px; height: 34px; }
+      .modal-backdrop.copilot-pip .copilot-demo-clock > span > b { font-size: var(--type-meta-size); }
+      .modal-backdrop.copilot-pip .copilot-demo-controls .btn:not(#copilotStartPause) { display: none; }
+      .modal-backdrop.copilot-pip .copilot-demo-controls .btn {
+        min-height: 32px;
+        padding: 6px 10px;
+        font-size: var(--type-micro-size);
+      }
+      .modal-backdrop.copilot-pip .copilot-timeline,
+      .modal-backdrop.copilot-pip .copilot-workspace,
+      .modal-backdrop.copilot-pip .copilot-transcript-panel,
+      .modal-backdrop.copilot-pip .modal-foot { display: none; }
+      .modal-backdrop.copilot-pip .copilot-interviewer-desk {
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 9px;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        position: static;
+      }
+      .modal-backdrop.copilot-pip .interviewer-desk-section { padding: 9px; border-radius: 9px; }
+      .modal-backdrop.copilot-pip .interviewer-desk-head h3 { font-size: var(--type-meta-size); }
+      .modal-backdrop.copilot-pip .interviewer-desk-head p { display: none; }
+      .modal-backdrop.copilot-pip .interviewer-desk-head .pill { font-size: var(--type-micro-size); }
+      .modal-backdrop.copilot-pip .interviewer-notes {
+        min-height: 104px;
+        height: 104px;
+        margin-top: 7px;
+        padding: 9px;
+        font-size: var(--type-meta-size);
+        line-height: 1.45;
+      }
+      .modal-backdrop.copilot-pip .note-history { display: none; }
+      .modal-backdrop.copilot-pip .interviewer-desk-actions {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 5px;
+      }
+      .modal-backdrop.copilot-pip .interviewer-desk-actions .pill { grid-column: 1 / -1; justify-self: end; }
+      .modal-backdrop.copilot-pip .copilot-mini-action { min-height: 28px; padding: 4px 7px; }
+      .modal-backdrop.copilot-pip .copilot-followup-dock {
+        min-height: 0;
+        max-height: none;
+        margin-top: 7px;
+        display: grid;
+        gap: 4px;
+        overflow: visible;
+      }
+      .modal-backdrop.copilot-pip .follow-up {
+        min-height: 34px;
+        padding: 5px 7px;
+        grid-template-columns: 19px 1fr;
+        gap: 6px;
+      }
+      .modal-backdrop.copilot-pip .follow-up > span { width: 19px; height: 19px; font-size: var(--type-micro-size); }
+      .modal-backdrop.copilot-pip .follow-up b {
+        font-size: var(--type-caption-size);
+        line-height: 1.3;
+      }
+      .modal-backdrop.copilot-pip .follow-up p { display: none; }
+      .copilot-pip-hint {
+        display: none;
+        margin: 0 0 8px;
+        padding: 6px 8px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border-radius: 7px;
+        color: var(--teal-deep);
+        background: #dff1f2;
+        font-size: var(--type-micro-size);
+        line-height: var(--type-micro-line);
+      }
+      .copilot-pip-hint button {
+        padding: 0;
+        border: 0;
+        color: var(--teal-deep);
+        background: transparent;
+        font: inherit;
+        font-weight: var(--weight-semibold);
+        cursor: pointer;
+      }
+      .modal-backdrop.copilot-pip .copilot-pip-hint { display: flex; }
+      .copilot-demo-bar { margin-bottom: 14px; padding: 12px 13px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1px solid #cfe6e8; border-radius: 10px; background: var(--teal-soft); }
+      .copilot-demo-clock { display: flex; align-items: center; gap: 10px; min-width: 0; }
+      .copilot-clock-face { width: 42px; height: 42px; display: grid; place-items: center; flex: none; border-radius: 50%; color: var(--white); background: var(--teal); font-size: var(--type-meta-size); line-height: 1; font-weight: var(--weight-semibold); }
+      .copilot-demo-clock > span:not(.copilot-clock-face) { min-width: 0; }
+      .copilot-demo-clock > span > b { display: block; color: var(--teal-deep); font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); }
+      .copilot-demo-clock > span > span { display: block; margin-top: 2px; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .copilot-demo-controls { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+      .copilot-timeline { margin-bottom: 14px; display: grid; grid-template-columns: repeat(5, 1fr); }
+      .copilot-stage { min-width: 0; display: grid; grid-template-columns: 24px 1fr; gap: 7px; align-items: center; position: relative; }
+      .copilot-stage:not(:last-child)::after { content: ""; height: 2px; position: absolute; left: 24px; right: 0; top: 11px; background: var(--line-strong); z-index: 0; }
+      .copilot-stage-dot { width: 24px; height: 24px; display: grid; place-items: center; border: 2px solid var(--line-strong); border-radius: 50%; color: var(--muted); background: var(--white); font-size: var(--type-micro-size); line-height: 1; font-weight: var(--weight-semibold); position: relative; z-index: 1; }
+      .copilot-stage-copy { min-width: 0; padding-right: 7px; }
+      .copilot-stage-copy { padding-left: 3px; background: var(--white); position: relative; z-index: 2; }
+      .copilot-stage-copy b { display: block; color: var(--body); font-size: var(--type-meta-size); line-height: var(--type-meta-line); white-space: nowrap; }
+      .copilot-stage-copy span { display: block; margin-top: 1px; color: var(--muted); font-size: var(--type-micro-size); line-height: var(--type-micro-line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .copilot-stage.complete .copilot-stage-dot { color: var(--white); border-color: var(--green); background: var(--green); }
+      .copilot-stage.complete:not(:last-child)::after { background: var(--green); }
+      .copilot-stage.current .copilot-stage-dot { color: var(--white); border-color: var(--teal); background: var(--teal); box-shadow: 0 0 0 4px rgba(47, 161, 179, .14); }
+      .copilot-stage.current .copilot-stage-copy b { color: var(--teal-deep); }
+      .copilot-interviewer-desk {
+        margin-bottom: 14px;
+        padding: 12px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr);
+        gap: 12px;
+        align-items: start;
+        border: 1px solid #abd9dc;
+        border-radius: 11px;
+        background: rgba(241, 248, 248, .97);
+        box-shadow: 0 8px 24px rgba(0, 86, 84, .08);
+        position: sticky;
+        top: 0;
+        z-index: 8;
+      }
+      .interviewer-desk-section { min-width: 0; padding: 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+      .interviewer-desk-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+      .interviewer-desk-head h3 { margin: 0; color: var(--teal-deep); font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); }
+      .interviewer-desk-head p { margin: 3px 0 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .interviewer-desk-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+      .copilot-mini-action {
+        min-height: 30px;
+        padding: 5px 9px;
+        border: 1px solid #b8dadd;
+        border-radius: 7px;
+        color: var(--teal-deep);
+        background: var(--white);
+        font: inherit;
+        font-size: var(--type-micro-size);
+        line-height: var(--type-micro-line);
+        font-weight: var(--weight-semibold);
+        cursor: pointer;
+      }
+      .copilot-mini-action.primary { color: var(--white); border-color: var(--teal); background: var(--teal); }
+      .copilot-mini-action:disabled { color: var(--muted); border-color: var(--line); background: #f3f5f5; cursor: not-allowed; opacity: .72; }
+      .copilot-followup-dock { min-height: 132px; height: auto; margin-top: 8px; overflow: visible; }
+      .copilot-followup-dock .follow-up { padding: 8px 9px; }
+      .copilot-workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+      .copilot-panel { min-width: 0; border: 1px solid var(--line); border-radius: 11px; background: var(--white); overflow: hidden; }
+      .copilot-panel-head { padding: 13px 14px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); background: #fafcfc; }
+      .copilot-panel-head h3 { margin: 0; color: var(--body); font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); font-weight: var(--weight-semibold); }
+      .copilot-panel-head p { margin: 3px 0 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .copilot-input { padding: 14px; }
+      .copilot-transcript {
+        width: 100%;
+        height: 210px;
+        padding: 12px;
+        overflow: auto;
+        border: 1px solid var(--line-strong);
+        border-radius: 9px;
+        color: var(--body);
+        background: #fbfdfd;
+        font-size: var(--type-meta-size);
+        line-height: 1.65;
+      }
+      .transcript-turn { padding: 8px 9px; border: 1px solid transparent; border-radius: 7px; transition: background .18s ease, border-color .18s ease; }
+      .transcript-turn + .transcript-turn { margin-top: 6px; }
+      .transcript-turn.candidate { background: var(--teal-soft); }
+      .transcript-turn.interviewer { background: #f4f6f6; }
+      .transcript-turn.is-highlighted { border-color: var(--orange); background: #fff2e9; box-shadow: 0 0 0 3px rgba(245, 91, 45, .12); }
+      .transcript-turn-meta { display: block; color: var(--muted); font-size: var(--type-micro-size); line-height: var(--type-micro-line); font-weight: var(--weight-semibold); }
+      .transcript-turn p { margin: 3px 0 0; color: var(--body); font-size: var(--type-meta-size); line-height: 1.5; }
+      .interviewer-note-box { margin: 0; padding: 0; border: 0; }
+      .interviewer-note-box label { display: block; color: var(--body); font-size: var(--type-meta-size); line-height: var(--type-meta-line); font-weight: var(--weight-semibold); }
+      .interviewer-note-box > p { margin: 3px 0 8px; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .interviewer-notes { width: 100%; min-height: 132px; padding: 12px; resize: vertical; border: 1px solid var(--line-strong); border-radius: 8px; color: var(--body); background: #fbfdfd; font: inherit; font-size: var(--type-body-size); line-height: var(--type-body-line); }
+      .interviewer-notes:focus { outline: 2px solid rgba(47, 161, 179, .18); border-color: var(--teal); }
+      .note-history { max-height: 68px; margin-top: 8px; display: grid; gap: 5px; overflow: auto; }
+      .note-snapshot { padding: 7px 8px; border-radius: 7px; color: var(--body); background: var(--gold-wash); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .note-snapshot b { color: #79510e; }
+      .copilot-input-note { margin: 8px 0 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .copilot-input-actions { margin-top: 11px; display: grid; grid-template-columns: 1fr; gap: 8px; }
+      .copilot-batch-status { margin-top: 9px; padding: 8px 9px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-radius: 7px; color: var(--muted); background: #f3f7f7; font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .copilot-batch-status b { color: var(--teal-deep); }
+      .copilot-results { min-height: 452px; background: #fafcfc; }
+      .copilot-transcript-panel { margin-top: 14px; }
+      .copilot-empty { min-height: 450px; padding: 35px; display: grid; place-items: center; color: var(--muted); text-align: center; }
+      .copilot-empty span { width: 42px; height: 42px; margin: 0 auto 10px; display: grid; place-items: center; border-radius: 12px; color: var(--teal-deep); background: var(--teal-wash); font-size: 16px; font-weight: var(--weight-semibold); }
+      .copilot-empty strong { display: block; color: var(--body); font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); }
+      .copilot-empty p { max-width: 380px; margin: 5px auto 0; font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .copilot-loading { min-height: 450px; display: grid; place-items: center; text-align: center; }
+      .copilot-loading .screen-agent-spinner { margin: 0 auto 10px; }
+      .copilot-loading strong { display: block; color: var(--body); font-size: var(--type-supporting-size); }
+      .copilot-loading p { margin: 4px 0 0; color: var(--muted); font-size: var(--type-meta-size); }
+      .copilot-output { padding: 14px; display: grid; gap: 12px; }
+      .copilot-output-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+      .copilot-output-head h3 { margin: 0; color: var(--teal-deep); font-size: var(--type-card-title-size); line-height: var(--type-card-title-line); font-weight: var(--weight-semibold); }
+      .copilot-summary { margin: 0; padding: 11px 12px; border-left: 3px solid var(--teal); border-radius: 0 8px 8px 0; color: var(--body); background: var(--teal-soft); font-size: var(--type-body-size); line-height: var(--type-body-line); }
+      .copilot-coverage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .coverage-item { padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); }
+      .coverage-item.unscored { border-color: #e2b450; box-shadow: inset 3px 0 0 #d7a12f; background: #fffaf0; }
+      .coverage-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .coverage-top b { color: var(--body); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .coverage-score-line { margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .coverage-score-label { color: var(--muted); font-size: var(--type-micro-size); line-height: var(--type-micro-line); font-weight: var(--weight-semibold); }
+      .coverage-item p { margin: 5px 0 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .evidence-refs { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 5px; }
+      .evidence-ref { padding: 3px 6px; border: 1px solid #cae3e5; border-radius: 99px; color: var(--teal-deep); background: var(--teal-wash); font: inherit; font-size: var(--type-micro-size); line-height: var(--type-micro-line); font-weight: var(--weight-semibold); cursor: pointer; }
+      span.evidence-ref { cursor: default; }
+      .follow-up-list { display: grid; gap: 7px; }
+      .follow-up { padding: 10px 11px; display: grid; grid-template-columns: 22px 1fr; gap: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); }
+      .follow-up > span { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; color: var(--gold); background: var(--gold-wash); font-size: var(--type-meta-size); font-weight: var(--weight-semibold); }
+      .follow-up b { display: block; color: var(--body); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .follow-up p { margin: 3px 0 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .scorecard-overall { padding: 13px; display: grid; grid-template-columns: 72px 1fr; gap: 13px; align-items: center; border: 1px solid #c7e8df; border-radius: 10px; background: var(--green-wash); }
+      .scorecard-number { width: 68px; height: 68px; display: grid; place-items: center; align-content: center; border: 6px solid var(--green); border-radius: 50%; color: var(--green); }
+      .scorecard-number b { font-size: 21px; line-height: 1; }
+      .scorecard-number small { margin-top: 2px; font-size: var(--type-micro-size); }
+      .scorecard-overall h4 { margin: 0; color: var(--body); font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); }
+      .scorecard-overall p { margin: 4px 0 0; color: var(--muted); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .scorecard-list { display: grid; gap: 10px; }
+      .score-guide-group { overflow: hidden; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+      .score-guide-head { padding: 9px 11px; display: flex; justify-content: space-between; color: var(--teal-deep); background: var(--teal-soft); font-size: var(--type-meta-size); line-height: var(--type-meta-line); font-weight: var(--weight-semibold); }
+      .scorecard-row { padding: 10px 11px; display: grid; grid-template-columns: minmax(130px, .8fr) 132px minmax(0, 1.5fr); gap: 10px; align-items: start; background: var(--white); }
+      .scorecard-row.unscored { background: #fffaf0; box-shadow: inset 3px 0 0 #d7a12f; }
+      .scorecard-row + .scorecard-row { border-top: 1px solid var(--line); }
+      .scorecard-row > b { color: var(--body); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .score-input-wrap { width: 108px; min-height: 32px; padding: 0 8px; display: grid; grid-template-columns: 1fr auto; align-items: center; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--white); }
+      .score-number-input { width: 100%; min-width: 0; padding: 5px 2px; border: 0; outline: 0; color: var(--body); background: transparent; text-align: center; font: inherit; font-size: var(--type-meta-size); line-height: var(--type-meta-line); font-weight: var(--weight-semibold); }
+      .score-number-input::placeholder { color: var(--muted); }
+      .score-input-wrap span { color: var(--muted); font-size: var(--type-micro-size); line-height: var(--type-micro-line); }
+      .scorecard-copy p { margin: 0; color: var(--muted); font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
+      .copilot-review-note { padding: 10px 11px; display: flex; gap: 8px; border: 1px solid #f0d7b1; border-radius: 8px; color: #79510e; background: var(--gold-wash); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .copilot-review-note > span:first-child { flex: none; }
+      .copilot-review-note > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+      .copilot-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .copilot-list-card { padding: 10px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); }
+      .copilot-list-card h4 { margin: 0; color: var(--body); font-size: var(--type-meta-size); }
+      .copilot-list-card ul { margin: 7px 0 0; padding-left: 16px; color: var(--muted); font-size: var(--type-caption-size); line-height: 1.55; }
+      .category-score-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+      .category-score-chip { padding: 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--white); text-align: center; }
+      .category-score-chip b { display: block; color: var(--teal-deep); font-size: var(--type-meta-size); }
+      .category-score-chip span { display: block; margin-top: 2px; color: var(--muted); font-size: var(--type-micro-size); }
+      .final-review-field { display: grid; gap: 6px; }
+      .final-review-field label { color: var(--body); font-size: var(--type-meta-size); font-weight: var(--weight-semibold); }
+      .final-review-field textarea { width: 100%; min-height: 72px; padding: 9px; resize: vertical; border: 1px solid var(--line-strong); border-radius: 8px; font: inherit; font-size: var(--type-meta-size); line-height: 1.5; }
+      .final-score-actions { display: flex; justify-content: flex-end; gap: 8px; }
+      .scorecard-completion { padding: 8px 10px; border-radius: 8px; color: #79510e; background: var(--gold-wash); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      #savedInterviewResult { border-color: #94d8ca; box-shadow: 0 8px 24px rgba(16, 114, 97, .08); }
+      .saved-interview-summary { display: grid; grid-template-columns: 92px 1fr; gap: 15px; align-items: center; }
+      .saved-score { width: 86px; height: 86px; display: grid; place-items: center; align-content: center; border: 7px solid var(--teal); border-radius: 50%; color: var(--teal-deep); }
+      .saved-score b { font-size: var(--type-stat-xl-size); line-height: 1; }
+      .saved-score span { margin-top: 2px; color: var(--muted); font-size: var(--type-micro-size); }
+      .saved-interview-copy p { margin: 5px 0 8px; color: var(--muted); font-size: var(--type-meta-size); line-height: var(--type-meta-line); }
+      .saved-category-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+      .saved-category-grid span { padding: 7px; border-radius: 7px; color: var(--body); background: #f4f7f7; text-align: center; font-size: var(--type-micro-size); }
+      .saved-category-grid b { display: block; margin-top: 2px; color: var(--teal-deep); font-size: var(--type-meta-size); }
 
       /* TA Portal typography system */
       h1 { font-size: var(--type-page-title-size); line-height: var(--type-page-title-line); }
@@ -1130,6 +1470,15 @@
         .date-chip { display: none; }
         h1 { font-size: 24px; }
         .source-row { grid-template-columns: 1fr; }
+        .copilot-demo-bar { align-items: flex-start; flex-direction: column; }
+        .copilot-demo-controls { width: 100%; justify-content: flex-start; }
+        .copilot-timeline { grid-template-columns: 1fr; gap: 8px; }
+        .copilot-stage:not(:last-child)::after { width: 2px; height: auto; left: 11px; right: auto; top: 24px; bottom: -8px; }
+        .copilot-interviewer-desk { grid-template-columns: 1fr; position: static; }
+        .copilot-workspace { grid-template-columns: 1fr; }
+        .copilot-coverage, .copilot-columns { grid-template-columns: 1fr; }
+        .scorecard-row { grid-template-columns: 1fr auto; }
+        .scorecard-copy { grid-column: 1 / -1; }
         .score-layout { grid-template-columns: 1fr; }
         .large-score { margin: auto; }
         .agent-summary { grid-template-columns: 1fr 1fr; }
@@ -1141,6 +1490,11 @@
         .detailed-score-row { grid-template-columns: 1fr; gap: 7px; }
         .detailed-score-value { grid-template-columns: 1fr 32px; }
         .modal-backdrop { padding: 10px; }
+        .modal-backdrop.copilot-pip .copilot-modal {
+          width: calc(100vw - 16px);
+          right: 8px;
+          bottom: 8px;
+        }
         .screening-drawer { width: 100%; }
       }
       @media (max-width: 480px) {
@@ -1212,6 +1566,7 @@
     </div>
 
     <div id="modalRoot"></div>
+    <div id="copilotRoot"></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script>
@@ -1219,9 +1574,9 @@
         { id: "pmt", short: "PM", name: "Product Management Trainee 2026", owner: "Minh Nguyen", active: true, opened: "04 Jul 2026", closes: "14 Aug 2026", target: 24, hired: 9, health: 82, counts: [] },
         { id: "apm", short: "AP", name: "Associate Product Manager", owner: "Hanh Le", active: true, opened: "18 Jul 2026", closes: "31 Aug 2026", target: 12, hired: 3, health: 71, counts: [] },
         { id: "dmt", short: "DG", name: "Digital Growth Trainee", owner: "Tuan Pham", active: true, opened: "22 Jul 2026", closes: "12 Sep 2026", target: 18, hired: 1, health: 64, counts: [] },
-        { id: "uxr", short: "UX", name: "UX Research Internship", owner: "Linh Vo", active: false, opened: "03 May 2026", closes: "30 Jun 2026", target: 8, hired: 8, health: 100, counts: [307, 144, 52, 26, 8] }
+        { id: "uxr", short: "UX", name: "UX Research Internship", owner: "Linh Vo", active: false, opened: "03 May 2026", closes: "30 Jun 2026", target: 8, hired: 8, health: 100, counts: [307, 144, 52, 26, 14, 8] }
       ];
-      const stageOrder = ["new", "qualified", "review", "interview", "offer"];
+      const stageOrder = ["new", "qualified", "review", "interview", "interviewed", "offer"];
 
       const candidates = [
         {
@@ -1291,21 +1646,22 @@
       ];
 
       const demoStageTargets = {
-        pmt: { new: 14, qualified: 12, review: 11, interview: 10, offer: 5 },
-        apm: { new: 11, qualified: 9, review: 8, interview: 7, offer: 3 },
-        dmt: { new: 10, qualified: 8, review: 5, interview: 5, offer: 2 }
+        pmt: { new: 14, qualified: 12, review: 11, interview: 10, interviewed: 7, offer: 5 },
+        apm: { new: 11, qualified: 9, review: 8, interview: 7, interviewed: 5, offer: 3 },
+        dmt: { new: 10, qualified: 8, review: 5, interview: 5, interviewed: 3, offer: 2 }
       };
       const mockGivenNames = ["An", "Bao", "Chi", "Duy", "Giang", "Ha", "Hai", "Khanh", "Lan", "Long", "Minh", "My", "Nam", "Nhi", "Phuc", "Quynh", "Son", "Trang"];
       const mockFamilyNames = ["Bui", "Dang", "Do", "Hoang", "Huynh", "Le", "Ngo", "Nguyen", "Pham", "Tran"];
       const mockSchools = ["Foreign Trade University", "RMIT Vietnam", "Fulbright University Vietnam", "FPT University", "National Economics University", "University of Economics HCMC", "HCMC University of Technology", "VinUniversity"];
       const mockLocations = ["Ho Chi Minh City", "Hanoi", "Da Nang", "Can Tho"];
       const mockColors = [["#dff0e9", "#147154"], ["#eee8f8", "#7052a0"], ["#fce7df", "#b34c27"], ["#e0f0f2", "#176b77"], ["#fff0dc", "#9d640a"], ["#e7edf7", "#4e6492"]];
-      const stageScoreBase = { new: 67, qualified: 77, review: 81, interview: 86, offer: 91 };
+      const stageScoreBase = { new: 67, qualified: 77, review: 81, interview: 86, interviewed: 89, offer: 91 };
       const stageNextStep = {
         new: "AI qualification in progress",
         qualified: "Open AI evidence brief",
         review: "TA approval for interview",
         interview: "Schedule panel interview",
+        interviewed: "Waiting for ranking",
         offer: "Human approval for offer"
       };
 
@@ -1320,7 +1676,8 @@
           new: `CV parsed successfully. The agent is validating education, experience and ${programFocus} evidence before qualification.`,
           qualified: `AI qualification is complete with consistent evidence in learning agility and ${programFocus}. Ready for TA review.`,
           review: `The evidence brief highlights strong potential in ${programFocus}; TA judgment is required before advancing this candidate.`,
-          interview: `Interview evidence is prepared around ${programFocus}, with structured probes and a draft scorecard for the panel.`,
+          interview: `Interview evidence is prepared around ${programFocus}, with structured probes and an AI-proposed scorecard for the panel.`,
+          interviewed: `The interview scorecard is complete and human-reviewed. This candidate is waiting for program ranking.`,
           offer: `All assessment evidence is consolidated. Final hiring and offer approval remains with the accountable human team.`
         };
         return {
@@ -1339,8 +1696,8 @@
           tags: [`CV-${String(index + 1).padStart(3, "0")}`, index % 3 === 0 ? "Learning verified" : "CV verified"],
           summary: summaryByStage[stage],
           next: stageNextStep[stage],
-          gap: stage === "offer" ? "Final accountability" : "Evidence depth",
-          gapDetail: stage === "offer" ? "AI has consolidated the evidence, but the offer decision requires accountable human approval." : `Current evidence should be validated through a concrete example of ${programFocus} before an important decision.`,
+          gap: stage === "offer" ? "Final accountability" : stage === "interviewed" ? "Ranking calibration" : "Evidence depth",
+          gapDetail: stage === "offer" ? "AI has consolidated the evidence, but the offer decision requires accountable human approval." : stage === "interviewed" ? "The completed interview evidence should be calibrated against the full candidate cohort before ranking." : `Current evidence should be validated through a concrete example of ${programFocus} before an important decision.`,
           sources: [["Learning history", `${2 + index % 7} modules · ${82 + index % 16}% average`, "◎"], ["Assignment", `${programFocus} case · ${score}/100`, "▤"], ["CV", `${1 + index % 3} experiences · verified`, "▧"]],
           skills: [["Product thinking", Math.min(98, score + 2)], ["Customer insight", Math.max(62, score - 3)], ["Data reasoning", Math.max(60, score - 5 + index % 5)], ["Communication", Math.max(65, score - 2 + index % 4)]],
           questions: [`Describe a specific ${programFocus} decision and the evidence behind it.`, "What assumption would you validate first, and why?", "When should this decision be escalated to a human owner?"],
@@ -1371,34 +1728,72 @@
 
       const agents = [
         { id: "evidence", icon: "E", name: "Evidence Assessment Agent", purpose: "Scores candidate readiness from learning history, assignments and CV evidence.", active: true, runs: "3,842", quality: "94.2%", latency: "18s", version: "v2.8", threshold: 78 },
-        { id: "interview", icon: "I", name: "Interview Copilot", purpose: "Prepares evidence-gap questions, joins interviews, logs notes and drafts a pre-score.", active: true, runs: "214", quality: "91.8%", latency: "Live", version: "v1.9", threshold: 82 },
+        { id: "interview", icon: "I", name: "Interview Copilot", purpose: "Turns finalized transcript turns into evidence checkpoints, follow-up prompts and a human-reviewed scorecard.", active: true, runs: "214", quality: "91.8%", latency: "Checkpoint", version: "v2.0", threshold: 82 },
         { id: "schedule", icon: "S", name: "Scheduling Agent", purpose: "Finds mutual calendar availability, proposes panels and sends candidate invitations.", active: true, runs: "638", quality: "97.1%", latency: "7s", version: "v2.2", threshold: 90 },
         { id: "program", icon: "P", name: "Program Health Agent", purpose: "Monitors funnel conversion, SLAs and daily momentum across active programs.", active: true, runs: "1,102", quality: "93.6%", latency: "12s", version: "v1.6", threshold: 80 }
       ];
 
-      const stageLabels = { new: "Applied", qualified: "Qualified", review: "Review", interview: "Interview", offer: "Offer" };
-      const stageClasses = { new: "violet", qualified: "gold", review: "orange", interview: "green", offer: "green" };
+      const stageLabels = { new: "Applied", qualified: "Qualified", review: "Review", interview: "Interview", interviewed: "Interviewed", offer: "Offer" };
+      const stageClasses = { new: "violet", qualified: "gold", review: "orange", interview: "green", interviewed: "green", offer: "green" };
       const stageOwnership = {
         new: { className: "ownership-auto", short: "Full AI agent", detail: "Applied → Qualified" },
         qualified: { className: "ownership-auto", short: "Full AI agent", detail: "Applied → Qualified" },
         review: { className: "ownership-support", short: "AI supporting", detail: "Review & Interview" },
         interview: { className: "ownership-support", short: "AI supporting", detail: "Review & Interview" },
+        interviewed: { className: "ownership-support", short: "AI supporting", detail: "Ranking calibration" },
         offer: { className: "ownership-approve", short: "Human approval", detail: "Important decisions" }
       };
       const studentCompetencyCatalog = [
-        { name: "Product Thinking", course: 1, criteria: 3, maxPoints: 15, aliases: ["product thinking", "growth thinking"], source: "Learning + assignment" },
-        { name: "Problem Solving", course: 2, criteria: 4, maxPoints: 20, aliases: ["problem solving"], source: "Structured case" },
-        { name: "Customer Focus", course: 3, criteria: 1, maxPoints: 5, aliases: ["customer focus", "customer insight"], source: "Discovery evidence" },
-        { name: "Data Sense", course: 3, criteria: 1, maxPoints: 5, aliases: ["data sense", "data reasoning"], source: "Metrics evidence" },
-        { name: "Communication", course: 4, criteria: 1, maxPoints: 5, aliases: ["communication"], source: "CV + assessment" },
-        { name: "Ownership", course: 4, criteria: 3, maxPoints: 15, aliases: ["ownership", "execution"], source: "Delivery evidence" }
+        { id: "product_thinking", name: "Product Thinking", course: 1, criteria: 3, maxPoints: 15, aliases: ["product thinking", "growth thinking"], source: "Learning + assignment" },
+        { id: "problem_solving", name: "Problem Solving", course: 2, criteria: 4, maxPoints: 20, aliases: ["problem solving"], source: "Structured case" },
+        { id: "customer_focus", name: "Customer Focus", course: 3, criteria: 1, maxPoints: 5, aliases: ["customer focus", "customer insight"], source: "Discovery evidence" },
+        { id: "data_sense", name: "Data Sense", course: 3, criteria: 1, maxPoints: 5, aliases: ["data sense", "data reasoning"], source: "Metrics evidence" },
+        { id: "communication", name: "Communication", course: 4, criteria: 1, maxPoints: 5, aliases: ["communication"], source: "CV + assessment" },
+        { id: "ownership", name: "Ownership", course: 4, criteria: 3, maxPoints: 15, aliases: ["ownership", "execution"], source: "Delivery evidence" }
       ];
+      const interviewScoringGuide = [
+        {
+          id: "personality", name: "Personality", maxPoints: 30, aggregation: "sum",
+          criteria: [
+            ["self_study", "Self-study"], ["self_learning", "Self-learning"], ["career_objective", "Career Objective"],
+            ["roadmap_to_objective", "Roadmap to Objective"], ["passionate", "Passionate"], ["proactive", "Proactive"]
+          ]
+        },
+        {
+          id: "knowledge", name: "Knowledge", maxPoints: 15, aggregation: "sum",
+          criteria: [["basic_product_knowledge", "Basic product knowledge"], ["product_design", "Product design (UI/UX)"], ["tech_knowledge", "Tech knowledge"]]
+        },
+        {
+          id: "mindset", name: "Mindset", maxPoints: 35, aggregation: "sum",
+          criteria: [
+            ["critical_thinking", "Critical Thinking"], ["logical_thinking", "Logical Thinking"], ["user_centric", "User Centric"],
+            ["data_driven", "Data Driven"], ["detail_oriented", "Detail Oriented"], ["result_oriented", "Result Oriented"],
+            ["system_thinking", "System Thinking"]
+          ]
+        },
+        {
+          id: "management", name: "Management", maxPoints: 15, aggregation: "sum",
+          criteria: [["prioritization", "Prioritization"], ["delivery", "Delivery"], ["collaboration", "Collaboration"]]
+        },
+        {
+          id: "bonus", name: "Bonus", maxPoints: 5, aggregation: "average",
+          criteria: [["trustworthy", "Trustworthy"], ["influence_people", "Influence People"]]
+        }
+      ].map(category => ({
+        ...category,
+        criteria: category.criteria.map(([id, name]) => ({ id, name, categoryId: category.id }))
+      }));
       const PAGE_SIZE = 20;
       const state = { view: "overview", lastView: "pipeline", selectedCandidate: null, search: "", program: "all", stage: "all", score: "all", trend: "applications", page: 1 };
+      const copilotSessions = new Map();
       const root = document.querySelector("#viewRoot");
       const modalRoot = document.querySelector("#modalRoot");
+      const copilotRoot = document.querySelector("#copilotRoot");
       const toast = document.querySelector("#toast");
       let toastTimer;
+      let copilotDemoTimer;
+      let activeCopilotCandidateId = null;
+      const COPILOT_DEMO_STEP_MS = 6000;
 
       function programById(id) { return programs.find(program => program.id === id); }
       function candidateById(id) { return candidates.find(candidate => candidate.id === id); }
@@ -1414,6 +1809,7 @@
         return `<span class="ownership-badge ${ownership.className}"><i></i>${ownership.short}</span>`;
       }
       function nextStepTone(candidate) {
+        if (candidate.interviewResult) return "decision";
         const step = candidate.next.toLowerCase();
         if (step.includes("request") || step.includes("evidence gap") || step.includes("walkthrough")) return "evidence";
         if (candidate.stage === "offer" || step.includes("offer")) return "decision";
@@ -1637,7 +2033,7 @@
             </div>
             <article class="card pipeline-card">
               <div class="pipeline-table">
-                <div class="pipeline-head"><div>Candidate information</div><div>Score by AI</div><div>Summary & suggested next step</div></div>
+                <div class="pipeline-head"><div>Candidate information</div><div>Readiness & interview</div><div>Summary & suggested next step</div></div>
                 <div id="pipelineRows">
                   ${pageCandidates.length ? pageCandidates.map(renderCandidateRow).join("") : '<div class="empty">No candidates match this filter. Try broadening your search.</div>'}
                 </div>
@@ -1650,14 +2046,36 @@
       function renderCandidateRow(candidate) {
         const program = programById(candidate.program);
         const scoreColor = candidate.score >= 85 ? "var(--green)" : candidate.score >= 75 ? "var(--gold)" : "var(--red)";
+        const draftInterview = copilotSessions.get(candidate.id)?.final;
+        const interviewScore = candidate.interviewResult || draftInterview;
+        const interviewState = candidate.interviewResult ? "complete" : draftInterview ? "draft" : "";
+        const nextAction = candidate.interviewResult ? "Waiting for ranking" : candidate.next;
         return `<button class="candidate-row" data-candidate="${candidate.id}">
           <div class="candidate-info">
             <span class="avatar" style="--avatar-bg:${candidate.color[0]};--avatar-ink:${candidate.color[1]}">${candidate.initials}</span>
             <span><strong>${candidate.name}</strong><small>${candidate.school}<br>${program.name} · Applied ${candidate.applied}</small><span class="candidate-tags">${candidate.tags.map(tag => `<span>${tag}</span>`).join("")}</span></span>
           </div>
-          <div class="ai-score"><span class="mobile-field-label">AI readiness</span><span class="score-ring" style="--score:${candidate.score};--score-color:${scoreColor}"><b>${candidate.score}</b></span><span class="score-copy"><strong>${candidate.confidence}</strong><small>Evidence coverage 92%</small>${statusPill(candidate.stage)}</span></div>
-          <div class="ai-summary"><span class="mobile-field-label">Summary & suggested next step</span><p>${candidate.summary}</p><span class="next-step ${nextStepTone(candidate)}"><span>Next suggested</span><b>${candidate.next} →</b></span></div>
+          <div class="ai-score"><span class="mobile-field-label">Readiness & interview</span><span class="readiness-score-group"><span class="score-ring" style="--score:${candidate.score};--score-color:${scoreColor}"><b>${candidate.score}</b></span><span class="score-copy"><strong>${candidate.confidence}</strong><small>Readiness · evidence 92%</small>${statusPill(candidate.stage)}</span></span><span class="interview-score-chip ${interviewState}"><span class="interview-score-icon ui-icon ui-icon--xs ui-icon--round">${candidate.interviewResult ? "✓" : draftInterview ? "!" : "—"}</span><span><small>${candidate.interviewResult ? "Interview final" : draftInterview ? "Interview AI estimate" : "Interview"}</small><strong>${interviewScore ? `${interviewScore.overallDraftScore}/100` : "Pending"}</strong></span></span></div>
+          <div class="ai-summary"><span class="mobile-field-label">Summary & suggested next step</span><p>${candidate.interviewResult ? `Interview completed and human-reviewed at ${candidate.interviewResult.overallDraftScore}/100. ${candidate.interviewResult.interviewSummary}` : candidate.summary}</p><span class="next-step ${nextStepTone(candidate)}"><span>Next suggested</span><b>${nextAction} →</b></span></div>
         </button>`;
+      }
+
+      function renderSavedInterviewResult(candidate) {
+        const result = candidate.interviewResult;
+        if (!result) return "";
+        const savedAt = new Date(result.savedAt).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" });
+        return `<article class="card" id="savedInterviewResult">
+          <div class="card-head"><div><h2>Final interview result</h2><p>Saved after interviewer review using the Zalo PMT 2026 scoring guide.</p></div><span class="pill green">Final · human reviewed</span></div>
+          <div class="card-body saved-interview-summary">
+            <div class="saved-score"><b>${esc(result.overallDraftScore)}</b><span>/100</span></div>
+            <div class="saved-interview-copy">
+              <b>${esc(result.interviewSummary)}</b>
+              <p>Saved by ${esc(result.savedBy)} · ${esc(savedAt)}${result.finalComment ? ` · “${esc(result.finalComment)}”` : ""}</p>
+              <div class="saved-category-grid">${result.categoryScores.map(category => `<span>${esc(category.name)}<b>${esc(category.points)}/${esc(category.maxPoints)}</b></span>`).join("")}</div>
+              <button class="btn btn-secondary" style="margin-top:10px" data-action="copilot">Review interview evidence</button>
+            </div>
+          </div>
+        </article>`;
       }
 
       function renderCandidateDetail() {
@@ -1668,26 +2086,28 @@
           <button class="back-button" id="backToPipeline">← Back to ${state.lastView === "overview" ? "overview" : "talent pipeline"}</button>
           <div class="page-heading candidate-title-row">
             <div class="detail-identity"><span class="detail-avatar" style="--avatar-bg:${candidate.color[0]};--avatar-ink:${candidate.color[1]}">${candidate.initials}</span><span class="detail-title"><h1>${candidate.name}</h1><span class="detail-title-meta">${candidate.email}<span>·</span>${candidate.location}<span>·</span>${statusPill(candidate.stage)}</span></span></div>
-            <div class="page-actions"><button class="btn btn-quiet" data-action="request-evidence">Request evidence</button>${candidate.next.startsWith("Interview scheduled") ? '<button class="btn btn-secondary" disabled>✓ Interview scheduled</button>' : candidate.stage === "new" ? '<button class="btn btn-secondary" disabled>AI qualification running</button>' : candidate.stage === "offer" ? '<button class="btn btn-primary" data-action="approve-offer">Approve offer</button>' : `<button class="btn btn-primary" data-action="${candidate.stage === "interview" ? "schedule" : "advance"}">${candidate.stage === "interview" ? "✦ Find best slot" : candidate.stage === "review" ? "Approve interview" : "Start TA review"}</button>`}</div>
+            <div class="page-actions"><button class="btn btn-quiet" data-action="request-evidence">Request evidence</button>${candidate.next.startsWith("Interview scheduled") ? '<button class="btn btn-secondary" disabled>✓ Interview scheduled</button>' : candidate.stage === "new" ? '<button class="btn btn-secondary" disabled>AI qualification running</button>' : candidate.stage === "interviewed" ? '<button class="btn btn-secondary" disabled>Waiting for ranking</button>' : candidate.stage === "offer" ? '<button class="btn btn-primary" data-action="approve-offer">Approve offer</button>' : `<button class="btn btn-primary" data-action="${candidate.stage === "interview" ? "schedule" : "advance"}">${candidate.stage === "interview" ? "✦ Find best slot" : candidate.stage === "review" ? "Approve interview" : "Start TA review"}</button>`}</div>
           </div>
 
           <div class="candidate-workspace">
             <div class="detail-stack">
-              <article class="card">
-                <div class="card-head"><div><h2>AI candidate summary</h2><p>Synthesized from verified learning, assignment and CV evidence.</p></div><span class="pill green">${candidate.confidence}</span></div>
-                <div class="card-body">
-                  <p class="summary-lead">${candidate.summary}</p>
-                  <div class="source-row">
-                    ${candidate.sources.map(source => `<div class="source-card"><div class="source-top"><span class="source-icon">${source[2]}</span><span class="verified">✓ Verified</span></div><b>${source[0]}</b><p>${source[1]}</p></div>`).join("")}
-                  </div>
-                </div>
-              </article>
+              ${renderSavedInterviewResult(candidate)}
 
               <article class="card">
                 <div class="card-head"><div><h2>Readiness score & evidence</h2><p>Six competencies synchronized with the Student Portal evidence model.</p></div><button class="btn-link" data-action="score-details">Detailed score →</button></div>
                 <div class="score-layout">
                   <div class="large-score" style="--score:${candidate.score}"><div><strong>${candidate.score}</strong><span>out of 100</span></div></div>
                   <div class="competencies">${detailedCandidateScores(candidate).map(skill => `<div class="competency"><span>${skill.name}</span><div class="track"><i style="width:${skill.score}%"></i></div><b>${skill.score}</b></div>`).join("")}</div>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="card-head"><div><h2>Learning, assignments & CV evidence</h2><p>Supporting profile information synthesized from verified sources.</p></div><span class="pill green">${candidate.confidence}</span></div>
+                <div class="card-body">
+                  <p class="summary-lead">${candidate.summary}</p>
+                  <div class="source-row">
+                    ${candidate.sources.map(source => `<div class="source-card"><div class="source-top"><span class="source-icon">${source[2]}</span><span class="verified">✓ Verified</span></div><b>${source[0]}</b><p>${source[1]}</p></div>`).join("")}
+                  </div>
                 </div>
               </article>
 
@@ -1706,9 +2126,9 @@
               <div class="decision-score"><div><strong>${candidate.next}</strong><span>Suggested based on ${candidate.score}% readiness</span></div><span class="pill ${candidate.score >= 85 ? "green" : "gold"}">${candidate.score >= 85 ? "Strong signal" : "Review signal"}</span></div>
               <div class="decision-block">
                 <h3>Next round</h3>
-                <p>${candidate.next.startsWith("Interview scheduled") ? "The interviewer confirmed the AI-recommended slot. Invitations and the evidence brief were sent automatically." : candidate.stage === "new" ? "The Qualification Agent is processing this CV end to end. TA will only be asked to act when accountable judgment is needed." : candidate.stage === "interview" ? "The Scheduling Agent will scan interviewer calendars for the next seven days and recommend the best-fit slot." : candidate.stage === "offer" ? "AI has consolidated the evidence and recommendation. A human hiring owner must approve before any offer is released." : "AI has prepared the evidence and recommendation; TA approval is required before the candidate moves forward."}</p>
+                <p>${candidate.next.startsWith("Interview scheduled") ? "The interviewer confirmed the AI-recommended slot. Invitations and the evidence brief were sent automatically." : candidate.stage === "new" ? "The Qualification Agent is processing this CV end to end. TA will only be asked to act when accountable judgment is needed." : candidate.stage === "interview" ? "The Scheduling Agent will scan interviewer calendars for the next seven days and recommend the best-fit slot." : candidate.stage === "interviewed" ? "The final interview result is saved. The candidate is waiting for cohort ranking and accountable human calibration." : candidate.stage === "offer" ? "AI has consolidated the evidence and recommendation. A human hiring owner must approve before any offer is released." : "AI has prepared the evidence and recommendation; TA approval is required before the candidate moves forward."}</p>
                 <div class="detail-actions">
-                  ${candidate.next.startsWith("Interview scheduled") ? '<button class="btn btn-secondary" disabled>✓ Invitations sent</button>' : candidate.stage === "new" ? '<button class="btn btn-secondary" disabled>AI qualification running</button>' : candidate.stage === "offer" ? '<button class="btn btn-primary" data-action="approve-offer">Approve offer decision</button>' : `<button class="btn btn-primary" data-action="${candidate.stage === "interview" ? "schedule" : "advance"}">${candidate.stage === "interview" ? "✦ Let agent find the best slot" : candidate.stage === "review" ? "Approve interview" : "Start TA review"}</button>`}
+                  ${candidate.next.startsWith("Interview scheduled") ? '<button class="btn btn-secondary" disabled>✓ Invitations sent</button>' : candidate.stage === "new" ? '<button class="btn btn-secondary" disabled>AI qualification running</button>' : candidate.stage === "interviewed" ? '<button class="btn btn-secondary" disabled>Waiting for ranking</button>' : candidate.stage === "offer" ? '<button class="btn btn-primary" data-action="approve-offer">Approve offer decision</button>' : `<button class="btn btn-primary" data-action="${candidate.stage === "interview" ? "schedule" : "advance"}">${candidate.stage === "interview" ? "✦ Let agent find the best slot" : candidate.stage === "review" ? "Approve interview" : "Start TA review"}</button>`}
                   <button class="btn btn-quiet" data-action="request-evidence">Request more evidence</button>
                 </div>
               </div>
@@ -1716,9 +2136,9 @@
                 <h3>Interview Copilot</h3>
                 <p>Bring the evidence record into the conversation without replacing interviewer judgment.</p>
                 <div class="agent-box">
-                  <div class="agent-line"><span class="agent-mark">AI</span><span><b>Ready to join</b><span>Consent notice and panel briefing included</span></span></div>
-                  <ul class="agent-capabilities"><li>Live structured notes</li><li>Evidence-gap coverage</li><li>Draft pre-score after interview</li></ul>
-                  <button class="btn btn-secondary" style="width:100%;margin-top:11px" data-action="copilot">Open interview copilot</button>
+                  <div class="agent-line"><span class="agent-mark">AI</span><span><b>${candidate.interviewResult ? "Final result saved" : "Ready after transcription"}</b><span>${candidate.interviewResult ? `${candidate.interviewResult.overallDraftScore}/100 · reviewed by ${candidate.interviewResult.savedBy}` : "Consumes finalized turns from your internal transcription model"}</span></span></div>
+                  <ul class="agent-capabilities"><li>Checkpoint evidence analysis</li><li>Transcript-linked evidence</li><li>Human-edited final scorecard</li></ul>
+                  <button class="btn btn-secondary" style="width:100%;margin-top:11px" data-action="copilot">${candidate.interviewResult ? "Review interview result" : "Open interview copilot"}</button>
                 </div>
               </div>
               <div class="decision-block">
@@ -1859,10 +2279,47 @@
       function openModal(content) {
         modalRoot.innerHTML = `<div class="modal-backdrop" id="modalBackdrop">${content}</div>`;
         document.body.style.overflow = "hidden";
-        document.querySelectorAll("[data-close-modal]").forEach(button => button.addEventListener("click", closeModal));
-        document.querySelector("#modalBackdrop").addEventListener("click", event => { if (event.target.id === "modalBackdrop") closeModal(); });
+        modalRoot.querySelectorAll("[data-close-modal]").forEach(button => button.addEventListener("click", closeModal));
+        modalRoot.querySelector("#modalBackdrop").addEventListener("click", event => { if (event.target.id === "modalBackdrop") closeModal(); });
       }
-      function closeModal() { modalRoot.innerHTML = ""; document.body.style.overflow = ""; }
+      function closeModal() {
+        modalRoot.innerHTML = "";
+        if (!copilotRoot.querySelector(".modal-backdrop:not(.copilot-pip)")) document.body.style.overflow = "";
+      }
+      function openCopilotLayer(content, candidateId) {
+        activeCopilotCandidateId = candidateId;
+        copilotRoot.innerHTML = `<div class="modal-backdrop" id="copilotBackdrop">${content}</div>`;
+        document.body.style.overflow = "hidden";
+        copilotRoot.querySelectorAll("[data-close-copilot]").forEach(button => button.addEventListener("click", closeCopilot));
+        copilotRoot.querySelector("#copilotBackdrop").addEventListener("click", event => {
+          if (event.target.id === "copilotBackdrop") closeCopilot();
+        });
+      }
+      function setCopilotPipMode(minimized) {
+        const backdrop = copilotRoot.querySelector("#copilotBackdrop");
+        const modal = copilotRoot.querySelector(".copilot-modal");
+        if (!backdrop || !modal) return;
+        backdrop.classList.toggle("copilot-pip", minimized);
+        modal.setAttribute("aria-modal", minimized ? "false" : "true");
+        modal.setAttribute("aria-label", minimized ? "Minimized Interview Copilot" : "Interview Copilot");
+        document.body.style.overflow = minimized ? "" : "hidden";
+        const notes = copilotRoot.querySelector("#copilotNotes");
+        if (minimized && notes) requestAnimationFrame(() => notes.focus({ preventScroll: true }));
+        showToast(minimized
+          ? "Interview Copilot minimized. Notes and follow-up questions will stay visible."
+          : "Interview Copilot restored.");
+      }
+      function closeCopilot() {
+        clearTimeout(copilotDemoTimer);
+        const session = copilotSessions.get(activeCopilotCandidateId);
+        if (session && (session.phase === "running" || session.phase === "analysing")) {
+          session.pauseRequested = true;
+          session.phase = "paused";
+        }
+        copilotRoot.innerHTML = "";
+        activeCopilotCandidateId = null;
+        if (!modalRoot.innerHTML) document.body.style.overflow = "";
+      }
 
       function openScheduleModal(candidate) {
         openModal(`<section class="modal" role="dialog" aria-modal="true" aria-labelledby="scheduleTitle">
@@ -1935,18 +2392,774 @@
         document.querySelector("#sendEvidence").addEventListener("click", () => { candidate.timeline.unshift(["Focused evidence requested", "Just now · due in 3 days"]); closeModal(); render(); showToast(`Evidence request sent to ${candidate.name}.`); });
       }
 
-      function openCopilotModal(candidate) {
-        openModal(`<section class="modal" role="dialog" aria-modal="true" aria-labelledby="copilotTitle">
-          <div class="modal-head"><div><p class="eyebrow">Interview Copilot</p><h2 id="copilotTitle">Copilot briefing for ${candidate.name}</h2><p>Ready before, during and after the structured interview.</p></div><button class="icon-button" data-close-modal aria-label="Close">×</button></div>
-          <div class="modal-body">
-            <div class="agent-box" style="margin-top:0"><div class="agent-line"><span class="agent-mark">AI</span><span><b>Briefing ready · consent required before joining</b><span>The agent cannot make the hiring decision and keeps an auditable evidence trail.</span></span></div></div>
-            <p class="label" style="margin:17px 0 8px">During the interview</p>
-            <div class="source-row"><div class="source-card"><div class="source-top"><span class="source-icon">▤</span><span class="verified">Live</span></div><b>Structured notes</b><p>Logs evidence against the interview rubric.</p></div><div class="source-card"><div class="source-top"><span class="source-icon">?</span><span class="verified">Assist</span></div><b>Gap coverage</b><p>Flags missing areas for interviewer follow-up.</p></div><div class="source-card"><div class="source-top"><span class="source-icon">◎</span><span class="verified">Draft</span></div><b>Pre-score</b><p>Prepares a score with citations for panel review.</p></div></div>
-            <p class="label" style="margin:17px 0 8px">Priority evidence gap</p><div class="evidence-gap"><span class="gap-icon">!</span><div><strong>${candidate.gap}</strong><p>${candidate.gapDetail}</p></div></div>
+      function demoTranscriptChunks(candidate) {
+        return [
+          {
+            minute: 15,
+            focus: "Problem framing",
+            lines: [
+              `Interviewer: ${candidate.questions[0] || "Tell me about a product decision you made."}`,
+              `Candidate: In a university product project, I interviewed twelve users and found that reminders were not the main problem. Users did not understand the first setup step, so I reframed the problem around activation rather than engagement.`,
+              `Interviewer: What options did you consider and how did you choose?`,
+              `Candidate: I compared a guided setup, more notifications and a shorter signup. I chose the guided setup because it addressed the observed friction and could be tested in one sprint. I documented the risks and asked design and engineering to challenge the assumptions.`
+            ]
+          },
+          {
+            minute: 30,
+            focus: "Measurement",
+            lines: [
+              `Interviewer: How did you measure whether it worked?`,
+              `Candidate: We tracked setup completion and seven-day activation. Completion increased from 42 to 57 percent in the test group, but retention was flat, so I did not claim a long-term win. I recommended another cohort before scaling.`,
+              `Interviewer: Which metric was the most important, and what was its limitation?`,
+              `Candidate: Seven-day activation was the decision metric because it was closer to repeated value than setup completion. The limitation was sample size, so I kept retention as a guardrail and avoided projecting the result to all users.`
+            ]
+          },
+          {
+            minute: 45,
+            focus: "Collaboration",
+            lines: [
+              `Interviewer: Tell me about disagreement in the team.`,
+              `Candidate: Engineering preferred notifications because they were faster. I shared interview clips and the effort-impact comparison, then proposed a one-week prototype. We agreed on the experiment, and I owned the follow-up analysis and communicated the inconclusive retention result.`,
+              `Interviewer: ${candidate.questions[1] || "What did you do when new evidence challenged your first idea?"}`,
+              `Candidate: I changed the recommendation when the retention guardrail stayed flat. I explained the uncertainty to the team, documented what we had learned, and proposed a smaller second cohort instead of defending the original launch plan.`
+            ]
+          },
+          {
+            minute: 60,
+            focus: "Reflection",
+            lines: [
+              `Interviewer: What would you improve if you ran the project again?`,
+              `Candidate: I would involve engineering earlier in discovery, define the retention guardrail before the test, and schedule a customer follow-up after the first week.`,
+              `Interviewer: How would you apply this learning in your first month as a Product Management Trainee?`,
+              `Candidate: I would make assumptions visible, pair every delivery metric with a customer outcome, and ask stakeholders to agree on the decision rule before work begins. I would also share uncertain results early rather than wait for a perfect story.`
+            ]
+          }
+        ];
+      }
+
+      function parseCopilotTranscript(value) {
+        const lines = String(value).split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+        if (!lines.length) throw new Error("Paste at least one finalized transcript turn.");
+        return lines.map((line, index) => {
+          const match = line.match(/^(Interviewer|Candidate|Unknown)\s*:\s*(.+)$/i);
+          if (!match) throw new Error(`Line ${index + 1} must start with Interviewer: or Candidate:.`);
+          const speaker = match[1].toLowerCase();
+          const startedAt = index * 225;
+          return {
+            turnId: `turn-${String(index + 1).padStart(3, "0")}`,
+            speaker,
+            startedAt,
+            endedAt: startedAt + 225,
+            text: match[2].trim(),
+            final: true
+          };
+        });
+      }
+
+      function copilotCandidatePayload(candidate) {
+        return {
+          id: candidate.id,
+          name: candidate.name,
+          targetRole: programById(candidate.program)?.name || "Product Management",
+          profileSummary: candidate.summary,
+          knownEvidenceGaps: [candidate.gap, candidate.gapDetail]
+        };
+      }
+
+      function interviewCriteria() {
+        return interviewScoringGuide.flatMap(category => category.criteria);
+      }
+
+      function criterionLabel(id) {
+        return interviewCriteria().find(item => item.id === id)?.name || id;
+      }
+
+      function evidenceRefs(ids) {
+        if (!ids?.length) return `<span class="evidence-ref">No transcript evidence yet</span>`;
+        return ids.map(id => `<button type="button" class="evidence-ref" data-evidence-turn="${esc(id)}">${esc(id)} ↗</button>`).join("");
+      }
+
+      function calculateInterviewCategoryScores(criteria) {
+        const byId = new Map(criteria.map(item => [
+          item.criterionId,
+          typeof item.score === "number" ? item.score : 0
+        ]));
+        return interviewScoringGuide.map(category => {
+          const values = category.criteria.map(criterion => byId.get(criterion.id) || 0);
+          const points = category.aggregation === "average"
+            ? values.reduce((sum, score) => sum + score, 0) / values.length
+            : values.reduce((sum, score) => sum + score, 0);
+          return { categoryId: category.id, name: category.name, points: Math.round(points * 10) / 10, maxPoints: category.maxPoints };
+        });
+      }
+
+      function recalculateInterviewScore(output) {
+        output.categoryScores = calculateInterviewCategoryScores(output.criteria);
+        output.overallDraftScore = Math.round(output.categoryScores.reduce((sum, category) => sum + category.points, 0) * 10) / 10;
+        output.rubricPoints = output.overallDraftScore;
+        return output;
+      }
+
+      function localCheckpoint(candidate, transcript) {
+        const ids = transcript.filter(turn => turn.speaker === "candidate").map(turn => turn.turnId);
+        const minute = Math.round((transcript.at(-1)?.endedAt || 0) / 60);
+        const coveredCount = minute >= 45 ? 17 : minute >= 30 ? 12 : 7;
+        const partialCount = minute >= 45 ? 3 : minute >= 30 ? 4 : 4;
+        const checkpointScorePattern = [4, 4, 3, 3, 5, 4, 4, 3, 3, 4, 4, 4, 3, 4, 4, 3, 4, 3, 4, 4, 3];
+        const coverage = interviewCriteria().map((criterion, index) => {
+          const status = index < coveredCount ? "covered" : index < coveredCount + partialCount ? "partial" : "missing";
+          return {
+            criterionId: criterion.id,
+            score: status === "missing" ? null : status === "partial" ? Math.min(3, checkpointScorePattern[index]) : checkpointScorePattern[index],
+            summaryNote: status === "missing"
+              ? `No usable ${criterion.name.toLowerCase()} evidence has appeared yet.`
+              : status === "partial"
+                ? `The candidate gave an early ${criterion.name.toLowerCase()} signal; the interviewer note and transcript suggest one more probe.`
+                : `A specific candidate example supports ${criterion.name.toLowerCase()}.`,
+            evidenceTurnIds: status === "missing" || !ids.length ? [] : [ids[index % ids.length]],
+            confidence: status === "covered" ? "medium" : "low"
+          };
+        });
+        const followUpCriteria = minute === 15
+          ? ["data_driven", "delivery", "collaboration"]
+          : minute === 30
+            ? ["influence_people", "roadmap_to_objective", "prioritization"]
+            : ["self_learning", "trustworthy", "system_thinking"];
+        return {
+          schemaVersion: "interview.checkpoint.v3",
+          checkpointSummary: minute === 15
+            ? "The opening segment establishes product motivation, customer framing and logical option selection. Measurement and delivery need direct evidence."
+            : minute === 30
+              ? "The candidate has added measurable outcomes and explicit trade-offs. The next segment should test collaboration, influence and ownership."
+              : "Most guide criteria now have usable signals. Use the final segment to test reflection, trust and transfer of learning.",
+          coverage,
+          followUps: followUpCriteria.map((criterionId, index) => ({
+            id: `follow-up-${minute}-${index + 1}`,
+            criterionId,
+            question: candidate.questions[index] || `Can you give another concrete example of ${criterionLabel(criterionId)}?`,
+            reason: index === 0 ? candidate.gapDetail : `Close the remaining ${criterionLabel(criterionId)} evidence gap.`,
+            priority: index === 0 ? "high" : "medium"
+          })),
+          pacingNote: `Automatic ${minute}-minute checkpoint complete. Interviewer notes were considered as context; transcript links remain the evidence source.`,
+          humanReviewRequired: true
+        };
+      }
+
+      function localFinalScorecard(candidate, transcript) {
+        const ids = transcript.filter(turn => turn.speaker === "candidate").map(turn => turn.turnId);
+        const criteria = interviewCriteria().map((criterion, index) => {
+          const scorePattern = [4, 4, 4, 3, 5, 4, 4, 3, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3];
+          const score = ids.length ? scorePattern[index] : null;
+          return {
+            criterionId: criterion.id,
+            score,
+            confidence: ids.length > 4 ? "medium" : "low",
+            rationale: ids.length
+              ? `The candidate supplied a concrete behavioral example relevant to ${criterion.name.toLowerCase()}; the interviewer should confirm the cited turn and adjust this AI estimate.`
+              : `No candidate evidence was available for ${criterion.name.toLowerCase()}.`,
+            evidenceTurnIds: ids.length ? [ids[index % ids.length]] : [],
+            remainingGap: score < 4 ? `Ask for a second example before treating ${criterion.name.toLowerCase()} as a strong signal.` : ""
+          };
+        });
+        return recalculateInterviewScore({
+          schemaVersion: "interview.scorecard.v3",
+          interviewSummary: `The interview shows structured product reasoning, learning agility and responsible trade-offs. ${candidate.gap} remains the clearest area for panel review.`,
+          criteria,
+          strengths: ["Frames problems from customer evidence.", "Makes measurement and trade-offs explicit.", "Reflects on how to improve future delivery."],
+          concerns: [`The pre-existing ${candidate.gap.toLowerCase()} gap is only partially resolved.`],
+          unansweredGaps: ["Confirm repeatability of the strongest example in a second context."],
+          reviewNote: "This is an AI-proposed scorecard. The interviewer must review transcript citations and may change every score before saving.",
+          humanReviewRequired: true
+        });
+      }
+
+      function scoreStepper(item, scope) {
+        const score = typeof item.score === "number" ? item.score : null;
+        return `<label class="score-input-wrap">
+          <input class="score-number-input" type="number" min="0.5" max="5" step="0.5" inputmode="decimal" value="${score === null ? "" : esc(score)}" placeholder="—" data-score-input data-score-scope="${scope}" data-score-criterion="${esc(item.criterionId)}" aria-label="${esc(criterionLabel(item.criterionId))} interviewer score">
+          <span>/ 5</span>
+        </label>`;
+      }
+
+      function renderCheckpoint(output, source, minute) {
+        const groups = interviewScoringGuide.map(category => {
+          const rows = category.criteria.map(criterion => output.coverage.find(item => item.criterionId === criterion.id)).filter(Boolean);
+          return `<section class="score-guide-group"><div class="score-guide-head"><span>${esc(category.name)}</span><span>${esc(category.maxPoints)} points</span></div>
+            <div class="copilot-coverage">${rows.map(item => `<article class="coverage-item ${item.score === null ? "unscored" : ""}">
+              <div class="coverage-top"><b>${esc(criterionLabel(item.criterionId))}</b><span class="pill ${item.score === null ? "gold" : item.score >= 4 ? "green" : item.score >= 3 ? "gold" : "red"}">${item.score === null ? "Score needed" : item.interviewerAdjusted ? `Interviewer score ${esc(item.score)}/5` : `AI estimate ${esc(item.score)}/5`}</span></div>
+              <p>${esc(item.summaryNote)}</p><div class="evidence-refs">${evidenceRefs(item.evidenceTurnIds)}</div>
+              <div class="coverage-score-line"><span class="coverage-score-label">${item.score === null ? "No transcript evidence · interviewer may score" : "Adjust in 0.5-point steps"}</span>${scoreStepper(item, "checkpoint")}</div>
+            </article>`).join("")}</div></section>`;
+        }).join("");
+        return `<div class="copilot-output">
+          <div class="copilot-output-head"><h3>${esc(minute || 15)}-minute checkpoint</h3><span class="pill ${source === "demo_fallback" ? "gold" : "green"}">${source === "demo_fallback" ? "Demo fallback" : "AI analysis"}</span></div>
+          <p class="copilot-summary">${esc(output.checkpointSummary)}</p>
+          <div class="scorecard-list">${groups}</div>
+          <div class="copilot-review-note"><span>⏱</span><span>${esc(output.pacingNote)}</span></div>
+        </div>`;
+      }
+
+      function renderFinalScorecard(output, source, session) {
+        const unscoredCount = output.criteria.filter(item => item.score === null).length;
+        const groups = interviewScoringGuide.map(category => `<section class="score-guide-group">
+          <div class="score-guide-head"><span>${esc(category.name)}</span><span>${esc(output.categoryScores.find(item => item.categoryId === category.id)?.points || 0)}/${esc(category.maxPoints)}</span></div>
+          ${category.criteria.map(criterion => {
+            const item = output.criteria.find(entry => entry.criterionId === criterion.id);
+            return `<article class="scorecard-row ${item.score === null ? "unscored" : ""}">
+              <b>${esc(criterion.name)}</b>
+              ${scoreStepper(item, "final")}
+              <div class="scorecard-copy"><p>${esc(item.rationale)}</p><div class="evidence-refs">${evidenceRefs(item.evidenceTurnIds)}</div></div>
+            </article>`;
+          }).join("")}
+        </section>`).join("");
+        return `<div class="copilot-output">
+          <div class="copilot-output-head"><h3>Final scorecard · interviewer review</h3><span class="pill ${source === "demo_fallback" ? "gold" : "green"}">${source === "demo_fallback" ? "Demo fallback" : "AI analysis"}</span></div>
+          <div class="scorecard-overall"><div class="scorecard-number"><b id="finalScoreTotal">${esc(output.overallDraftScore)}</b><small>/100</small></div><div><h4>Editable AI-proposed score</h4><p>${esc(output.interviewSummary)}</p></div></div>
+          <div class="scorecard-completion ${unscoredCount ? "" : "hidden"}" id="finalScoreCompletion">${unscoredCount ? `<b>${unscoredCount} criteria need interviewer scores.</b> AI left them blank because the transcript did not contain enough evidence.` : ""}</div>
+          <div class="category-score-strip">${output.categoryScores.map(category => `<span class="category-score-chip"><b data-final-category="${esc(category.categoryId)}">${esc(category.points)}/${esc(category.maxPoints)}</b><span>${esc(category.name)}</span></span>`).join("")}</div>
+          <div class="scorecard-list">${groups}</div>
+          <div class="copilot-columns">
+            <article class="copilot-list-card"><h4>Strengths</h4><ul>${output.strengths.map(item => `<li>${esc(item)}</li>`).join("") || "<li>No confirmed strength yet.</li>"}</ul></article>
+            <article class="copilot-list-card"><h4>Concerns & unanswered gaps</h4><ul>${[...output.concerns, ...output.unansweredGaps].map(item => `<li>${esc(item)}</li>`).join("") || "<li>No material gap recorded.</li>"}</ul></article>
           </div>
-          <div class="modal-foot"><button class="btn btn-quiet" data-close-modal>Close</button><button class="btn btn-primary" id="prepareCopilot">Attach to next interview</button></div>
-        </section>`);
-        document.querySelector("#prepareCopilot").addEventListener("click", () => { closeModal(); showToast(`Interview Copilot attached to ${candidate.name}’s next session.`); });
+          <div class="final-review-field"><label for="finalInterviewNote">Final interviewer comment</label><textarea id="finalInterviewNote" placeholder="Add your final judgment, nuance or panel handoff note…">${esc(session.finalComment || "")}</textarea></div>
+          <div class="copilot-review-note"><span>!</span><span>${esc(output.reviewNote)} No hire/reject recommendation is generated.</span></div>
+          <div class="final-score-actions"><button class="btn ${session.saved ? "btn-secondary" : "btn-primary"}" id="saveInterviewResult" ${unscoredCount || session.saved ? "disabled" : ""}>${session.saved ? "✓ Final result saved" : unscoredCount ? `Complete ${unscoredCount} scores to save` : "Save final interview result"}</button></div>
+        </div>`;
+      }
+
+      function renderPreInterview(candidate) {
+        return `<div class="copilot-output">
+          <div class="copilot-output-head"><h3>Before interview starts</h3><span class="pill">Briefing ready</span></div>
+          <p class="copilot-summary">The Copilot is ready to consume finalized transcript batches from the internal transcription model. No audio or partial transcript is analysed.</p>
+          <div><p class="label" style="margin:0 0 7px">Priority evidence gap</p><div class="evidence-gap"><span class="gap-icon">!</span><div><strong>${esc(candidate.gap)}</strong><p>${esc(candidate.gapDetail)}</p></div></div></div>
+          <div class="copilot-review-note"><span>✓</span><span>Start the demo interview to receive a finalized transcript batch and automatic analysis every 15 simulated minutes.</span></div>
+        </div>`;
+      }
+
+      function renderCopilotFollowups(session, candidate) {
+        const dock = document.querySelector("#copilotFollowups");
+        const badge = document.querySelector("#copilotFollowupBadge");
+        if (!dock) return;
+        const currentCheckpoint = session.checkpoint || session.checkpoints?.[session.currentMinute];
+        const checkpoint = currentCheckpoint || session.checkpoints?.[45];
+        const followUps = checkpoint?.followUps?.length
+          ? checkpoint.followUps
+          : candidate.questions.slice(0, 3).map((question, index) => ({
+              question,
+              reason: index === 0 ? candidate.gapDetail : "Prepared from the candidate evidence record.",
+              criterionId: index === 0 ? "data_driven" : index === 1 ? "self_learning" : "delivery"
+            }));
+        if (badge) badge.textContent = checkpoint ? `${currentCheckpoint ? session.currentMinute : 45} min` : "Before";
+        dock.innerHTML = followUps.slice(0, 5).map((item, index) => `<article class="follow-up">
+          <span>${index + 1}</span><div><b>${esc(item.question)}</b><p>${esc(item.reason)}${item.criterionId ? ` · ${esc(criterionLabel(item.criterionId))}` : ""}</p></div>
+        </article>`).join("") || `<p class="copilot-input-note">No additional follow-up is required.</p>`;
+      }
+
+      function setCopilotScore(scope, criterionId, rawValue, rerender = true) {
+        const candidate = candidateById(activeCopilotCandidateId);
+        const session = candidate ? copilotSessions.get(candidate.id) : null;
+        const collection = scope === "final" ? session?.final?.criteria : session?.checkpoint?.coverage;
+        const criterion = collection?.find(item => item.criterionId === criterionId);
+        if (!criterion) return;
+        const numericValue = Number(rawValue);
+        criterion.score = String(rawValue).trim() === "" || !Number.isFinite(numericValue)
+          ? null
+          : Math.max(0.5, Math.min(5, Math.round(numericValue * 2) / 2));
+        criterion.interviewerAdjusted = criterion.score !== null;
+        session.saved = false;
+        if (scope === "final") recalculateInterviewScore(session.final);
+        if (rerender) renderCopilotResult(session, candidate);
+        return criterion;
+      }
+
+      function refreshFinalScoreCompletion(session) {
+        if (!session?.final) return;
+        const unscoredCount = session.final.criteria.filter(item => item.score === null).length;
+        const total = document.querySelector("#finalScoreTotal");
+        const completion = document.querySelector("#finalScoreCompletion");
+        const saveButton = document.querySelector("#saveInterviewResult");
+        if (total) total.textContent = session.final.overallDraftScore;
+        session.final.categoryScores.forEach(category => {
+          const categoryScore = document.querySelector(`[data-final-category="${category.categoryId}"]`);
+          if (categoryScore) categoryScore.textContent = `${category.points}/${category.maxPoints}`;
+        });
+        if (completion) {
+          completion.classList.toggle("hidden", unscoredCount === 0);
+          completion.innerHTML = unscoredCount
+            ? `<b>${unscoredCount} criteria need interviewer scores.</b> AI left them blank because the transcript did not contain enough evidence.`
+            : "";
+        }
+        if (saveButton) {
+          saveButton.disabled = session.saved || unscoredCount > 0;
+          saveButton.className = `btn ${session.saved ? "btn-secondary" : "btn-primary"}`;
+          saveButton.textContent = session.saved
+            ? "✓ Final result saved"
+            : unscoredCount
+              ? `Complete ${unscoredCount} scores to save`
+              : "Save final interview result";
+        }
+      }
+
+      function bindCopilotScoreInputs() {
+        document.querySelectorAll("#copilotResult [data-score-input]").forEach(input => {
+          input.addEventListener("input", () => {
+            const criterion = setCopilotScore(input.dataset.scoreScope, input.dataset.scoreCriterion, input.value, false);
+            const card = input.closest(".coverage-item, .scorecard-row");
+            const badge = card?.querySelector(".coverage-top .pill");
+            if (criterion?.score !== null) {
+              card?.classList.remove("unscored");
+              if (badge) {
+                badge.className = `pill ${criterion.score >= 4 ? "green" : criterion.score >= 3 ? "gold" : "red"}`;
+                badge.textContent = `Interviewer score ${criterion.score}/5`;
+              }
+            } else {
+              card?.classList.add("unscored");
+              if (badge) {
+                badge.className = "pill gold";
+                badge.textContent = "Score needed";
+              }
+            }
+            if (input.dataset.scoreScope === "final") refreshFinalScoreCompletion(copilotSessions.get(activeCopilotCandidateId));
+          });
+          input.addEventListener("change", () => {
+            const criterion = setCopilotScore(input.dataset.scoreScope, input.dataset.scoreCriterion, input.value, false);
+            if (criterion) input.value = criterion.score === null ? "" : criterion.score;
+            if (input.dataset.scoreScope === "final") refreshFinalScoreCompletion(copilotSessions.get(activeCopilotCandidateId));
+          });
+        });
+      }
+
+      function renderCopilotResult(session, candidate) {
+        const result = document.querySelector("#copilotResult");
+        if (!result) return;
+        renderCopilotFollowups(session, candidate);
+        if (session.loading) {
+          const actionLabel = session.currentMinute === 60 ? "Producing final scorecard" : `Analysing the ${session.currentMinute}-minute checkpoint`;
+          result.innerHTML = `<div class="copilot-loading"><div><span class="screen-agent-spinner"></span><strong>${esc(actionLabel)}</strong><p>Checking transcript citations against the 100-point Zalo PMT interview guide.</p></div></div>`;
+          return;
+        }
+        if (session.final) {
+          result.innerHTML = renderFinalScorecard(session.final, session.finalSource, session);
+          bindCopilotScoreInputs();
+          return;
+        }
+        if (session.checkpoint) {
+          result.innerHTML = renderCheckpoint(session.checkpoint, session.checkpointSource, session.currentMinute);
+          bindCopilotScoreInputs();
+          return;
+        }
+        result.innerHTML = renderPreInterview(candidate);
+      }
+
+      function renderTranscriptFeed(session) {
+        const transcript = document.querySelector("#copilotTranscript");
+        if (!transcript) return;
+        if (!session.transcriptText.trim()) {
+          transcript.innerHTML = `<p class="copilot-input-note" style="margin:0">Finalized transcript turns will appear here automatically.</p>`;
+          return;
+        }
+        const turns = parseCopilotTranscript(session.transcriptText);
+        transcript.innerHTML = turns.map(turn => {
+          const minute = Math.floor(turn.startedAt / 60);
+          const seconds = String(turn.startedAt % 60).padStart(2, "0");
+          return `<article class="transcript-turn ${esc(turn.speaker)}" data-transcript-turn="${esc(turn.turnId)}">
+            <span class="transcript-turn-meta">${minute}:${seconds} · ${esc(turn.speaker)} · ${esc(turn.turnId)}</span>
+            <p>${esc(turn.text)}</p>
+          </article>`;
+        }).join("");
+        transcript.scrollTop = transcript.scrollHeight;
+      }
+
+      function renderNoteHistory(session) {
+        const history = document.querySelector("#copilotNoteHistory");
+        if (!history) return;
+        history.innerHTML = session.notes.length
+          ? session.notes.map(note => `<div class="note-snapshot"><b>${esc(note.minute)} min</b> · ${esc(note.text)}</div>`).join("")
+          : `<p class="copilot-input-note" style="margin:0">Notes are captured with the next checkpoint and supplied as interviewer context.</p>`;
+      }
+
+      function captureCopilotNote(session, minute) {
+        const text = String(session.noteDraft || "").trim();
+        if (!text) return;
+        const existing = session.notes.find(note => note.minute === minute);
+        if (existing) existing.text = text;
+        else session.notes.push({ noteId: `note-${minute}-${session.notes.length + 1}`, minute, text });
+        session.noteDraft = "";
+      }
+
+      function highlightTranscriptTurn(turnId) {
+        const turns = Array.from(document.querySelectorAll("[data-transcript-turn]"));
+        const turn = turns.find(item => item.dataset.transcriptTurn === turnId);
+        if (!turn) return;
+        turns.forEach(item => item.classList.remove("is-highlighted"));
+        turn.classList.add("is-highlighted");
+        turn.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      function saveFinalInterviewResult(candidate, session) {
+        session.finalComment = document.querySelector("#finalInterviewNote")?.value.trim() || session.finalComment || "";
+        document.querySelectorAll("#copilotResult [data-score-input][data-score-scope='final']").forEach(input => {
+          setCopilotScore("final", input.dataset.scoreCriterion, input.value, false);
+        });
+        const unscored = session.final.criteria.filter(item => item.score === null);
+        if (unscored.length) {
+          showToast(`Add interviewer scores for ${unscored.length} highlighted criteria before saving.`);
+          return;
+        }
+        session.saved = true;
+        candidate.interviewResult = {
+          ...structuredClone(session.final),
+          finalComment: session.finalComment,
+          interviewerNotes: structuredClone(session.notes),
+          transcriptText: session.transcriptText,
+          savedAt: new Date().toISOString(),
+          savedBy: "Minh Nguyen",
+          status: "saved"
+        };
+        candidate.stage = "interviewed";
+        candidate.next = "Waiting for ranking";
+        candidate.timeline.unshift(["Final interview result saved", `Just now · ${session.final.overallDraftScore}/100 · Minh Nguyen`]);
+        refreshProgramCounts();
+        render();
+        renderCopilotResult(session, candidate);
+        showToast(`Final interview result saved for ${candidate.name}.`);
+      }
+
+      function renderCopilotTimeline(session) {
+        const timeline = document.querySelector("#copilotTimeline");
+        const clock = document.querySelector("#copilotClock");
+        const phase = document.querySelector("#copilotPhase");
+        const transcriptInput = document.querySelector("#copilotTranscript");
+        const batchStatus = document.querySelector("#copilotBatchStatus");
+        const startPause = document.querySelector("#copilotStartPause");
+        const next = document.querySelector("#copilotNext");
+        const reset = document.querySelector("#copilotReset");
+        const generateCheckpoint = document.querySelector("#copilotGenerateCheckpoint");
+        const refreshQuestions = document.querySelector("#copilotRefreshQuestions");
+        if (!timeline) return;
+        const stages = [
+          { minute: 0, label: "Before", detail: "Briefing" },
+          { minute: 15, label: "15 min", detail: "Checkpoint" },
+          { minute: 30, label: "30 min", detail: "Checkpoint" },
+          { minute: 45, label: "45 min", detail: "Checkpoint" },
+          { minute: 60, label: "End", detail: "Scorecard" }
+        ];
+        timeline.innerHTML = stages.map((stage, index) => {
+          const complete = stage.minute === 0
+            ? session.currentMinute > 0
+            : stage.minute === 60
+              ? Boolean(session.final)
+              : Boolean(session.checkpoints[stage.minute]);
+          const current = session.phase !== "complete" && session.currentMinute === stage.minute;
+          return `<div class="copilot-stage ${complete ? "complete" : ""} ${current ? "current" : ""}">
+            <span class="copilot-stage-dot ui-icon ui-icon--xs ui-icon--round">${complete ? "✓" : index + 1}</span>
+            <span class="copilot-stage-copy"><b>${stage.label}</b><span>${stage.detail}</span></span>
+          </div>`;
+        }).join("");
+        const phaseLabels = {
+          ready: "Ready to start",
+          running: "Waiting for next finalized batch",
+          paused: "Demo paused",
+          analysing: "Analysing transcript batch",
+          complete: "Interview complete"
+        };
+        clock.textContent = `${session.currentMinute}m`;
+        phase.textContent = phaseLabels[session.phase] || phaseLabels.ready;
+        renderTranscriptFeed(session);
+        renderNoteHistory(session);
+        const notesInput = document.querySelector("#copilotNotes");
+        if (notesInput && notesInput.value !== session.noteDraft) notesInput.value = session.noteDraft;
+        const lastChunk = session.chunks.find(chunk => chunk.minute === session.currentMinute);
+        batchStatus.innerHTML = session.currentMinute === 0
+          ? `<span>No transcript received yet</span><b>Next: 15 min</b>`
+          : session.currentMinute === 60
+            ? `<span>Full one-hour transcript received</span><b>16 finalized turns</b>`
+            : `<span>Latest batch: ${esc(lastChunk?.focus || "Interview evidence")}</span><b>Next: ${session.currentMinute + 15} min</b>`;
+        startPause.textContent = session.phase === "running" || session.phase === "analysing"
+          ? "Ⅱ Pause demo"
+          : session.phase === "complete"
+            ? "↻ Replay demo"
+            : session.currentMinute > 0
+              ? "▶ Resume demo"
+              : "▶ Start 1-hour demo";
+        startPause.disabled = session.loading;
+        next.disabled = session.loading || session.phase === "complete";
+        reset.disabled = session.loading || session.currentMinute === 0;
+        if (generateCheckpoint) {
+          generateCheckpoint.disabled = session.loading || session.currentMinute === 0 || session.phase === "complete";
+          generateCheckpoint.textContent = session.loading ? "Analysing…" : "Generate checkpoint";
+        }
+        if (refreshQuestions) {
+          refreshQuestions.disabled = session.loading || session.currentMinute === 0 || session.phase === "complete";
+          refreshQuestions.textContent = session.loading ? "Refreshing…" : "Refresh questions";
+        }
+      }
+
+      async function runCopilotAnalysis(candidate, action, session, options = {}) {
+        let transcript;
+        try {
+          transcript = parseCopilotTranscript(session.transcriptText);
+        } catch (error) {
+          showToast(error.message);
+          return;
+        }
+        session.loading = true;
+        renderCopilotResult(session, candidate);
+        renderCopilotTimeline(session);
+        const payload = {
+          sessionId: `demo-${candidate.id}`,
+          candidate: copilotCandidatePayload(candidate),
+          transcript,
+          interviewerNotes: session.notes,
+          previousCheckpoint: session.checkpoint || session.checkpoints[session.currentMinute] || session.checkpoints[45] || undefined
+        };
+        const priorCheckpoint = session.checkpoint || session.checkpoints[session.currentMinute] || null;
+        try {
+          const response = await fetch("/api/interview-copilot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action, payload })
+          });
+          const body = await response.json().catch(() => ({}));
+          if (!response.ok || !body.output) throw new Error(body.error || "Interview Copilot is unavailable.");
+          if (action === "checkpoint") {
+            session.checkpoint = options.refreshQuestionsOnly && priorCheckpoint
+              ? {
+                  ...priorCheckpoint,
+                  followUps: body.output.followUps,
+                  pacingNote: body.output.pacingNote
+                }
+              : body.output;
+            session.checkpointSource = body.source;
+            session.checkpoints[session.currentMinute] = session.checkpoint;
+          } else {
+            session.final = body.output;
+            session.finalSource = body.source;
+          }
+        } catch {
+          if (action === "checkpoint") {
+            const fallback = localCheckpoint(candidate, transcript);
+            session.checkpoint = options.refreshQuestionsOnly && priorCheckpoint
+              ? {
+                  ...priorCheckpoint,
+                  followUps: fallback.followUps,
+                  pacingNote: fallback.pacingNote
+                }
+              : fallback;
+            session.checkpointSource = "demo_fallback";
+            session.checkpoints[session.currentMinute] = session.checkpoint;
+          } else {
+            session.final = localFinalScorecard(candidate, transcript);
+            session.finalSource = "demo_fallback";
+          }
+          showToast("Interview Copilot API is unavailable. Showing the deterministic demo analysis.");
+        } finally {
+          session.loading = false;
+          renderCopilotResult(session, candidate);
+          renderCopilotTimeline(session);
+        }
+      }
+
+      async function regenerateCopilotCheckpoint(candidate, session, refreshQuestionsOnly) {
+        if (!session.currentMinute || !session.transcriptText.trim()) {
+          showToast("Wait for the first finalized transcript batch before running the AI checkpoint.");
+          return;
+        }
+        clearTimeout(copilotDemoTimer);
+        const resumeAfterAnalysis = session.phase === "running";
+        captureCopilotNote(session, session.currentMinute);
+        session.phase = "analysing";
+        await runCopilotAnalysis(candidate, "checkpoint", session, { refreshQuestionsOnly });
+        session.phase = resumeAfterAnalysis ? "running" : "paused";
+        renderCopilotTimeline(session);
+        if (resumeAfterAnalysis) scheduleNextCopilotBatch(candidate);
+        if (session.checkpointSource !== "demo_fallback") {
+          showToast(refreshQuestionsOnly
+            ? "Suggested follow-up questions refreshed by AI."
+            : `${session.currentMinute}-minute AI checkpoint regenerated.`);
+        }
+      }
+
+      function scheduleNextCopilotBatch(candidate) {
+        clearTimeout(copilotDemoTimer);
+        const session = copilotSessions.get(candidate.id);
+        if (!session || session.phase !== "running" || session.currentMinute >= 60) return;
+        copilotDemoTimer = setTimeout(() => advanceCopilotDemo(candidate, false), COPILOT_DEMO_STEP_MS);
+      }
+
+      async function advanceCopilotDemo(candidate, manualAdvance) {
+        const session = copilotSessions.get(candidate.id);
+        if (!session || session.loading || session.currentMinute >= 60) return;
+        clearTimeout(copilotDemoTimer);
+        const wasPaused = session.phase === "paused";
+        const nextChunk = session.chunks.find(chunk => chunk.minute > session.currentMinute);
+        if (!nextChunk) return;
+        captureCopilotNote(session, nextChunk.minute);
+        session.phase = "analysing";
+        session.currentMinute = nextChunk.minute;
+        session.transcriptText = [session.transcriptText, ...nextChunk.lines].filter(Boolean).join("\n");
+        session.checkpoint = null;
+        session.pauseRequested = manualAdvance || wasPaused;
+        renderCopilotTimeline(session);
+        const action = session.currentMinute === 60 ? "finalize" : "checkpoint";
+        await runCopilotAnalysis(candidate, action, session);
+        if (session.currentMinute === 60) {
+          session.phase = "complete";
+          candidate.stage = "interview";
+          candidate.next = "Review & save interview scorecard";
+          candidate.timeline.unshift(["AI scorecard generated", "Just now · human review required"]);
+          refreshProgramCounts();
+        } else if (session.pauseRequested) {
+          session.phase = "paused";
+        } else {
+          session.phase = "running";
+          scheduleNextCopilotBatch(candidate);
+        }
+        renderCopilotTimeline(session);
+      }
+
+      function resetCopilotDemo(candidate) {
+        clearTimeout(copilotDemoTimer);
+        const session = copilotSessions.get(candidate.id);
+        Object.assign(session, {
+          currentMinute: 0,
+          phase: "ready",
+          transcriptText: "",
+          checkpoint: null,
+          checkpointSource: null,
+          checkpoints: {},
+          final: null,
+          finalSource: null,
+          loading: false,
+          pauseRequested: false,
+          notes: [],
+          noteDraft: "",
+          finalComment: "",
+          saved: false
+        });
+        renderCopilotTimeline(session);
+        renderCopilotResult(session, candidate);
+      }
+
+      function toggleCopilotDemo(candidate) {
+        const session = copilotSessions.get(candidate.id);
+        if (session.phase === "complete") resetCopilotDemo(candidate);
+        if (session.phase === "running" || session.phase === "analysing") {
+          clearTimeout(copilotDemoTimer);
+          session.pauseRequested = true;
+          if (!session.loading) session.phase = "paused";
+        } else {
+          session.pauseRequested = false;
+          session.phase = "running";
+          scheduleNextCopilotBatch(candidate);
+        }
+        renderCopilotTimeline(session);
+      }
+
+      function openCopilotModal(candidate) {
+        let session = copilotSessions.get(candidate.id);
+        if (!session?.chunks) session = {
+          chunks: demoTranscriptChunks(candidate),
+          currentMinute: 0,
+          phase: "ready",
+          transcriptText: "",
+          checkpoint: null,
+          checkpointSource: null,
+          checkpoints: {},
+          final: null,
+          finalSource: null,
+          loading: false,
+          pauseRequested: false,
+          notes: [],
+          noteDraft: "",
+          finalComment: "",
+          saved: false
+        };
+        if (candidate.interviewResult && !session.final) {
+          session.transcriptText = candidate.interviewResult.transcriptText || session.transcriptText;
+          session.notes = structuredClone(candidate.interviewResult.interviewerNotes || []);
+          session.final = structuredClone(candidate.interviewResult);
+          session.finalSource = "saved_result";
+          session.finalComment = candidate.interviewResult.finalComment || "";
+          session.saved = true;
+          session.currentMinute = 60;
+          session.phase = "complete";
+        }
+        session.notes ||= [];
+        session.noteDraft ||= "";
+        session.finalComment ||= "";
+        copilotSessions.set(candidate.id, session);
+        openCopilotLayer(`<section class="modal copilot-modal" role="dialog" aria-modal="true" aria-labelledby="copilotTitle">
+          <div class="modal-head">
+            <div><p class="eyebrow">Interview Copilot · automatic 15-minute checkpoints</p><h2 id="copilotTitle">${esc(candidate.name)} · one-hour demo interview</h2><p>One hour is time-compressed for the demo. Finalized transcript batches arrive automatically at 15, 30, 45 and 60 minutes.</p></div>
+            <div class="copilot-head-actions">
+              <button class="btn btn-quiet copilot-minimize-action" id="minimizeCopilot" type="button" aria-label="Minimize Interview Copilot to picture in picture">Minimize ↘</button>
+              <button class="btn btn-quiet copilot-restore-action" id="restoreCopilot" type="button" aria-label="Restore full Interview Copilot">Restore ↗</button>
+              <button class="icon-button" id="closeCopilot" type="button" aria-label="Close Interview Copilot">×</button>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div class="copilot-pip-hint"><span>Picture-in-picture · browse candidate evidence freely</span><button id="viewCopilotCandidate" type="button">View ${esc(candidate.name)} →</button></div>
+            <div class="copilot-demo-bar">
+              <div class="copilot-demo-clock"><span class="copilot-clock-face ui-icon ui-icon--lg ui-icon--round" id="copilotClock">0m</span><span><b>Demo interview clock</b><span id="copilotPhase">Ready to start</span></span></div>
+              <div class="copilot-demo-controls"><button class="btn btn-primary" id="copilotStartPause">▶ Start 1-hour demo</button><button class="btn btn-secondary" id="copilotNext">↦ Next 15 min now</button><button class="btn btn-quiet" id="copilotReset">↻ Reset</button></div>
+            </div>
+            <div class="copilot-timeline" id="copilotTimeline" aria-label="Interview checkpoint timeline"></div>
+            <div class="copilot-interviewer-desk">
+              <section class="interviewer-desk-section">
+                <div class="interviewer-desk-head"><div><h3>Interviewer notes</h3><p>Your free-form judgment is captured into the next checkpoint.</p></div><span class="pill">Private context</span></div>
+                <div class="interviewer-note-box">
+                  <textarea class="interviewer-notes" id="copilotNotes" aria-label="Interviewer notes" placeholder="Capture your feeling, doubts, or skill judgment here. Example: Strong logic, but impact sounds overstated—verify data ownership.">${esc(session.noteDraft || "")}</textarea>
+                  <div class="note-history" id="copilotNoteHistory"></div>
+                </div>
+              </section>
+              <section class="interviewer-desk-section">
+                <div class="interviewer-desk-head">
+                  <div><h3>Suggested follow-up questions</h3><p>Up to five questions generated from transcript evidence and your notes.</p></div>
+                  <div class="interviewer-desk-actions">
+                    <span class="pill gold" id="copilotFollowupBadge">Before</span>
+                    <button class="copilot-mini-action primary" id="copilotGenerateCheckpoint" type="button">Generate checkpoint</button>
+                    <button class="copilot-mini-action" id="copilotRefreshQuestions" type="button">Refresh questions</button>
+                  </div>
+                </div>
+                <div class="copilot-followup-dock follow-up-list" id="copilotFollowups"></div>
+              </section>
+            </div>
+            <div class="copilot-workspace">
+              <section class="copilot-panel copilot-results" id="copilotResult" aria-live="polite"></section>
+            </div>
+            <section class="copilot-panel copilot-transcript-panel">
+              <div class="copilot-panel-head"><div><h3>Transcript evidence</h3><p>Supporting record · finalized turns from internal STT</p></div><span class="pill">15-min batches</span></div>
+              <div class="copilot-input">
+                <div class="copilot-transcript" id="copilotTranscript" aria-label="Interview transcript"></div>
+                <div class="copilot-batch-status" id="copilotBatchStatus"><span>No transcript received yet</span><b>Next: 15 min</b></div>
+                <p class="copilot-input-note">The transcript sits below the interviewer workspace as supporting evidence. Evidence links in the checkpoint and scorecard jump directly to the cited candidate turn.</p>
+              </div>
+            </section>
+          </div>
+          <div class="modal-foot"><button class="btn btn-quiet" data-close-copilot>Close</button></div>
+        </section>`, candidate.id);
+        renderCopilotTimeline(session);
+        renderCopilotResult(session, candidate);
+        document.querySelector("#copilotStartPause").addEventListener("click", () => toggleCopilotDemo(candidate));
+        document.querySelector("#copilotNext").addEventListener("click", () => advanceCopilotDemo(candidate, true));
+        document.querySelector("#copilotReset").addEventListener("click", () => resetCopilotDemo(candidate));
+        document.querySelector("#copilotGenerateCheckpoint").addEventListener("click", () => regenerateCopilotCheckpoint(candidate, session, false));
+        document.querySelector("#copilotRefreshQuestions").addEventListener("click", () => regenerateCopilotCheckpoint(candidate, session, true));
+        document.querySelector("#copilotNotes").addEventListener("input", event => { session.noteDraft = event.target.value; });
+        document.querySelector("#minimizeCopilot").addEventListener("click", () => setCopilotPipMode(true));
+        document.querySelector("#restoreCopilot").addEventListener("click", () => setCopilotPipMode(false));
+        document.querySelector("#closeCopilot").addEventListener("click", closeCopilot);
+        document.querySelector("#viewCopilotCandidate").addEventListener("click", () => setView("candidate", candidate.id));
+        document.querySelector("#copilotResult").addEventListener("click", event => {
+          const evidence = event.target.closest("[data-evidence-turn]");
+          if (evidence) highlightTranscriptTurn(evidence.dataset.evidenceTurn);
+          if (event.target.closest("#saveInterviewResult")) saveFinalInterviewResult(candidate, session);
+        });
+        document.querySelector("#copilotResult").addEventListener("input", event => {
+          if (event.target.id === "finalInterviewNote") session.finalComment = event.target.value;
+        });
       }
 
       function openScoreModal(candidate) {
@@ -2163,7 +3376,11 @@
       document.querySelectorAll(".nav-item").forEach(button => button.addEventListener("click", () => openNavigationView(button.dataset.view)));
       document.querySelector("#helpButton").addEventListener("click", () => showToast("TA Portal guide opened for this workspace."));
       document.querySelector("#notificationButton").addEventListener("click", () => showToast("You have 6 overdue candidate decisions."));
-      document.addEventListener("keydown", event => { if (event.key === "Escape" && modalRoot.innerHTML) closeModal(); });
+      document.addEventListener("keydown", event => {
+        if (event.key !== "Escape") return;
+        if (modalRoot.innerHTML) closeModal();
+        else if (copilotRoot.innerHTML) closeCopilot();
+      });
       render();
     </script>
   </body>

@@ -16,7 +16,7 @@ The product creates an early talent funnel around the application journey. Stude
 - Allows candidates to apply without completing the course or earning a certificate.
 - Automatically sends each application package to the AI Agent path and inserts a structured candidate row in HR.
 - Automatically invites candidates who meet the Ready threshold directly to interview.
-- Starts a separate Interview Evidence Probe Agent only after the candidate accepts; TA can review its pack in CV details and share it with the interviewer.
+- Turns finalized interview transcript turns into evidence checkpoints, focused follow-up questions, and a human-reviewed final scorecard.
 - Lets the student upload a CV as a PDF before applying.
 - Lets the student select a hiring position and apply with role-specific prompts.
 - Shows HR an agent assessment queue with realistic sample candidates.
@@ -70,7 +70,7 @@ flowchart TD
     CERTIFICATE["Create PMT Ready certificate<br/>verification code · PDF · share link"]
     APPLY["Apply to PMT program<br/>CV · profile · verified evidence"]
     SUBMITTED_HOME["Submitted Home<br/>application timeline · TA reviewed<br/>interview scheduling · waiting suggestions"]
-    TA_COPILOT["TA Copilot<br/><code>Planned · Agent ID not created</code><br/><i>summarizes evidence and flags uncertainty;<br/>does not make the hiring decision</i>"]
+    TA_COPILOT["Interview Copilot<br/><code>Direct Responses API · no Workspace Agent ID</code><br/><i>analyses transcript evidence and drafts a scorecard;<br/>does not make the hiring decision</i>"]
     TA_PORTAL["TA portal review"]
     TA_DECISION(["Human TA decision"])
 
@@ -129,7 +129,7 @@ flowchart LR
         A3["Assignment Evaluator Agent<br/><code>agt_6a64f790c85481919b2ce219d5fa205d</code>"]
         A4["Next Action Recommender<br/><code>agt_6a64f7982f588191990e773e2e00d2ec</code>"]
         A5["Improvement Coach<br/><code>agt_6a64f794847c8191afb0ec83beb8e8bd</code>"]
-        A6["TA Copilot<br/><code>Planned · Agent ID not created</code>"]
+        A6["Interview Copilot<br/><code>Direct Responses API · no Workspace Agent ID</code>"]
     end
 
     subgraph AI_RUNTIME["AI runtime"]
@@ -186,7 +186,7 @@ flowchart LR
     RESPONSES --> OBSERVE
 ```
 
-The live portal uses the Responses API only for CV extraction in the current student demo. Course-assignment submissions are scored locally as a random 3★ or 4★ result and never call an AI Agent. Workspace Agent versions remain available for editable operator testing and future workflows, but they are not the assignment result channel.
+The live portal uses the Responses API for student CV extraction and TA Interview Copilot transcript analysis. Course-assignment submissions are scored locally as a random 3★ or 4★ result and never call an AI Agent. Workspace Agent versions remain available for editable operator testing and future workflows, but they are not either synchronous result channel.
 
 The current onboarding demo does not call Journey Designer. Every user receives
 the same validated four-course Product journey, while their selected career
@@ -203,9 +203,9 @@ The active student AI responsibility is CV extraction and neutral summarization.
 | Assignment Evaluator Agent | `agt_6a64f790c85481919b2ce219d5fa205d` | Route retained; assignment UI does not call it | Draft · inactive in demo |
 | Improvement Coach | `agt_6a64f794847c8191afb0ec83beb8e8bd` | Route retained; result UI does not call it | Draft · inactive in demo |
 | Next Action Recommender | `agt_6a64f7982f588191990e773e2e00d2ec` | Route retained; result UI does not call it | Published version retained · inactive in demo |
-| TA Copilot | Not created | Not integrated | Planned |
+| Interview Copilot | Direct Responses API · no Workspace Agent ID | `POST /api/interview-copilot` | Integrated in TA candidate view |
 
-The updated Workspace Agent configurations remain drafts; the Next Action Recommender also has an older published version. Only CV extraction currently uses the OpenAI Responses API when a server-side `OPENAI_API_KEY` is present. If CV extraction is unavailable or invalid, onboarding stays on the current step and shows `AI Agent is not working. Please try again.` Assignment scoring is deliberately local and does not depend on an API key.
+The updated Workspace Agent configurations remain drafts; the Next Action Recommender also has an older published version. CV extraction and Interview Copilot use the OpenAI Responses API when a server-side `OPENAI_API_KEY` is present. If CV extraction is unavailable or invalid, onboarding stays on the current step and shows `AI Agent is not working. Please try again.` If Interview Copilot is unavailable, the TA modal clearly labels and renders a deterministic local demo scorecard. Assignment scoring is deliberately local and does not depend on an API key.
 
 ### Student agent v2 input/output map
 
@@ -231,6 +231,8 @@ This first prototype is intentionally simple:
 - `api/student-agent-contracts.mjs` defines the five student-agent roles, strict input/output contracts, evidence rules, and cross-field validation.
 - `student-portal.html` owns the shared four-course progress state and local random 3★/4★ demo scorer used by Courses 2–4.
 - `api/student-agents.mjs` is the server-only OpenAI Responses API gateway. CV extraction is active; the other student-agent routes are retained for future use.
+- `api/interview-copilot.mjs` accepts finalized transcript turns and returns a strict checkpoint or final-scorecard response.
+- `api/interview-copilot-contracts.mjs` owns the 100-point Zalo PMT 2026 interview rubric, evidence-citation rules, interviewer-note handling, protected-attribute exclusions, and deterministic overall-score calculation.
 - `api/evaluate-assignment.mjs` contains the private backend endpoint that triggers the PM CV Evaluator in ChatGPT.
 - `server.mjs` serves the local demo and API endpoint together.
 - Browser storage keeps the demo student's onboarding, extracted profile, learning progress, and application status on the same domain. Raw CV file bytes are not cached.
@@ -293,7 +295,7 @@ cached demo Student session instead of showing Login and Onboarding again.
 
 ## Required Accounts and API Keys
 
-An OpenAI API key is required for CV extraction. Store it only in `.env` or deployment secrets; the browser never receives the key. Without it, the UI displays the agent failure toast on the CV step. Learning assignment demo results continue to work without a key.
+An OpenAI API key is required for live CV extraction and live Interview Copilot analysis. Store it only in `.env` or deployment secrets; the browser never receives the key. Without it, the CV step displays the agent failure toast and Interview Copilot uses its clearly labelled deterministic demo fallback. Learning assignment demo results continue to work without a key.
 
 A Workspace Agent access token is required only when running the asynchronous PM CV Evaluator trigger endpoint. The browser never receives that token either.
 
@@ -306,6 +308,7 @@ Copy `.env.example` to `.env` for live agent mode.
 ```text
 OPENAI_API_KEY=
 OPENAI_STUDENT_AGENT_MODEL=gpt-5.6-terra
+OPENAI_INTERVIEW_COPILOT_MODEL=gpt-5.6
 ```
 
 The student portal calls these server-only routes:
@@ -316,7 +319,81 @@ POST /api/student-agents/journey-designer
 POST /api/student-agents/assignment-evaluator
 POST /api/student-agents/improvement-coach
 POST /api/student-agents/next-action
+POST /api/interview-copilot
 ```
+
+### Interview Copilot contract
+
+Live transcription is deliberately outside this demo. An internal transcription
+service should send only finalized speaker turns to Interview Copilot:
+
+```json
+{
+  "action": "checkpoint",
+  "payload": {
+    "sessionId": "interview-mai-001",
+    "candidate": {
+      "id": "mai",
+      "name": "Mai Anh",
+      "targetRole": "Product Management Trainee"
+    },
+    "transcript": [
+      {
+        "turnId": "turn-001",
+        "speaker": "candidate",
+        "startedAt": 0,
+        "endedAt": 42,
+        "text": "I interviewed twelve users...",
+        "final": true
+      }
+    ],
+    "interviewerNotes": [
+      {
+        "noteId": "note-15-1",
+        "minute": 15,
+        "text": "Strong product curiosity; verify ownership of the reported impact."
+      }
+    ]
+  }
+}
+```
+
+Use `action: "checkpoint"` after each transcript window to receive every
+criterion's current `score`, concise `summaryNote`, transcript evidence links,
+and up to five focused follow-up questions. A score is `null` until candidate
+evidence exists. Use `action: "finalize"` after the interview to receive the
+AI-proposed 100-point scorecard. The attached Zalo PMT 2026
+guide is represented as Personality 30, Knowledge 15, Mindset 35, Management 15,
+and Bonus 5. Evidence-backed criteria are rated from 0.5–5 in half-point increments;
+criteria without candidate transcript evidence remain blank for interviewer input.
+Because the source guide lists two
+five-point Bonus criteria while capping the section at five, the implementation
+uses their average for the Bonus category. All evidence citations
+must resolve to a supplied `turnId`; the server rejects unknown citations and
+calculates category and `/100` totals itself. Free-form interviewer notes can
+affect confidence, current score estimates and follow-up priority, but cannot be cited as candidate
+evidence.
+Neither action can return a hire, reject, offer, or ranking recommendation, and
+every output sets `humanReviewRequired: true`.
+
+The TA portal includes a time-compressed one-hour demo interview. It begins with
+the pre-interview evidence briefing, automatically appends finalized transcript
+batches at 15, 30, 45, and 60 simulated minutes, and refreshes the checkpoint
+after each of the first three batches. At 60 minutes it automatically calls the
+finalize action and renders the AI-proposed scorecard. The operator can pause,
+resume, reset, advance immediately to the next 15-minute checkpoint, force the
+agent to regenerate the current checkpoint, or refresh only the suggested
+questions during a live demo.
+The interviewer can type unstructured notes beside the transcript; each note is
+captured into the next checkpoint. Criterion summaries link back to highlighted
+candidate transcript turns. At the end, every score remains editable with a
+half-point numeric control, the overall and category totals recalculate immediately,
+and the result cannot be saved until the interviewer resolves all blank criteria. Saving the human-reviewed
+result adds it to the candidate detail page. In the live workspace, the large
+interviewer note area and current follow-up questions remain pinned above the
+analysis while the transcript sits below as supporting evidence. AI-estimated and
+final interview scores also appear in the talent pipeline, with the next action changing
+from interview advancement to the new `Interviewed` / `Waiting for ranking` stage.
 
 The published TA-side PM CV Evaluator endpoint is also included:
 
@@ -342,7 +419,7 @@ Never place a real access token directly in source code.
 
 ## Known Limitations
 
-- CV extraction is the only active student-agent call in the portal and requires `OPENAI_API_KEY`.
+- CV extraction and TA Interview Copilot are the active Responses API calls and require `OPENAI_API_KEY` for live analysis.
 - Course assignment scoring is a deliberate local demo: it randomly returns only 3★ or 4★ and is not an actual evaluation of answer quality.
 - Courses 2–4 share the same demo assignment pattern. A 4★ result completes the current course and unlocks the next; 3★ leaves progress unchanged.
 - Certificate generation, PDF download, sharing, and the submitted application timeline are interactive demo states; they do not yet persist to a backend.
@@ -352,6 +429,7 @@ Never place a real access token directly in source code.
 - No real database.
 - Uploaded PDF, DOC, and DOCX content is passed server-side to the Responses API as a file input for structured profile extraction. The browser never receives the OpenAI API key.
 - No email, calendar, or interview scheduling integration.
+- Live audio capture and speech-to-text are not part of this demo; Interview Copilot starts from finalized turns supplied by an internal transcription service.
 - The certificate is a visible state in the app, not a generated PDF.
 
 ## Hackathon Materials

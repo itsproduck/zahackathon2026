@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import apiHandler from "./api/evaluate-assignment.mjs";
+import interviewCopilotHandler from "./api/interview-copilot.mjs";
 import interviewQuestionHandler from "./api/prepare-interview-questions.mjs";
 import studentAgentsHandler from "./api/student-agents.mjs";
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
@@ -86,6 +87,10 @@ const server = http.createServer((req, res) => {
   }
   if ((req.url || "").startsWith("/api/prepare-interview-questions")) {
     interviewQuestionHandler(req, res);
+    return;
+  }
+  if ((req.url || "").startsWith("/api/interview-copilot")) {
+    interviewCopilotHandler(req, res);
     return;
   }
   serveStatic(req, res);
