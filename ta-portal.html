@@ -357,6 +357,20 @@
       .program-row:hover { background: linear-gradient(90deg, transparent, #f8fbfb 8%, #f8fbfb 92%, transparent); }
       .program-name strong { display: block; font-size: 12px; line-height: 1.45; font-weight: var(--weight-semibold); }
       .program-name span { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+      .program-name .deadline-chip {
+        width: fit-content;
+        margin-top: 4px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border: 0;
+        color: var(--muted);
+        background: transparent;
+        font-weight: var(--weight-regular);
+        white-space: nowrap;
+      }
+      .deadline-chip i { color: #91a0a3; font-style: normal; font-size: 11px; }
       .mini-funnel { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
       .funnel-step { min-width: 0; }
       .funnel-step i { display: block; height: 5px; margin-bottom: 6px; border-radius: 99px; background: var(--teal); opacity: var(--step-opacity, 1); }
@@ -366,7 +380,12 @@
       .funnel-step span { display: block; color: var(--muted); font-size: 8px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .health { text-align: right; }
       .health strong { display: block; color: var(--teal-deep); font-size: 11px; }
-      .health span { color: var(--muted); font-size: 8px; }
+      .health span, .health small { display: block; font-size: 8px; }
+      .health span { margin-top: 2px; color: var(--green); font-weight: var(--weight-semibold); }
+      .health small { margin-top: 1px; color: var(--muted); }
+      .health.watch strong, .health.watch span { color: var(--gold); }
+      .health.risk strong, .health.risk span { color: var(--orange-dark); }
+      .health.completed strong, .health.completed span { color: #607d86; }
       .action-list { padding: 5px 18px 12px; }
       .action-item { padding: 13px 0; display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: start; border-bottom: 1px solid var(--line); }
       .action-item:last-child { border: 0; }
@@ -403,26 +422,31 @@
       }
       .ownership-guide {
         margin-bottom: 13px;
-        padding: 9px 12px;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 7px 16px;
+        padding: 13px 15px;
         border: 1px solid var(--line);
         border-radius: 10px;
         color: var(--muted);
         background: var(--white);
         font-size: 8px;
       }
-      .ownership-guide > strong { color: var(--body); font-size: 9px; font-weight: var(--weight-semibold); }
+      .ownership-guide h2, .ownership-guide h3 {
+        margin: 0 0 9px;
+        color: var(--ink);
+        font-size: var(--type-row-title-size);
+        line-height: var(--type-row-title-line);
+        font-weight: var(--weight-semibold);
+        letter-spacing: var(--tracking-heading);
+      }
+      .ownership-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 7px 22px; }
       .ownership-guide span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
       .ownership-guide i, .ownership-badge i { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--teal); }
       .ownership-guide .ownership-support i, .ownership-badge.ownership-support i { background: var(--violet); }
       .ownership-guide .ownership-approve i, .ownership-badge.ownership-approve i { background: var(--orange); }
       .ownership-guide small { color: #8a989b; font-size: inherit; }
       .result-count { margin-left: auto; padding: 0 6px; color: var(--muted); font-size: 10px; white-space: nowrap; }
-      .pipeline-card { overflow-x: auto; }
+      .pipeline-card { overflow: hidden; container-type: inline-size; }
       .pipeline-table { min-width: 840px; }
+      .mobile-field-label { display: none; }
       .pagination {
         margin-top: 13px;
         padding: 10px 12px;
@@ -503,6 +527,61 @@
       .next-step { padding: 9px 10px; border-left: 2px solid var(--orange); border-radius: 0 7px 7px 0; background: #fff8f5; }
       .next-step span { display: block; color: #a83f20; font-size: 8px; font-weight: var(--weight-semibold); letter-spacing: .06em; text-transform: uppercase; }
       .next-step b { display: block; margin-top: 3px; color: #673326; font-size: 9px; line-height: 1.4; font-weight: var(--weight-medium); }
+
+      @container (max-width: 859px) {
+        .pipeline-table { min-width: 0; }
+        .pipeline-head { display: none; }
+        .candidate-row {
+          grid-template-columns: minmax(215px, .72fr) minmax(0, 1.28fr);
+        }
+        .candidate-row > div { padding: 14px 16px; }
+        .candidate-row > .candidate-info {
+          grid-row: 1 / 3;
+          border-left: 0;
+        }
+        .candidate-row > .ai-summary { border-top: 1px solid #eef2f2; }
+        .mobile-field-label {
+          display: block;
+          color: var(--muted);
+          font-size: var(--type-micro-size);
+          line-height: var(--type-micro-line);
+          font-weight: var(--weight-semibold);
+          letter-spacing: .08em;
+          text-transform: uppercase;
+        }
+        .ai-score {
+          display: grid;
+          grid-template-columns: 47px minmax(0, 1fr);
+          gap: 9px 11px;
+        }
+        .ai-score .mobile-field-label { grid-column: 1 / -1; }
+        .ai-summary {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 10px;
+        }
+      }
+      @container (max-width: 619px) {
+        #pipelineRows {
+          padding: 10px;
+          display: grid;
+          gap: 10px;
+          background: var(--page);
+        }
+        .candidate-row {
+          grid-template-columns: minmax(0, 1fr);
+          border: 1px solid var(--line);
+          border-radius: 10px;
+          box-shadow: 0 4px 14px rgba(0, 86, 84, .04);
+          overflow: hidden;
+        }
+        .candidate-row > .candidate-info { grid-row: auto; }
+        .candidate-row > div + div {
+          border-top: 1px solid #eef2f2;
+          border-left: 0;
+        }
+        .candidate-row > .ai-summary { border-top: 1px solid #eef2f2; }
+        .ai-summary p { font-size: var(--type-supporting-size); line-height: var(--type-supporting-line); }
+      }
 
       /* Candidate detail */
       .back-button { margin-bottom: 14px; padding: 4px 0; border: 0; color: var(--muted); background: transparent; font-size: 10px; }
@@ -896,7 +975,7 @@
       .card-head h2, .modal-head h2 { font-size: var(--type-card-title-size); line-height: var(--type-card-title-line); }
       .eyebrow, .nav-label, .pipeline-head, .label { font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
       .crumb, .student-link, .date-chip, .sidebar-note p, .profile small,
-      .card-head p, .metric-top, .metric small, .program-name span, .health span,
+      .card-head p, .metric-top, .metric small, .program-name span, .health span, .health small,
       .action-copy span, .chart-summary span, .chart-labels-row, .result-count,
       .pagination, .candidate-info small, .score-copy small, .verified,
       .source-card p, .large-score span, .evidence-gap p, .decision-score span,
@@ -1028,6 +1107,7 @@
         .agent-summary { grid-template-columns: 1fr 1fr; }
         .filter-bar { flex-wrap: wrap; }
         .search-wrap { flex-basis: 100%; }
+        .filter-bar .select { min-width: 0; flex: 1 1 145px; }
         .result-count { width: 100%; margin: 0; }
         .pagination { align-items: flex-start; flex-direction: column; }
         .detailed-score-row { grid-template-columns: 1fr; gap: 7px; }
@@ -1041,6 +1121,7 @@
         .metric strong { font-size: 22px; }
         .page-actions { width: 100%; }
         .page-actions .btn { flex: 1; }
+        .filter-bar .select { width: 100%; flex-basis: 100%; }
         .detail-identity { align-items: flex-start; }
         .detail-avatar { width: 44px; height: 44px; }
         .candidate-title-row .page-actions { width: 100%; display: grid; grid-template-columns: 1fr; }
@@ -1293,17 +1374,25 @@
 
       function programById(id) { return programs.find(program => program.id === id); }
       function candidateById(id) { return candidates.find(candidate => candidate.id === id); }
+      function programHealthStatus(program) {
+        if (!program.active) return { className: "completed", label: "Completed", detail: "Program closed" };
+        if (program.health >= 80) return { className: "healthy", label: "Healthy", detail: "On track" };
+        if (program.health >= 70) return { className: "watch", label: "Watch", detail: "Monitor closely" };
+        return { className: "risk", label: "At risk", detail: "Action required" };
+      }
       function ownershipForStage(stage) { return stageOwnership[stage] || stageOwnership.review; }
       function ownershipBadge(stage) {
         const ownership = ownershipForStage(stage);
         return `<span class="ownership-badge ${ownership.className}"><i></i>${ownership.short}</span>`;
       }
-      function ownershipGuide() {
+      function ownershipGuide(headingLevel = 2) {
         return `<div class="ownership-guide" aria-label="AI and human workflow ownership">
-          <strong>Workflow ownership</strong>
-          <span class="ownership-auto"><i></i>Full AI agent <small>Intake → Qualified</small></span>
-          <span class="ownership-support"><i></i>AI supporting <small>Review + Interview</small></span>
-          <span class="ownership-approve"><i></i>Human approval <small>Moves + offers</small></span>
+          <h${headingLevel}>Workflow ownership</h${headingLevel}>
+          <div class="ownership-legend">
+            <span class="ownership-auto"><i></i>Full AI agent <small>Intake → Qualified</small></span>
+            <span class="ownership-support"><i></i>AI supporting <small>Review + Interview</small></span>
+            <span class="ownership-approve"><i></i>Human approval <small>Moves + offers</small></span>
+          </div>
         </div>`;
       }
       function detailedCandidateScores(candidate) {
@@ -1380,15 +1469,23 @@
             <div class="overview-grid">
               <article class="card">
                 <div class="card-head"><div><h2>Active recruiting programs</h2><p>Cumulative candidates who reached each funnel stage.</p></div><button class="btn-link" data-go="programs">Manage programs →</button></div>
-                <div style="padding:11px 17px 0">${ownershipGuide()}</div>
+                <div style="padding:11px 17px 0">${ownershipGuide(3)}</div>
                 <div class="program-list">
                   ${active.map(program => `
                     <button class="program-row" data-program-filter="${program.id}">
-                      <span class="program-name"><strong>${program.name}</strong><span>${program.counts[0]} applications · ${program.owner}<br>closes ${program.closes}</span></span>
+                      <span class="program-name">
+                        <strong>${program.name}</strong>
+                        <span>${program.counts[0]} applications · ${program.owner}</span>
+                        <span class="deadline-chip"><i>◷</i>Deadline: ${program.closes}</span>
+                      </span>
                       <span class="mini-funnel">
                         ${stageOrder.map((stage, index) => `<span class="funnel-step ${ownershipForStage(stage).className}" style="--step-opacity:${1 - index * .08}"><i></i><b>${program.counts[index]}</b><span>${stageLabels[stage]}</span></span>`).join("")}
                       </span>
-                      <span class="health"><strong>${program.health}% healthy</strong><span>${program.health > 75 ? "On track" : "Needs attention"}</span></span>
+                      <span class="health ${programHealthStatus(program).className}">
+                        <strong>${program.health}%</strong>
+                        <span>${programHealthStatus(program).label}</span>
+                        <small>${programHealthStatus(program).detail}</small>
+                      </span>
                       <span>›</span>
                     </button>
                   `).join("")}
@@ -1522,8 +1619,8 @@
             <span class="avatar" style="--avatar-bg:${candidate.color[0]};--avatar-ink:${candidate.color[1]}">${candidate.initials}</span>
             <span><strong>${candidate.name}</strong><small>${candidate.school}<br>${program.name} · Applied ${candidate.applied}</small><span class="candidate-tags">${candidate.tags.map(tag => `<span>${tag}</span>`).join("")}</span></span>
           </div>
-          <div class="ai-score"><span class="score-ring" style="--score:${candidate.score};--score-color:${scoreColor}"><b>${candidate.score}</b></span><span class="score-copy"><strong>${candidate.confidence}</strong><small>Evidence coverage 92%</small>${statusPill(candidate.stage)}</span></div>
-          <div class="ai-summary"><p>${candidate.summary}</p><span class="next-step"><span>Next suggested</span><b>${candidate.next} →</b></span></div>
+          <div class="ai-score"><span class="mobile-field-label">AI readiness</span><span class="score-ring" style="--score:${candidate.score};--score-color:${scoreColor}"><b>${candidate.score}</b></span><span class="score-copy"><strong>${candidate.confidence}</strong><small>Evidence coverage 92%</small>${statusPill(candidate.stage)}</span></div>
+          <div class="ai-summary"><span class="mobile-field-label">Summary & suggested next step</span><p>${candidate.summary}</p><span class="next-step"><span>Next suggested</span><b>${candidate.next} →</b></span></div>
         </button>`;
       }
 
@@ -1622,7 +1719,7 @@
                 <div class="program-meta"><div><span>Recruiting window</span><b>${program.opened}<br>→ ${program.closes}</b></div><div><span>Candidates</span><b>${program.counts[0]} total</b></div><div><span>Hiring target</span><b>${program.hired}/${program.target} filled</b></div></div>
                 <div class="program-progress"><div class="program-progress-head"><span>Target progress</span><span>${Math.round(program.hired / program.target * 100)}%</span></div><div class="track"><i style="width:${Math.min(100, program.hired / program.target * 100)}%;background:${program.active ? "var(--teal)" : "#8da0a3"}"></i></div></div>
               </div>
-              <div class="program-card-foot"><span>${program.active ? `${program.health}% pipeline health · ${program.counts[3]} in interviews` : "Historical data remains available"}</span><button class="btn btn-quiet" data-manage-program="${program.id}">Manage program</button></div>
+              <div class="program-card-foot"><span>${program.active ? `${program.health}% · ${programHealthStatus(program).label} · ${program.counts[3]} reached interview` : `${programHealthStatus(program).label} · Historical data remains available`}</span><button class="btn btn-quiet" data-manage-program="${program.id}">Manage program</button></div>
             </article>`).join("")}
           </div>
         </section>`;
