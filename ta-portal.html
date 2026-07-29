@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#005654">
     <title>AI Talent Platform — TA Portal</title>
+    <script>
+      if (window.location.protocol === "file:") {
+        window.location.replace(`http://localhost:3000/ta-portal${window.location.search}${window.location.hash}`);
+      }
+    </script>
     <link rel="stylesheet" href="./typography.css">
     <link rel="stylesheet" href="./iconography.css">
     <style>
@@ -1230,6 +1235,8 @@
       .copilot-mini-action:disabled { color: var(--muted); border-color: var(--line); background: #f3f5f5; cursor: not-allowed; opacity: .72; }
       .copilot-followup-dock { min-height: 132px; height: auto; margin-top: 8px; overflow: visible; }
       .copilot-followup-dock .follow-up { padding: 8px 9px; }
+      .copilot-review-shell { min-width: 0; }
+      .copilot-review-main { min-width: 0; }
       .copilot-workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
       .copilot-panel { min-width: 0; border: 1px solid var(--line); border-radius: 11px; background: var(--white); overflow: hidden; }
       .copilot-panel-head { padding: 13px 14px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); background: #fafcfc; }
@@ -1269,6 +1276,47 @@
       .copilot-batch-status { margin-top: 9px; padding: 8px 9px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-radius: 7px; color: var(--muted); background: #f3f7f7; font-size: var(--type-caption-size); line-height: var(--type-caption-line); }
       .copilot-batch-status b { color: var(--teal-deep); }
       .copilot-results { min-height: 452px; background: #fafcfc; }
+      .copilot-results.is-updating { position: relative; }
+      .copilot-live-status {
+        min-height: 42px;
+        margin: 10px 14px 0;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        position: sticky;
+        top: 0;
+        z-index: 6;
+        border: 1px solid #b8dde1;
+        border-radius: 9px;
+        color: var(--teal-deep);
+        background: rgba(239, 249, 250, .96);
+        box-shadow: 0 5px 16px rgba(0, 85, 91, .08);
+        backdrop-filter: blur(8px);
+      }
+      .copilot-live-status-spinner {
+        width: 17px;
+        height: 17px;
+        flex: none;
+        border: 2px solid #b8dde1;
+        border-top-color: var(--teal);
+        border-radius: 50%;
+        animation: copilotStatusSpin .8s linear infinite;
+      }
+      @keyframes copilotStatusSpin { to { transform: rotate(360deg); } }
+      .copilot-live-status-copy { min-width: 0; }
+      .copilot-live-status-copy b {
+        display: block;
+        font-size: var(--type-meta-size);
+        line-height: var(--type-meta-line);
+      }
+      .copilot-live-status-copy span {
+        display: block;
+        margin-top: 1px;
+        color: var(--muted);
+        font-size: var(--type-micro-size);
+        line-height: var(--type-micro-line);
+      }
       .copilot-transcript-panel { margin-top: 14px; }
       .copilot-empty { min-height: 450px; padding: 35px; display: grid; place-items: center; color: var(--muted); text-align: center; }
       .copilot-empty span { width: 42px; height: 42px; margin: 0 auto 10px; display: grid; place-items: center; border-radius: 12px; color: var(--teal-deep); background: var(--teal-wash); font-size: 16px; font-weight: var(--weight-semibold); }
@@ -1349,6 +1397,206 @@
       .saved-category-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
       .saved-category-grid span { padding: 7px; border-radius: 7px; color: var(--body); background: #f4f7f7; text-align: center; font-size: var(--type-micro-size); }
       .saved-category-grid b { display: block; margin-top: 2px; color: var(--teal-deep); font-size: var(--type-meta-size); }
+
+      /* Two-column interview workspace */
+      .modal-backdrop:not(.copilot-pip) .modal.copilot-modal {
+        width: min(1440px, 100%);
+        height: calc(100vh - 44px);
+        max-height: calc(100vh - 44px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .modal-head,
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .modal-foot { flex: none; }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .modal-foot { display: none; }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .modal-body {
+        min-height: 0;
+        padding: 14px;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        overflow: hidden;
+        background: #f5f9f9;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-demo-bar,
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-timeline { flex: none; }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-review-shell {
+        min-height: 0;
+        display: grid;
+        flex: 1;
+        grid-template-columns: minmax(310px, 360px) minmax(0, 1fr);
+        gap: 14px;
+        overflow: hidden;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-interviewer-desk {
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        position: static;
+        scrollbar-gutter: stable;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .interviewer-desk-section {
+        padding: 12px;
+        flex: none;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .interviewer-desk-head p {
+        max-width: 250px;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .interviewer-notes {
+        min-height: 110px;
+        height: 110px;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .interviewer-desk-section:last-child .interviewer-desk-head {
+        flex-direction: column;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .interviewer-desk-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-followup-dock {
+        min-height: 0;
+        gap: 5px;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-followup-dock .follow-up {
+        padding: 7px 8px;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-followup-dock .follow-up p {
+        display: none;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-review-main {
+        min-height: 0;
+        padding-right: 4px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+      }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-results { min-height: 0; }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-transcript {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+      }
+
+      /* Completed interview refinements */
+      .copilot-modal.is-final-review .copilot-demo-bar,
+      .copilot-modal.is-final-review .copilot-timeline { display: none; }
+      .modal-backdrop:not(.copilot-pip) .copilot-modal.is-final-review .copilot-interviewer-desk {
+        overflow: hidden;
+        scrollbar-gutter: auto;
+      }
+      .copilot-modal.is-final-review .interviewer-desk-section:last-child {
+        min-height: 0;
+        flex: 1;
+        overflow: hidden;
+      }
+      .copilot-modal.is-final-review .interviewer-desk-actions .copilot-mini-action { display: none; }
+      .copilot-modal.is-final-review .interviewer-notes {
+        min-height: 96px;
+        height: 96px;
+        resize: none;
+      }
+      .copilot-modal.is-final-review .note-history {
+        max-height: none;
+        margin-top: 7px;
+        gap: 4px;
+        overflow: visible;
+      }
+      .copilot-modal.is-final-review .note-snapshot {
+        padding: 5px 7px;
+        font-size: var(--type-micro-size);
+        line-height: 1.35;
+      }
+      .copilot-modal.is-final-review .copilot-followup-dock {
+        min-height: 0;
+        margin-top: 7px;
+        gap: 5px;
+        overflow: hidden;
+      }
+      .copilot-modal.is-final-review .follow-up {
+        min-height: 0;
+        padding: 6px 7px;
+        grid-template-columns: 20px 1fr;
+        gap: 6px;
+      }
+      .copilot-modal.is-final-review .follow-up > span {
+        width: 20px;
+        height: 20px;
+        font-size: var(--type-micro-size);
+      }
+      .copilot-modal.is-final-review .follow-up b {
+        font-size: var(--type-caption-size);
+        line-height: 1.35;
+      }
+      .copilot-modal.is-final-review .follow-up p { display: none; }
+      .copilot-modal.is-final-review .interviewer-evidence-panel { display: none; }
+      .copilot-modal.is-final-review .copilot-batch-status { position: static; }
+
+      /* Picture-in-picture isolation */
+      .modal-backdrop.copilot-pip .copilot-modal,
+      .modal-backdrop.copilot-pip .copilot-modal.is-final-review {
+        width: min(430px, calc(100vw - 28px));
+        height: auto;
+        max-height: min(690px, calc(100vh - 28px));
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .modal-backdrop.copilot-pip .copilot-modal .modal-head { flex: none; }
+      .modal-backdrop.copilot-pip .copilot-modal .modal-body,
+      .modal-backdrop.copilot-pip .copilot-modal.is-final-review .modal-body {
+        min-height: 0;
+        max-height: none;
+        display: block;
+        flex: 1;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+      }
+      .modal-backdrop.copilot-pip .copilot-review-shell,
+      .modal-backdrop.copilot-pip .copilot-modal.is-final-review .copilot-review-shell {
+        min-height: 0;
+        display: block;
+        overflow: visible;
+      }
+      .modal-backdrop.copilot-pip .copilot-review-main { display: none; }
+      .modal-backdrop.copilot-pip .copilot-interviewer-desk,
+      .modal-backdrop.copilot-pip .copilot-modal.is-final-review .copilot-interviewer-desk {
+        min-height: 0;
+        overflow: visible;
+      }
+      .modal-backdrop.copilot-pip .interviewer-desk-section:last-child,
+      .modal-backdrop.copilot-pip .copilot-modal.is-final-review .interviewer-desk-section:last-child {
+        min-height: 0;
+        overflow: visible;
+      }
+      .modal-backdrop.copilot-pip .copilot-head-actions { gap: 5px; }
+      .modal-backdrop.copilot-pip .copilot-restore-action,
+      .modal-backdrop.copilot-pip .icon-button { flex: none; }
+      .modal-backdrop.copilot-pip .copilot-demo-bar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+      }
+      .modal-backdrop.copilot-pip .copilot-demo-clock > span > b { white-space: nowrap; }
+      .modal-backdrop.copilot-pip .copilot-demo-controls {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        flex-wrap: nowrap;
+      }
+      .modal-backdrop.copilot-pip .copilot-demo-controls .btn { white-space: nowrap; }
+      .modal-backdrop.copilot-pip .copilot-mini-action:disabled { display: none; }
 
       /* TA Portal typography system */
       h1 { font-size: var(--type-page-title-size); line-height: var(--type-page-title-line); }
@@ -1461,6 +1709,9 @@
         .trend-card { grid-column: auto; }
         .decision-card { position: static; }
         .agent-grid, .program-admin-grid { grid-template-columns: 1fr; }
+        .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-review-shell {
+          grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+        }
       }
       @media (max-width: 780px) {
         .shell { display: block; }
@@ -1485,6 +1736,26 @@
         .copilot-timeline { grid-template-columns: 1fr; gap: 8px; }
         .copilot-stage:not(:last-child)::after { width: 2px; height: auto; left: 11px; right: auto; top: 24px; bottom: -8px; }
         .copilot-interviewer-desk { grid-template-columns: 1fr; position: static; }
+        .modal-backdrop:not(.copilot-pip) .modal.copilot-modal {
+          height: auto;
+          overflow: auto;
+        }
+        .modal-backdrop:not(.copilot-pip) .copilot-modal .modal-body {
+          display: block;
+          overflow: visible;
+        }
+        .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-review-shell {
+          display: block;
+          overflow: visible;
+        }
+        .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-interviewer-desk {
+          margin-bottom: 12px;
+          overflow: visible;
+        }
+        .modal-backdrop:not(.copilot-pip) .copilot-modal .copilot-review-main {
+          padding-right: 0;
+          overflow: visible;
+        }
         .copilot-workspace { grid-template-columns: 1fr; }
         .copilot-coverage, .copilot-columns { grid-template-columns: 1fr; }
         .scorecard-row { grid-template-columns: 1fr auto; }
@@ -2774,12 +3045,37 @@
       function renderCopilotResult(session, candidate) {
         const result = document.querySelector("#copilotResult");
         if (!result) return;
+        const isFinalReview = Boolean(session.final);
+        document.querySelector(".copilot-modal")?.classList.toggle("is-final-review", isFinalReview);
+        const notesHelp = document.querySelector("#copilotNotesHelp");
+        const followupsHelp = document.querySelector("#copilotFollowupsHelp");
+        const notesInput = document.querySelector("#copilotNotes");
+        if (notesHelp) notesHelp.textContent = isFinalReview
+          ? "Add a final private scoring note or review notes captured during the interview."
+          : "Your free-form judgment is captured into the next checkpoint.";
+        if (followupsHelp) followupsHelp.textContent = isFinalReview
+          ? "Reference-only prompts generated during the interview."
+          : "Up to five questions generated from transcript evidence and your notes.";
+        if (notesInput) notesInput.placeholder = isFinalReview
+          ? "Add a final private scoring note…"
+          : "Capture your feeling, doubts, or skill judgment here. Example: Strong logic, but impact sounds overstated—verify data ownership.";
         renderCopilotFollowups(session, candidate);
         if (session.loading) {
-          const actionLabel = session.currentMinute === 60 ? "Producing final scorecard" : `Analysing the ${session.currentMinute}-minute checkpoint`;
-          result.innerHTML = `<div class="copilot-loading"><div><span class="screen-agent-spinner"></span><strong>${esc(actionLabel)}</strong><p>Checking transcript citations against the 100-point Zalo PMT interview guide.</p></div></div>`;
+          const isFinalizing = session.currentMinute === (session.plannedEndMinute || 60);
+          const actionLabel = isFinalizing ? "AI is preparing the final scorecard" : `AI is analysing the ${session.currentMinute}-minute checkpoint`;
+          result.classList.add("is-updating");
+          result.setAttribute("aria-busy", "true");
+          const currentStatus = result.querySelector("#copilotLiveStatus");
+          const statusMarkup = `<div class="copilot-live-status" id="copilotLiveStatus" role="status">
+            <span class="copilot-live-status-spinner" aria-hidden="true"></span>
+            <span class="copilot-live-status-copy"><b>${esc(actionLabel)}</b><span>The current scorecard remains available. New evidence will update here automatically.</span></span>
+          </div>`;
+          if (currentStatus) currentStatus.outerHTML = statusMarkup;
+          else result.insertAdjacentHTML("afterbegin", statusMarkup);
           return;
         }
+        result.classList.remove("is-updating");
+        result.removeAttribute("aria-busy");
         if (session.final) {
           result.innerHTML = renderFinalScorecard(session.final, session.finalSource, session);
           bindCopilotScoreInputs();
@@ -2817,7 +3113,7 @@
         if (!history) return;
         history.innerHTML = session.notes.length
           ? session.notes.map(note => `<div class="note-snapshot" data-note-id="${esc(note.noteId)}"><b>${esc(note.minute)} min · ${esc(note.noteId)}</b> · ${esc(note.text)}</div>`).join("")
-          : `<p class="copilot-input-note" style="margin:0">Notes are captured with the next checkpoint and supplied as interviewer context.</p>`;
+          : `<p class="copilot-input-note" style="margin:0">${session.final ? "No private notes were captured during the interview." : "Notes are captured with the next checkpoint and supplied as interviewer context."}</p>`;
       }
 
       function captureCopilotNote(session, minute) {
@@ -2848,6 +3144,7 @@
       }
 
       function saveFinalInterviewResult(candidate, session) {
+        captureCopilotNote(session, session.currentMinute);
         session.finalComment = document.querySelector("#finalInterviewNote")?.value.trim() || session.finalComment || "";
         document.querySelectorAll("#copilotResult [data-score-input][data-score-scope='final']").forEach(input => {
           setCopilotScore("final", input.dataset.scoreCriterion, input.value, false);
@@ -2875,6 +3172,9 @@
         candidate.timeline.unshift(["Final interview result saved", `Just now · ${session.final.overallDraftScore}/100 · Minh Nguyen`]);
         refreshProgramCounts();
         render();
+        renderNoteHistory(session);
+        const notesInput = document.querySelector("#copilotNotes");
+        if (notesInput) notesInput.value = "";
         renderCopilotResult(session, candidate);
         showToast(`Final interview result saved for ${candidate.name}.`);
       }
@@ -2945,7 +3245,7 @@
         next.disabled = session.loading || session.phase === "complete";
         reset.disabled = session.loading || session.currentMinute === 0;
         if (endEarly) {
-          endEarly.classList.toggle("hidden", session.phase === "complete");
+          endEarly.classList.toggle("hidden", session.phase === "complete" || session.currentMinute === 0);
           endEarly.disabled = session.loading || session.currentMinute === 0;
         }
         if (extend) {
@@ -2983,6 +3283,23 @@
           previousCheckpoint: session.checkpoint || session.checkpoints[session.currentMinute] || session.checkpoints[45] || undefined
         };
         const priorCheckpoint = session.checkpoint || session.checkpoints[session.currentMinute] || null;
+        const mergeCheckpointUpdate = incoming => {
+          if (!priorCheckpoint || options.refreshQuestionsOnly) return incoming;
+          const adjustedScores = new Map(
+            (priorCheckpoint.coverage || [])
+              .filter(item => item.interviewerAdjusted)
+              .map(item => [item.criterionId, item])
+          );
+          return {
+            ...incoming,
+            coverage: (incoming.coverage || []).map(item => {
+              const adjusted = adjustedScores.get(item.criterionId);
+              return adjusted
+                ? { ...item, score: adjusted.score, interviewerAdjusted: true }
+                : item;
+            })
+          };
+        };
         try {
           const response = await fetch("/api/interview-copilot", {
             method: "POST",
@@ -2998,7 +3315,7 @@
                   followUps: body.output.followUps,
                   pacingNote: body.output.pacingNote
                 }
-              : body.output;
+              : mergeCheckpointUpdate(body.output);
             session.checkpointSource = body.source;
             session.checkpoints[session.currentMinute] = session.checkpoint;
           } else {
@@ -3014,7 +3331,7 @@
                   followUps: fallback.followUps,
                   pacingNote: fallback.pacingNote
                 }
-              : fallback;
+              : mergeCheckpointUpdate(fallback);
             session.checkpointSource = "demo_fallback";
             session.checkpoints[session.currentMinute] = session.checkpoint;
           } else {
@@ -3118,7 +3435,6 @@
         session.phase = "analysing";
         session.currentMinute = nextChunk.minute;
         session.transcriptText = [session.transcriptText, ...nextChunk.lines].filter(Boolean).join("\n");
-        session.checkpoint = null;
         session.pauseRequested = manualAdvance || wasPaused;
         renderCopilotTimeline(session);
         const action = session.currentMinute === plannedEndMinute ? "finalize" : "checkpoint";
@@ -3236,37 +3552,41 @@
               <div class="copilot-demo-controls"><button class="btn btn-primary" id="copilotStartPause">▶ Start 1-hour demo</button><button class="btn btn-secondary" id="copilotNext">↦ Next 15 min now</button><button class="btn btn-danger hidden" id="copilotEndEarly">End interview now</button><button class="btn btn-secondary hidden" id="copilotExtend">+ Extend to 75 min</button><button class="btn btn-quiet" id="copilotReset">↻ Reset</button></div>
             </div>
             <div class="copilot-timeline" id="copilotTimeline" aria-label="Interview checkpoint timeline"></div>
-            <div class="copilot-interviewer-desk">
-              <section class="interviewer-desk-section">
-                <div class="interviewer-desk-head"><div><h3>Interviewer notes</h3><p>Your free-form judgment is captured into the next checkpoint.</p></div><span class="pill">Private context</span></div>
-                <div class="interviewer-note-box">
-                  <textarea class="interviewer-notes" id="copilotNotes" aria-label="Interviewer notes" placeholder="Capture your feeling, doubts, or skill judgment here. Example: Strong logic, but impact sounds overstated—verify data ownership.">${esc(session.noteDraft || "")}</textarea>
-                  <div class="note-history" id="copilotNoteHistory"></div>
-                </div>
-              </section>
-              <section class="interviewer-desk-section">
-                <div class="interviewer-desk-head">
-                  <div><h3>Suggested follow-up questions</h3><p>Up to five questions generated from transcript evidence and your notes.</p></div>
-                  <div class="interviewer-desk-actions">
-                    <span class="pill gold" id="copilotFollowupBadge">Before</span>
-                    <button class="copilot-mini-action primary" id="copilotGenerateCheckpoint" type="button">Generate checkpoint</button>
-                    <button class="copilot-mini-action" id="copilotRefreshQuestions" type="button">Refresh questions</button>
+            <div class="copilot-review-shell">
+              <div class="copilot-interviewer-desk">
+                <section class="interviewer-desk-section">
+                  <div class="interviewer-desk-head"><div><h3>Interviewer notes</h3><p id="copilotNotesHelp">Your free-form judgment is captured into the next checkpoint.</p></div><span class="pill">Private context</span></div>
+                  <div class="interviewer-note-box">
+                    <textarea class="interviewer-notes" id="copilotNotes" aria-label="Interviewer notes" placeholder="Capture your feeling, doubts, or skill judgment here. Example: Strong logic, but impact sounds overstated—verify data ownership.">${esc(session.noteDraft || "")}</textarea>
+                    <div class="note-history" id="copilotNoteHistory"></div>
                   </div>
-                </div>
-                <div class="copilot-followup-dock follow-up-list" id="copilotFollowups"></div>
-              </section>
-            </div>
-            <div class="copilot-workspace">
-              <section class="copilot-panel copilot-results" id="copilotResult" aria-live="polite"></section>
-            </div>
-            <section class="copilot-panel copilot-transcript-panel">
-              <div class="copilot-panel-head"><div><h3>Transcript evidence</h3><p>Supporting record · finalized turns from internal STT</p></div><span class="pill">15-min batches</span></div>
-              <div class="copilot-input">
-                <div class="copilot-transcript" id="copilotTranscript" aria-label="Interview transcript"></div>
-                <div class="copilot-batch-status" id="copilotBatchStatus"><span>No transcript received yet</span><b>Next: 15 min</b></div>
-                <p class="copilot-input-note">The transcript sits below the interviewer workspace as supporting evidence. Evidence links in the checkpoint and scorecard jump directly to the cited candidate turn.</p>
+                </section>
+                <section class="interviewer-desk-section">
+                  <div class="interviewer-desk-head">
+                    <div><h3>Suggested follow-up questions</h3><p id="copilotFollowupsHelp">Up to five questions generated from transcript evidence and your notes.</p></div>
+                    <div class="interviewer-desk-actions">
+                      <span class="pill gold" id="copilotFollowupBadge">Before</span>
+                      <button class="copilot-mini-action primary" id="copilotGenerateCheckpoint" type="button">Generate checkpoint</button>
+                      <button class="copilot-mini-action" id="copilotRefreshQuestions" type="button">Refresh questions</button>
+                    </div>
+                  </div>
+                  <div class="copilot-followup-dock follow-up-list" id="copilotFollowups"></div>
+                </section>
               </div>
-            </section>
+              <div class="copilot-review-main">
+                <div class="copilot-workspace">
+                  <section class="copilot-panel copilot-results" id="copilotResult" aria-live="polite"></section>
+                </div>
+                <section class="copilot-panel copilot-transcript-panel">
+                  <div class="copilot-panel-head"><div><h3>Transcript evidence</h3><p>Supporting record · finalized turns from internal STT</p></div><span class="pill">15-min batches</span></div>
+                  <div class="copilot-input">
+                    <div class="copilot-transcript" id="copilotTranscript" aria-label="Interview transcript"></div>
+                    <div class="copilot-batch-status" id="copilotBatchStatus"><span>No transcript received yet</span><b>Next: 15 min</b></div>
+                    <p class="copilot-input-note">The transcript follows the scorecard as supporting evidence. Evidence links jump directly to the cited candidate turn.</p>
+                  </div>
+                </section>
+              </div>
+            </div>
           </div>
           <div class="modal-foot"><button class="btn btn-quiet" data-close-copilot>Close</button></div>
         </section>`, candidate.id);
